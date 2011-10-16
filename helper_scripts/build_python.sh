@@ -2,32 +2,13 @@
 # Build Python (with readline and zlib support)
 # note: Install readline and zlib before running this script
 #
-# $LastChangedDate: 2011-09-12 11:20:44 -0700 (Mon, 12 Sep 2011) $ $LastChangedRevision: 52004 $
+# $LastChangedDate: 2011-08-16 10:04:48 -0700 (Tue, 16 Aug 2011) $ $LastChangedRevision: 51626 $
 
-echo "Installing Python 2.6.7. This takes a while..."
+echo "Installing Python 2.4.6. This takes a while..."
 cd "$PKG"
 untar "$PYTHON_TB"
-chmod -R 755 "$PYTHON_DIR"
+chmod -R 775 "$PYTHON_DIR"
 cd "$PYTHON_DIR"
-
-# Look for Debian/Ubuntu Multiarch
-if [ -d /usr/lib/`uname -m`-linux-gnu ]; then
-    echo "Patching for Debian/Ubuntu Multiarch"
-    patch < ../multiarch-patch.txt >> "$INSTALL_LOG" 2>&1
-    if [ $? -gt 0 ]; then
-    	echo "Failed to patch for Debian/Ubuntu Multiarch."
-    	seelog
-    	exit 1
-    fi
-fi
-
-echo "Patching for thread size"
-patch -p0 < ../issue9670-v2.txt >> "$INSTALL_LOG" 2>&1
-if [ $? -gt 0 ]; then
-	echo "Failed to patch for thread size."
-	seelog
-	exit 1
-fi
 
 # Look for Darwin
 if [ `uname` = 'Darwin' ]; then
@@ -36,26 +17,52 @@ if [ `uname` = 'Darwin' ]; then
     if [ "X$INSTALL_RL" = "Xno" ] && [ -d /opt/local/include ] && [ -d /opt/local/lib ]; then
         sed -E -e "s|#(add_dir_to_list\(self\.compiler\..+_dirs, '/opt/local/)|\\1|" -i.bak setup.py
     fi
-    EXFLAGS="--disable-toolbox-glue --disable-ipv6 --disable-framework"
+    # Look for Leopard (9.x)
+    if uname -r | grep -q '^9\.'
+    then
+        # we're on Leopard
+        if [ "X$MACOSX_DEPLOYMENT_TARGET" != "X10.4" ]; then
+            # we're not compiling for tiger compatibility
+        	# so, patch for Leopard setpgrp
+        	sed -E -e "s|(CPPFLAGS=.+)|\\1 -D__DARWIN_UNIX03|" -i.bak Makefile.pre.in
+        fi
+    fi
+    # Look for Snow Leopard (10.x)
+    if uname -r | grep -q '^1[01]\.'
+    then
+        # we're on Snow Leopard; time to patch
+        # Thanks, Florian!
+        patch -p0 < ../../patches/python-2.4-darwin-10.6.patch >> "$INSTALL_LOG" 2>&1
+        EXFLAGS="--disable-toolbox-glue --disable-ipv6 --disable-framework"
+    fi
 fi
 
 if [ "x$UNIVERSALSDK" != "x" ];	then
     EXFLAGS="--enable-universalsdk=$UNIVERSALSDK"
 fi
 
-./configure $EXFLAGS --prefix="$PY_HOME" >> "$INSTALL_LOG" 2>&1
-
-## OpenSolaris has netpacket/packet.h but it does not compile Modules/socketmodule.c
-if [ `uname` = 'SunOS' ]; then 
-    # OpenSolaris and Oracle Solaris 11 Express are SunOS 5.11 for now. 
-    if [  `uname -r | awk -F. '{print $2}'` -gt 10 ]; then 
-        mv pyconfig.h pyconfig.h.bak  
-        /usr/bin/sed -e "s|\(^#define HAVE_NETPACKET_PACKET_H 1$\)|/* \1 */|" pyconfig.h.bak >pyconfig.h 
-    fi 
+if [ $NEED_LOCAL -eq 1 ]; then
+	./configure $EXFLAGS \
+		--prefix="$PY_HOME" \
+		--with-readline \
+		--with-zlib \
+		--disable-tk \
+		--with-gcc="$GCC -I\"$LOCAL_HOME\"/include" \
+		--with-cxx="$GPP -I\"$LOCAL_HOME\"/include" \
+		LDFLAGS="-L\"$LOCAL_HOME\"/lib" \
+		>> "$INSTALL_LOG" 2>&1
+else
+    ./configure $EXFLAGS \
+		--prefix="$PY_HOME" \
+		--with-readline \
+		--with-zlib \
+		--disable-tk \
+		--with-gcc="$GCC" \
+		--with-cxx="$GPP" \
+		>> $INSTALL_LOG 2>&1
 fi
-
-make install >> "$INSTALL_LOG" 2>&1
-
+"$GNU_MAKE" >> $INSTALL_LOG 2>&1
+"$GNU_MAKE" install >> $INSTALL_LOG 2>&1
 cd "$PKG"
 if [ -d "$PYTHON_DIR" ]
 then
@@ -63,7 +70,7 @@ then
 fi
 if [ ! -x "$PY_HOME/bin/python" ]
 then
-	echo "Install of Python 2.6.7 has failed."
+	echo "Install of Python 2.4.6 has failed."
 	seelog
     exit 1
 fi

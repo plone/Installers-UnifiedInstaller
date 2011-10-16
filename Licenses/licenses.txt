@@ -1,9 +1,11 @@
-The Plone Content Management System is copyright (c) 2000-2010
-by the Plone Foundation.
+The Plone Content Management System is built on the Content 
+Management Framework (CMF) and the Zope Application Server.
+Plone is copyright 2000-2007 Plone Foundation et al.
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License version 2
-as published by the Free Software Foundation.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,9 +28,6 @@ A few components are distributed in binary or pre-installed format
 on some platforms (e.g., OS X), and the licenses may not be in the
 compiled versions:
 
-libjpeg:
-    See jpeg.txt
-
 readline library:
     GPL
 
@@ -40,9 +39,6 @@ Python
 
 Zope
     Zope Public License, version 2.1
-
-libxml2, libxslt
-    MIT License
 
 For license specifications for Python Packages and Eggs
 see the included PKG-INFO files.

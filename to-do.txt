@@ -1,0 +1,16 @@
+- include boostrap.py -- it will help when an install is moved.
+
+- use "sudo -u user command" inside plonectl when installed in root mode.
+
+- For root mode, create both a "zeo" and "plone" user for cluster. Run
+zeoserver under zeo. Restructure var so that clients and server only own
+what they need. clients don't need to own filestorage! All they need is a place
+to write their logs, socket and pid.
+
+- zc.buildout needs to go into python's site-packages, or it won't be possible
+to run bootstrap.py after paster.
+
+- The instance creation scripts always should have been python scripts;
+using Python will be much easier than using sed for all the buildout.cfg
+adaptations. It might also make it easier to reconcile the UnifiedInstaller
+with Windows.

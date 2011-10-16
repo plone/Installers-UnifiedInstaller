@@ -1,7 +1,7 @@
 # Test the invoking Python to see if it's a good candidate
-# for running Zope 2.12.x / Plone 4.0.x.
+# for running Zope 2.10.x / Plone 3.0.x.
 #
-# $LastChangedDate: 2011-10-01 13:45:45 -0700 (Sat, 01 Oct 2011) $ $LastChangedRevision: 52404 $
+# $LastChangedDate: 2008-08-03 10:21:34 -0700 (Sun, 03 Aug 2008) $ $LastChangedRevision: 21978 $
 
 import sys, os.path
 
@@ -9,15 +9,10 @@ passed = True
 
 # check version
 vi = sys.version_info[:3]
-if vi < (2, 6, 0) or vi >= (2, 7, 0) :
-    print "Failed: Python version must be 2.6+."
+if vi < (2, 4, 2) or vi >= (2, 5, 0) :
+    print "Failed: Python version must be 2.4.2+. Python 2.5.x not supported."
     # not much point in further testing.
     sys.exit(1)
-
-if not os.path.isfile( os.path.join(sys.prefix, 'include', 'python2.6', 'Python.h') ):
-    print "Failed: We need to be able to use Python.h, which is missing."
-    print "You may be able to resolve this by installing the python-dev package."
-    passed = False
 
 try:
     import xml.parsers.expat
@@ -34,20 +29,22 @@ except ImportError:
 
 try:
     import _imaging
-    try:
-        from _imaging import jpeg_decoder
-    except ImportError:
-            print "Failed: The Python Imaging Library is installed, but the JPEG"
-            print "support is not working."
-            passed = False
 except ImportError:
-    pass
+    if os.path.isfile( os.path.join(sys.prefix, 'include', 'python2.4', 'Python.h') ):
+        print "Warning: the Python Imaging Library is missing."
+        print "We'll try to build it, but watch for problems.\n"
+    else:
+        print "Failed: Python must include Python Imaging Library"
+        print "or the headers necessary to build it. Try installing"
+        print "your Python development and/or imaging packages.\n"
+        passed = False
 
 try:
     import _ssl
 except ImportError:
-    print "Failed: This Python does not have ssl support."
-    passed = False
+    print "Warning: This Python does not have ssl support."
+    print "It may still be usable for Zope, but will not support"
+    print "openid, ESMTP+TLS, or updates via https.\n"
 
 try:
     import readline

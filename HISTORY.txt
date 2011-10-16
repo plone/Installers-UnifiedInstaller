@@ -1,63 +1,257 @@
-Unreleased
+3.3.6-20110816
+    - Update to work on Lardy Lion. (OS X 10.7)
 
-    - Don't install OSX controller on Lion (no wx).
+3.3.6
 
-4.1.2
+    - Update to 3.3.6.
 
-    - Update to 4.1.2
+    - Permission fixups for extra directories inside var.
 
-    - Try to detect libxml2/libxslt if installed; check versions. Only build
-      statically if missing or out-of-date.
+3.3.5
 
-    - 4.1 requires ssl (optional with earlier versions). Make it much clearer
-      that this is required. Fixes #12248.
+    - Adapt to 3.3.5.
 
-    - Refine some of the dependency tests.
+    - Extend permissions setting to make LC_MESSAGES directories in zope
+      writable by client processes in cluster configuration.
 
-    - Earlier debian multiarch detection code would fail if multiple multiarch
-      directories were present. Fixed, thanks to jgrigera for the solution.
-      issue #12188
-
-4.1 - 20110907
-
-    - Fixes for building on Fedora 15, issue #12103. Removed some configure
-      options that only worked with Python 2.4.x. I don't know why they
-      only caused problems with Fedora 15.
-
-4.1 - 20110830
-
-    - Add --clients=# option to specify # of zeo clients created.
-
-    - Add --with-site-packages option to use virtualenv without the
-      extra isolation.
-
-    - Provide more options to control lxml install.
-
-4.1 - 20110726
-
-    - Adapt to work with OS X 10.7. This mainly involved updating readline
-      and libjpeg to most-current versions.
-
-4.1
-
-    - Update to 4.1
-
-4.1rc3 + Zope-Hotfix-20110622
-
-    - Add Zope-Hotfix-20110622
+    - Snow Leopard doesn't need CFLAGS="-arch x86_64" to compile on 10.6 64,
+      and it prevents compilation on 10.6 32. Removed.
+      
+    - Check /usr/lib64 for .so files in checkLib.
     
-    - Update to Python 2.6.7, VirtualEnv 1.6.1
+    - CFLAGS needs exporting.
+
+3.3.4
+
+    - Updated to 3.3.4
+
+3.3.3
+
+    - Updated to 3.3.3
     
-    - Fixes to lxml build for root installs. Separate lxml build.
+    - Added dumppickedversions extension and pinned all unpinned
+      eggs used by the unified installer.
 
-4.1rc3
+3.3.2
 
-    - Add lxml with static xml2 and xslt.
+    - Update to 3.3.2
 
-    - Add patch for Natty's multiarch. Fixes problem with inability to build
-      Python zlib support when libraries are in /usr/lib/x86_64-linux-gnu.
+    - Move build environment settings out of individual help scripts
+      and into the main install.sh.
+      
+    - setuptools-0.6c11 doesn't seem to work with PIL. Changed build of
+      PIL to avoid it.
+
+3.3.1
+
+    - Use "-U" flag when running buildout to avoid collisions with
+      personal buildout config files.
+
+    - Adapt to 3.3.1
+
+3.3 - installer revision 20090908
+
+    - Improve OS X 10.6 compatibility (a work in progress; there are still
+      python tests failing, though Zope/Plone seems to work).
+
+    - Update to Python 2.4.6
+
+    - Update to Zope 2.10.9
+
+3.3
+
+    - Adapt to 3.3
+
+    - Update to Zope 2.10.8
+
+3.3rc5
+
+    - Adapt to 3.3rc5
+
+3.3rc4
+
+    - Adapt to 3.3rc4
+
+    - Build local readline by default on Darwin.
+
+    - Ownership incorrect for LC_MESSAGES in eggs. #Fixes 9301.
+
+3.3rc3
+
+    - Adapt to 3.3rc3
     
-    - Switched from PIL to Pillow>=1.7.1, as it has support for the nutty
-      natty multiarch paths.
+    - Include non-binary simplejson in egg cache.
 
-4.1rc2
+    - Add collective.recipe.backup.
+
+    - Fix pid/lock file names in client2 of zeo config.
+
+3.3rc2
+
+    - Adapt to Plone 3.3rc2
+    
+    - Include bootstrap.py in base_skeleton. It may be confusing to some,
+      but it's vital if a buildout gets moved.
+    
+3.3rc1
+
+    - Adapt to Plone 3.3rc1
+    
+3.3b1
+
+    - Adapt to Plone 3.3b1
+    
+    - Move Cheetah into egg cache, include non-binary Cheetah.
+
+3.2.2r1 (unreleased)
+
+    - Too many eggs pulled in in ZopeSkel part.
+
+3.2.2
+
+    - Adapt to 3.2.2.
+
+3.2.1r4
+
+    - Misspelling of .gz as .tz caused iniparse to be loaded from web.
+      On 2009-02-27, a new, broken version of iniparse caused havoc.
+
+    - Fixed capitalization errors in init scripts.
+
+3.2.1r3
+
+    - Fixed bug in --instance, did not work with simple name. Added tests.
+
+3.2.1r2
+
+    - Fixed bug in --with-python, issue #8938. Added tests.
+
+3.2.1
+    - Adapt to 3.2.1
+
+3.2
+    - Adapt to 3.2
+
+3.2rc1
+
+    - Adapt to 3.2rc1.
+
+3.2a1
+
+    - Adapt to 3.2a1.
+
+3.1 ex - testing installer features for Plone 3.2
+
+    - When building Python on Darwin, don't do setpgrp patch if
+      MACOSX_DEPLOYMENT_TARGET is set for Tiger.
+
+    - Switch to a single .py script for instance creation.
+
+    - Create init plone site and content via plonectl (plone.recipe.unifiedinstaller)
+      Remove mkPloneSite.py from this kit.
+
+    - Set up root-install cluster to run ZEO and clients under separate
+      user ids. Don't allow clients access to filestorage.
+
+    - Unified control program "plonectl"
+    
+    - Replace Zope root page with a Plone-specific page
+    
+    - Install paster/ZopeSkel under the control of buildout
+    
+    - Optional build of readline, mainly needed for Leopard
+    
+    - --separate-zope, --skip-tool-tests, --log options, mainly
+      useful for building the OS X installer.
+    
+    - Heavily commented buildout.cfgs with most major options set
+      in variables at the top
+      
+    - buildout.cfg with commented out common products
+    
+    - Now installs to /usr/local/Plone rather than /opt/Plone-version.
+      Uses /Applications/Plone on Darwin.
+
+3.1.4
+
+    - Update to Plone 3.1.4 release.
+
+3.1.3
+
+    - Update to Plone 3.1.3 release.
+
+3.1.2
+
+    - Update to Python 2.4.5, now officially supported by Zope 2.10.6.
+
+    - Update to Plone 3.1.1 release.
+
+    - Add --separate-zope command-line option to build/use
+      a Zope outside of the buildout parts.
+
+3.1.1
+
+    - Update to Plone 3.1.1 release.
+
+3.1
+    - Update to Plone 3.1 release.
+
+	- Changed the zeo template buildout.cfg clients to use
+	  ${zeoserver:zeo-address} rather than literals so that
+	  the zeoserver address is only in one spot.
+
+    - Added option to skip running bin/buildout. Use --nobuildout flag.
+
+    - Added documentation on building under OpenBSD.
+
+    - Fixed a bug in the code that tries to find Python.h. This
+      would have blocked attempts to build PIL for existing Pythons.
+
+    - Add code to make install.sh work with tar variations that
+      don't support bzip2 and/org gunzip. Now requires bunzip2
+      and gunzip.
+
+3.1-rc-1
+
+    - Change version numbering to match Plone; advance to 3.1-rc1.
+
+3.1.0-beta1
+
+    - Change version numbering to match Plone; advance to 3.1-beta1.
+
+Beta 5
+
+    - Pin to Plone 3.0.x.
+
+    - If using --with-python and _imaging isn't available, see
+      if the headers to build it are available before giving
+      up.
+
+    - Set umask to 022 early in install.
+
+    - Add cxx flag to python configure for global libs code branch.
+
+Beta 4
+
+    - Minor change in end-of-install message to accommodate
+      splitting of adminPassword.txt in plone.recipes.unifiedinstaller.
+    
+    - Make it possible to run install.sh from a separate working directory.
+
+Beta 3
+
+    - Update to Plone 3.0.6, ZopeSkel 1.5.1.
+
+    - Allow target command-line argument to be a relative path
+      (thanks, Raphael Ritz).
+
+Beta 2
+
+    - Default to "newest=false" in buildout.cfg.
+
+    - Direct most of build noise to a detailed log file in hopes that 
+      real errors will get noticed.
+
+Beta 1
+
+    - First major testing release

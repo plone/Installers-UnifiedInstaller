@@ -1,48 +1,21 @@
-==============================
-Plone 4.1.2: Unified Installer
-==============================
+================================================
+Plone : Unified Installer
+================================================
 
 The Plone Unified Installer is a source-installation kit that installs
 Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.1.2, Zope 2.12.14, and Python 2.6.7.
+This version includes Plone , Zope 2.10.7, and Python 2.4.6.
 
+The Unified Installer was originally developed for Plone 2.5 by Kamal Gill.
+Adaptation to Plone 3.x and buildout: Steve McMahon (steve@dcn.org)
+Maintainer for Plone 3.x: Steve McMahon
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
 
 *Important:* Back up your existing Plone site prior to running the installer
 or running buildout to update.
-
-Outline of this document
-------------------------
-    Installation Instructions
-        For a super-user (root) installation
-        For a non-super-user (rootless) installation
-    Installation Options
-    Dependencies
-    Recommended Libraries and Utilities
-    Install Location, Root Install
-    Install Location, Root-less Install
-    Startup/Shutdown/Restart/Status instructions
-        Root Install
-        Root-less Install
-    Ports
-    Post-installation Instructions
-    Root Install Notes
-    Updating After Installation
-        Customizing the installation
-    Third-party products installed
-    Platform Notes
-        Mac OS X Server
-        Solaris
-        OpenBSD/NetBSD
-    Uninstall Instructions
-    Backup Instructions
-    Coexistence with System Python
-    Developer Options
-    Installer Bug reports
-    Credits
 
 
 Installation Instructions
@@ -72,7 +45,7 @@ recommended for a production deployment, while the standalone method is
 easier for a desktop-based development setup.
 
 For more detail on both root/non-root and ZEO/standalone choices, see
-"Installing on Linux / Unix / BSD":http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd
+"Installing Plone 3 with the Unified Installer":http://plone.org/documentation/tutorial/installing-plone-3-with-the-unified-installer
 in the Plone.Org documentation section.
 
 
@@ -88,12 +61,12 @@ Python/Zope/Plone to /usr/local/Plone
 A "plone" user will be added, and Zope will be configured to
 run under that user id. You will need to start Zope as root or via sudo.
 
-To install Plone 4.1 in a stand-alone (single Zope instance) configuration:
+To install Plone  in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
 
-To install Plone 4.1 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone  in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
@@ -107,12 +80,12 @@ directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
 
-To install Plone 4.1 in a stand-alone (single Zope instance) configuration:
+To install Plone  in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh standalone
 
-To install Plone 4.1 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone  in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh zeo
@@ -134,23 +107,17 @@ Options:
   and Python will be built inside this directory.
   Default is /usr/local/Plone for root install,
   $HOME/Plone for non-root.
-  
-  PLEASE NOTE: Your pathname should not include spaces.
 
 --instance=instance-name
   Use to specify the name of the operating instance to be created.
   This will be created inside the target directory.
   Default is 'zinstance' for standalone, 'zeocluster' for ZEO.
 
---clients=client-count
-  Use with the "zeo" install method to specify the number of Zope
-  clients you wish to create. Default is 2.
+--user=user-name
+  In a root install, sets the effective user for running the
+  instance. Default is 'plone'. Ignored for non-root installs.
 
---user=user-name In a root install, sets the effective user for running the
-  instance. Default is 'plone'. Ignored for non-root installs. You should always
-  use the same user within a given target.
-
---with-python=/full/path/to/python2.6
+--with-python=/full/path/to/python2.4
   If you have an already built Python that's adequate to run
   Zope / Plone, you may specify it here.
   virtualenv will be used to isolate the copy used for the install.
@@ -160,23 +127,17 @@ Options:
 --password=InstancePassword
   If not specified, a random password will be generated.
 
---libz=(auto|yes|no)
+--libz=(local|global|no)
   Overrides the automatic determination of whether and where to
   install the libz compression library.
 
---libjpeg=(auto|yes|no)
+--libjpeg=(local|global|no)
   Overrides the automatic determination of whether and where to
   install the libjpeg JPEG library.
   
---readline=(auto|yes|no)
+--readline=local
   Optional. Installs a local readline library. Only necessary
   on platforms with odd libraries (like OS X Leopard).
-
---without-ssl
-  Optional. Allows the build to proceed without ssl dependency tests.
-
---without-lxml
-  Prevents automatic build of lxml with static xml2 and xslt libraries
 
 Note that you may run install.sh repeatedly for the same target so long
 as you either use a different installation method or specify different
@@ -199,40 +160,34 @@ Dependencies
 6) posix-compliant /bin/sh
 
 
-Libraries and Utilities
-=======================
+Recommended Libraries and Utilities
+===================================
 Install libraries prior to running installer.
-Development versions of some packages are required for headers. Debian/Ubuntu
-package names are included below.
+Development versions of some packages are required for headers.
 
-Required
---------
-* Build Essentials (gcc, make)
-     build-essential
 * libssl (SSL support)
+     *Strongly recommended.*
+     Used by openid and SecureMailHost; needed for https updates.
      libssl-dev
-
-Recommended
------------
 * zlib (GZ compression)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
-     zlib-dev
+     zlib1g-dev
 * libjpeg (jpeg support)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
-     libjpeg-dev
+     libjpeg62-dev
 * readline (Python command-line history)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
      libreadline5-dev readline-common
+* libxml2 (used by marshall)
+     libxml-dev
 * wv (used to index Word documents)
      wv
      <http://wvware.sourceforge.net/>
      May be installed after Plone install.
-* poppler-utils (used to index PDFs)
-     poppler-utils
-     <http://poppler.freedesktop.org/>
+* xpdf (used to index PDFs)
+     xpdf
+     <http://www.foolabs.com/xpdf/download.html>
      May be installed after Plone install.
 
 
@@ -241,7 +196,7 @@ Install Location, Root Install
 - Base install at /usr/local/Plone by default. This may be changed
   with the --target installation option. If you change it, you'll also need
   to change the paths below.
-- Python installed at /usr/local/Plone/Python-2.6
+- Python installed at /usr/local/Plone/Python-2.4
 - For ZEO Cluster
 	- ZEO cluster (server and 2 clients) installed and configured at /usr/local/Plone/zeocluster
 	  Both --target and --name options may change this.
@@ -263,7 +218,7 @@ Install Location, Root-less Install
 - Base install at $HOME/Plone, where $HOME is the user's home
   directory, by default. This may be changed with the --target installation
   option. If you change it, you'll also need to change the paths below.
-- Python installed at $HOME/Plone/Python-2.6
+- Python installed at $HOME/Plone/Python-2.4
 - For ZEO Cluster
 	- ZEO cluster (server and 2 clients) installed and configured at $HOME/Plone/zeocluster
 	  Both --target and --name options may change this.
@@ -351,14 +306,13 @@ ZEO Cluster:
 
 Post-installation instructions
 ==============================
-You should be able to view the welcome page at::
+You should be able to view the Zope Management Interface at::
 
-    http://localhost:8080/
+    http://localhost:8080/manage
 
-That page offers options to create a new Plone site and to use the Zope
-Management Interface (ZMI) for lower-level control. Among the ZMI options
-is the ability to create additional Plone instances inside the Zope
-Zope object database.
+And, your new Plone at::
+
+    http://localhost:8080/Plone
 
 (Use the admin password provided at yourinstance/adminPassword.txt)
 
@@ -372,27 +326,6 @@ user at::
     http://localhost:8080/acl_users/users/manage_users
 
 Password changes will not be reflected in adminPassword.txt.
-
-Root Install Notes
-==================
-
-If you install as root, the installer will set you instance up for operation
-under a specific user id. The id, "plone" unless you specify otherwise, will be 
-created if it doesn't exist.
-
-The Zope daemon will be set up run under this user id, and the user will be the
-owner of the files in the instance and buildout cache subdirectories.
-
-This means that you will need to prefix your start/stop/buildout commands with:
-
-sudo -u plone
-
-to make sure they run under the correct user id.
-
-If you try to start Zope as root, it will automatically switch effective ID to
-the configured user. However, you'll need to be sure to run buildout
-(for configuration updates) via sudo. Running buildout as root is a security
-risk.
 
 
 Updating After Installation
@@ -411,16 +344,28 @@ for information on buildout options.
 
 Apply settings by running bin/buildout in your buildout installation directory.
 
+Updating the installation
+-------------------------
+To update your installation, backup and run:
+
+bin/buildout -n
+
+from your instance directory. This will bring your installation up-to-date,
+possibly updating Zope, Plone, eggs, and product packages in the process.
+(The "-n" flag tells buildout to search for newer components.)
+
+Check portal_migration in the ZMI after update to perform version migration
+if necessary. You may also need to visit the product installer to update
+product versions.
+
 
 Third-party products installed
 ==============================
 - PIL (Python Imaging Library)
-- libjpeg (JPEG library, usually installed to target/Python2.6/lib)
-- libz (compression, usually installed to target/Python2.6/lib)
+- libjpeg (JPEG library, usually installed to target/Python2.4/lib)
+- libz (compression, usually installed to target/Python2.4/lib)
 - libxml2-python (required for Marshall support)
-- libreadline (terminal mode command-line and prompt editing)
 - Cheetah, Paste, PasteDeploy, PasteScript, ZopeSkel
-- lxml, libxml2, libxslt
 - The buildout recipe also installs elementtree
 
 
@@ -431,80 +376,55 @@ version of sh fails on test expressions, you may need to edit the
 install script to specify use of zsh, bash or a later version of sh.
 
 The install script requires several GNU build utilities such as gcc,
-g++, make, gunzip, bunzip2 and tar. You may need to edit your shell
-paths or set compile or link flags in some environments to make
-sure you use the GNU tools..
+g++, make, gunzip, bunzip2 and tar. You may need to edit the install
+script to specify their locations and names.
 
-The install script tries to find zlib, readline and libjpeg libraries.
-If it can't find them, it installs them locally in the target directory.
-If the library detection code in the installation script doesn't meet your
+The install script tries to find zlib and libjpeg libraries. If it can't
+find them, it installs them locally in the target directory. If the
+library detection code in the installation script doesn't meet your
 needs, you may force a particular choice by editing the script.
 
-Note that readline installation is forced on OS X, where the default
-readline library is incomplete.
 
+Tested on the following operating environments
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Ubuntu 7.04, 7.10 Server
+- Mac OS X 10.4.x, 10.5.x
+  (with Xcode tools; make sure to reinstall XCode when you upgrade to Leopard.
+   On Leopard, it's strongly advised to install the MacPorts version of the
+   readline library before running the Unified Installer.)
+- FreeBSD 6.1
+- OpenBSD 4.2 (see note below)
 
-Mac OS X Server
-~~~~~~~~~~~~~~~
-If you are using LDAP for directory services, the install.sh script may be
-unable to reliably create users and groups.
+Previous 3-series Unified Installers were tested with the list below, and
+will probably work with them.
+- Ubuntu 6.06, 6.10 Server
+- Solaris 10
+  (edit install.sh to specify /bin/zsh or /bin/bash rather than /bin/sh;
+   edit tool paths for GNU tools.)
+- Fedora Core 6
+- Fedora 7 (64-bit PowerPC, x86_64)
+- SUSE LES 10
 
-In a custom environment such as this, scripted creation of users and groups 
-for a root installation of Plone may be inappropriate.
+OpenBSD
+~~~~~~~
+The Unified Installer is not smart enough to install Python 2.4.x on OpenBSD;
+it just requires too many platform-specific patches.
 
-You can use Workgroup Manager (Apple Server Admin Tools) to create  
-groups that are typical to a production installation of Plone: 
-   plone
-   zeo
-
-then create users with UIDs below 500: 
-   plone
-   zeo
-
-For each user: 
- * match the Primary Group ID to the corresponding group 
- * decide whether to allow a shell 
- * specify the path to the home directory. 
-
-For root installation of a ZEO cluster on Mac OS X, custom paths might be: 
-
-/Applications/Plone/homes/plone
-/Applications/Plone/homes/zeo
-
--- when scripted installation of Plone proceeds, 
-   it will make that directory hierarchy for you. 
-
-After you configure users and groups to suit your planned use of Plone, 
-you can re-run install.sh. 
-
-
-Solaris (need further check)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you want to compile Python 2.6 and so on with Sun cc other than GNU cc,
-you have to set an environmental variable CC=/your/Sun/cc.
-
-
-OpenBSD/NetBSD
-~~~~~~~~~~~~~~
-The Unified Installer is not smart enough to install Python 2.6.x on
-OpenBSD/NetBSD; it just requires too many platform-specific patches.
-
-Alternatively, you may install for OpenBSD by preinstalling Python 2.6 packages,
+Alternatively, you may install for OpenBSD by preinstalling Python 2.4 packages,
 then telling the Unified Installer to use the preinstalled Python.
 
 Test builds on OpenBSD 4.2 succeeded with the following packages pre-installed:
 
 bzip2-1.0.4          block-sorting file compressor, unencumbered
-python-2.6.7         interpreted object-oriented programming language
-python-expat-2.6.7   expat module for Python
+python-2.4.4p4       interpreted object-oriented programming language
+python-expat-2.4.4p4 expat module for Python
 
-If you are unable to install python-expat-2.6.7, you may need to install the
+If you are unable to install python-expat-2.4.4p4, you may need to install the
 xbase file set, which includes expat in some versions of OpenBSD (4.2). 
 
 Then, when you run the Unified Installer, add the command-line argument:
 
-    --with-python=/usr/local/bin/python2.6
+    --with-python=/usr/local/bin/python2.4
     
 
 Uninstall instructions
@@ -525,15 +445,8 @@ Live backup is possible. See http://plone.org/documentation/how-to/backup-plone
 Coexistence with System Python
 ==============================
 The Python installed by the Unified Installer should *not* interfere with
-any other Python on your system.  The Installer bundles Python 2.6.7,
-placing it at /usr/local/Plone/Python-2.6 or $HOME/Plone/Python-2.6.
-
-
-Developer Options
-=================
-After installation, read the instructions at the top of the develop.cfg
-file at the top of the instance directory. This provides support for building
-a development environment.
+any other Python on your system.  The Installer bundles Python 2.4.6,
+placing it at /usr/local/Plone/Python-2.4 or $HOME/Plone/Python-2.4.
 
 
 Installer Bug reports
@@ -544,10 +457,6 @@ bug reports. Specify the "Installer (Unified)" component.
 
 Credits
 =======
-The Unified Installer was originally developed for Plone 2.5 by Kamal Gill.
-Adaptation to Plone 3.x, 4.x and buildout: Steve McMahon (steve@dcn.org)
-Maintainer for Plone 3.x, 4.x: Steve McMahon
-
 Thanks to Martin Aspeli and Wichert Akkerman for vital hints and suggestions
 with the buildout version.
 
@@ -556,5 +465,11 @@ implementation for -- stand-alone and cluster configuration options.
 
 Thanks to Larry T of the Davis Plone Group for the first implementation
 of the rootless install.
+
+Thanks to Alex Clark and Raphael Ritz for help with creation of a Plone
+site in the initial database.
+
+Thanks to the Davis (California) Plone Users Group for helping with
+testing.
 
 Thanks to Barry Page and Larry Pitcher for their work on the init scripts.

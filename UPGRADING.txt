@@ -1,50 +1,132 @@
+This document provides instructions for upgrading from Plone 2.5.x or
+earlier (non-buildout) Plone 3.2 installations. To upgrade a buildout-based
+installation, see the "Updating After Installation" section of the Unified
+Installer README.txt.
+
 Upgrade Instructions
 ====================
+Installer-based automatic upgrades are not supported. To upgrade your
+site, you will need to complete the following steps:
 
-For general instructions on upgrading a Plone installation, see http://plone.org/documentation/manual/upgrade-guide/
+Major Version Upgrade (2.5.x to .x)
+--------------------------------------
 
-Major Version Upgrades
-======================
+1) Install Plone with the Unified Installer (default location: /usr/local/Plone)
 
-Upgrading from Plone 2.x to Plone 4
------------------------------------
+2) Stop the existing Plone instance (default location /usr/local/Plone-2.5)
+	>> sudo /usr/local/Plone-2.5/zeocluster/bin/shutdowncluster.sh
 
-You will nearly always want to upgrade your Plone 2.x installation first to a
-working Plone 3.3.x installation, then attempt the Plone 4 upgrade. Upgrades
-of very old installations will nearly always require add-on-product problem
-solving.
+3) Copy your Data.fs file from /usr/local/Plone-2.5/zeocluster/server/var/Data.fs to
+   /usr/local/Plone/instance_name/var/filestorage/
+   "instance_name" will be zinstance or zeocluster for a typical install.
 
-Upgrading from Plone 3.0 or 3.1
--------------------------------
+   >> cp /usr/local/Plone-2.5/zeocluster/server/var/Data.fs /usr/local/Plone/zeocluster/var/filestorage/Data.fs
 
-Plone installations before 3.2 generally did not use the zc.buildout
-configuration management system. See
-http://plone.org/documentation/manual/upgrade-guide/general-advice-on-updating-from-a-non-buildout-to-buildout-based-installation
-for an orientation to buildout and advice on the update pattern.
+   (Make sure the target Data.fs has "plone" for an owner.)
 
-Upgrading from Plone 3.2 or later
----------------------------------
+4) Migrate any third-party or custom products to the new setup
+	>> cp -r /usr/local/Plone-2.5/zeocluster/Products/<CUSTOM_PRODUCT> \
+	   /usr/local/Plone/instance_name/products/<CUSTOM_PRODUCT>
 
-The general strategy for this upgrade path is to:
+   Note that many products will need updates to work with 3.x. Check
+   plone.org/products for latest versions. Note that you may also install
+   add-on products in your new install by adding URLs to your buildout.cfg
+   productdistros section.
 
-1) Independently install Plone 4;
+5) Start the new Plone instance at /usr/local/Plone/instance_name
 
-2) Get all of your add-on products working on your new Plone 4 install;
-   This will usually involve adding new product version specifications
-   to the "eggs" list of the Plone 4 install. If you're upgrading a
-   custom product, see 
-   http://plone.org/documentation/manual/upgrade-guide/version/upgrading-plone-3-x-to-4.0/updating-add-on-products-for-plone-4.0
+6) Click the 'Upgrade' button in the 'Migrate' tab in portal_migration (ZMI).
+
+7) Click the 'Upgrade' button in the 'Version Migration' tab in portal_atct (ZMI).
+
+8) Reinstall updated products in Plone at Site Setup -> Add/Remove
+   Products (or via portal_quickinstaller in ZMI)
+
+Please note that the administrative passwords will be those of the old install
+-- not the new. You may wish to update adminPassword.txt to reflect the change.
+
+Note: Instructions on how to upgrade from versions prior to Plone 2.5 are beyond
+the scope of this document.
+
+
+Minor Version Update (For example, 3.2 to )
+----------------------------------------------------
+
+The 3.2 Unified Installer installs to different locations depending on your
+choices of root/non-root, zeo/standalone configurations.
+
+Begin by locating your installation. Typical locations are:
+
+    root:            /usr/local/Plone
+    non-root:        $HOME/Plone
+
+Stop Zope and back up the *entire* installation.
+
+If your previous installation is buildout-based
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+
+Change into your installation's instance directory (typically zinstance
+or zeocluster).
+
+Edit buildout.cfg to specify version  and to load versions.cfg from
+a URL.
+
+Run the command:
+
+    bin/buildout -n
+
+Use "sudo" if this is a root install. The "-n" flag forces buildout into
+"newest" mode and it will search for new versions.
+
+If your instance does not update, check to see if your buildout.cfg file
+has is using an old versions.cfg URL.
+
+Correct the versions and run buildout again. (It may be necessary to delete
+.installed.cfg.)
+
+Now, start your instance as usual. Visit the Zope Management Interface and
+for every Plone site in your Zope instance, visit portal_migration and
+migrate your data to the latest release.
+
+If your previous installation is not buildout-based
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+
+Begin by locating your Data.fs file. Typical locations are:
+
+    root, ZEO:            /usr/local/Plone-3.0/zeocluster/server/var/Data.fs
+    root, standalone:     /usr/local/Plone-3.0/zinstance/var/Data.fs
+    non-root, ZEO:        $HOME/Plone-3.0/zeocluster/server/var/Data.fs
+    non-root, standalone: $HOME/Plone-3.0/zinstance/var/Data.fs
+
+Next, locate your instance Products directory. Typical locations are:
+
+    root, ZEO:            /usr/local/Plone-3.0/zeocluster/Products
+    root, standalone:     /usr/local/Plone-3.0/zinstance/Products
+    non-root, ZEO:        $HOME/Plone-3.0/zeocluster/Products
+    non-root, standalone: $HOME/Plone-3.0/zinstance/Products
+
+1) Stop your existing Plone install using the shutdown instructions in
+   adminPassword.txt.
+
+2) Install Plone 3.2.x with the Unified Installer. Determine the location of your
+   new Data.fs and instance Products.
    
-3) Copy the Data.fs database file from your old to var/filestorage in your
-   new install. Restart Zope and run the portal migration to update database
-   entries to new formats.
+3) Copy the old Data.fs to replace the newly installed one. Make sure it is
+   owned by the "plone" user id.
    
-Upgrading from an earlier Plone 4
----------------------------------
+4) Copy any add-on products (ones not included in the Plone installation) in
+   your old instance Products directory to your new instance Products directory.
+   You may wish to take this opportunity to look for update Products and install
+   them in place of old ones. Better: install add-on products by adding URLs to
+   your buildout.cfg's productdistros section.
 
-You probably do not need a new installation. Instead, follow the
-instructions in your buildout.cfg file for switching your version
-configuration file to use the latest available.
+5) Start the new Plone instance via the instructions in the new
+   adminPassword.txt file.
 
-Make sure you back up your complete installation before running
-any in-place update! 
+7) Click the 'Upgrade' button in the 'Migrate' tab in portal_migration (ZMI).
+
+8) Reinstall updated products in Plone at Site Setup -> Add/Remove
+   Products (or via portal_quickinstaller in ZMI)
+
+Please note that the administrative passwords will be those of the old install
+-- not the new. You may wish to update adminPassword.txt to reflect the change.

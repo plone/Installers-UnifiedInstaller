@@ -2,9 +2,9 @@
 #
 # Unified Plone installer build script
 # Created by Kamal Gill (kamalgill at mac.com)
-# Adapted for Plone 3+ and buildout by Steve McMahon (steve at dcn.org)
+# Adapted for Plone 3 and buildout by Steve McMahon (steve at dcn.org)
 #
-# $LastChangedDate: 2011-10-10 15:57:37 -0700 (Mon, 10 Oct 2011) $ $LastChangedRevision: 52415 $
+# $LastChangedDate: 2011-08-16 10:04:48 -0700 (Tue, 16 Aug 2011) $ $LastChangedRevision: 51626 $
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
@@ -19,10 +19,6 @@
 # Options:
 # --password=InstancePassword
 #   If not specified, a random password will be generated.
-#
-# --clients=client-count
-#   Use with the "zeo" install method to specify the number of Zope
-#   clients you wish to create. Default is 2.
 # 
 # --target=pathname
 #   Use to specify top-level path for installs. Plone instances
@@ -38,35 +34,33 @@
 #   In a server-mode install, sets the effective user for running the
 #   instance. Default is 'plone'. Ignored for non-server-mode installs.
 # 
-# --with-python=/fullpathtopython2.6
+# --with-python=/fullpathtopython2.4
 #   If you have an already built Python that's adequate to run
 #   Zope / Plone, you may specify it here.
 #   virtualenv will be used to isolate the copy used for the install.
-#
-# --with-site-packages
-#   When --with-python is used to specify a python, that python is isolated
-#   via virtualenv using the --no-site-packages argument. Set the --with-site-
-#   packages flag if you want to include system packages.
 # 
 # --nobuildout
 #   Skip running bin/buildout. You should know what you're doing.
 # 
+# --with-zope=/fullpathtozope2.10
+#   If you have an already built Zope that's adequate to run
+#   Plone, you may specify it here.
+# 
 # Library build control options:
-# --libz=auto|yes|no
-# --libjpeg=auto|yes|no
-# --readline=auto|yes|no
-# --lxml=auto|yes|no
+# --libz=auto|global|local|no
+# --libjpeg=auto|global|local|no
 #
 #   auto -   to have this program determine whether or not you need the
 #            library installed. If needed, will be installed to $PLONE_HOME.
-#   yes    - to force install to $PLONE_HOME for static link
+#   global - to force install to /usr/local/ (requires root)
+#   local  - to force install to $PLONE_HOME (or $LOCAL_HOME) for static link
 #   no     - to force no install
-#
-# lxml note:
-# if needed, lxml is built with static xml2 and xslt libraries
 
 
-# Path for Root install
+#################################################
+# Commonly configured options:
+
+# Path options for Root install
 #
 # Path for server-mode install of Python/Zope/Plone
 if [ `uname` = "Darwin" ]; then
@@ -84,66 +78,76 @@ ZEOCLUSTER_HOME=zeocluster
 # a stand-alone (non-zeo) instance will go here (inside $PLONE_HOME):
 RINSTANCE_HOME=zinstance
 
+# Locations of required build tools.
+# If the right tools aren't being found, edit below to specify the full pathname.
+GCC="gcc"
+GPP="g++"
+GNU_MAKE="make"
+# Some tars can't handle deep path trees; GNU tar is safest.
+GNU_TAR="tar"
+# We need both gunzip and bunzip2 decompression utilities.
+GUNZIP="gunzip"
+BUNZIP2="bunzip2"
 
-# build environment setup
-# use configure (renamed preflight) to create a build environment file
-# that will allow us to check for headers and tools the same way
-# that the cmmi process will.
-test -f ./buildenv.sh && rm -f ./buildenv.sh
-sh ./preflight -q
-# suck in the results as shell variables that we can test.
-. ./buildenv.sh
-
-
-INSTALL_LXML=auto
+# This install requires the zlib and libjpeg libraries, which are
+# usually installed as system libraries.
+# You may also override this with the --libz and --libjpeg
+# command-line options.
+#
+# Set the options below to
+#   auto -   to have this program determine whether or not you need the
+#            library installed. If needed, will be installed to $PLONE_HOME.
+#   global - to force install to /usr/local/ (requires root)
+#   local  - to force install to $PLONE_HOME (or $LOCAL_HOME) for static link
+#   no     - to force no install
 INSTALL_ZLIB=auto
 INSTALL_JPEG=auto
 if [ `uname` = "Darwin" ]; then
-  # Darwin ships with a readtext rather than readline; it doesn't work.
-  INSTALL_READLINE=yes
+	# Darwin ships with a readtext rather than readline; it doesn't work.
+	INSTALL_READLINE=local
 else
-  INSTALL_READLINE=auto
+	INSTALL_READLINE=no
 fi
 
-# default user ids for effective user in root installs; ignored in non-root.
+# user ids for effective user in root installs; ignored in non-root.
 EFFECTIVE_USER=plone
+ZEO_USER=zeo
 
 # End of commonly configured options.
 #################################################
 
 
 # This script should be run from the directory containing packages/
+# Include the following tarballs in the packages/ directory in the bundle...
 PACKAGES_DIR=packages
 ONLINE_PACKAGES_DIR=opackages
+PYTHON_TB=Python-2.4.6.tar.bz2
+PYTHON_DIR=Python-2.4.6
+JPEG_TB=jpegsrc.v8c.tar.bz2
+JPEG_DIR=jpeg-8c
+ZLIB_TB=zlib-1.2.5.tar.bz2
+ZLIB_DIR=zlib-1.2.5
+READLINE_TB=readline-6.2.tar.bz2
+READLINE_DIR=readline-6.2
+SETUP_TB=setuptools-0.6c11.tar.gz
+SETUP_DIR=setuptools-0.6c11
+VENV_TB=virtualenv-1.3.4.tar.gz
+VENV_DIR=virtualenv-1.3.4
+ZOPE=Zope-2.10.9-final-py2.4
+PIL_TB=Pillow-1.7.4.tar.bz2
+PIL_DIR=Pillow-1.7.4
 
 HSCRIPTS_DIR=helper_scripts
 
-PYTHON_TB=Python-2.6.7.tar.bz2
-PYTHON_DIR=Python-2.6.7
-DISTRIBUTE_TB=distribute-0.6.19.tar.gz
-DISTRIBUTE_DIR=distribute-0.6.19
-JPEG_TB=jpegsrc.v8c.tar.bz2
-JPEG_DIR=jpeg-8c
-READLINE_TB=readline-6.2.tar.bz2
-READLINE_DIR=readline-6.2
-ZLIB_TB=zlib-1.2.5.tar.bz2
-ZLIB_DIR=zlib-1.2.5
-VIRTUALENV_TB=virtualenv-1.6.1.tar.bz2
-VIRTUALENV_DIR=virtualenv-1.6.1
-
-# check for PIL and jpeg support
-PIL_TEST="from _imaging import jpeg_decoder"
-
-# check for distribute
-DISTRIBUTE_TEST="from setuptools import _distribute"
 
 if [ `whoami` = "root" ]; then
-    ROOT_INSTALL=1
+	ROOT_INSTALL=1
+	SUDO="sudo"
 else
-    ROOT_INSTALL=0
-    # set paths to local versions
-    PLONE_HOME=$LOCAL_HOME
-    EFFECTIVE_USER=$USER
+	ROOT_INSTALL=0
+	SUDO=""
+	# set paths to local versions
+	PLONE_HOME=$LOCAL_HOME
 fi
 
 
@@ -168,7 +172,7 @@ usage () {
     echo
     echo "Use sudo (or run as root) for server-mode install."
     echo
-    echo "Options (see top of install.sh for complete list):"
+    echo "Options:"
     echo "--password=InstancePassword"
     echo "  If not specified, a random password will be generated."
     echo
@@ -176,10 +180,6 @@ usage () {
     echo "  Use to specify top-level path for installs. Plone instances"
     echo "  and Python will be built inside this directory"
     echo "  (default is $PLONE_HOME)"
-    echo 
-    echo "--clients=client-count"
-    echo "  Use with the "zeo" install method to specify the number of Zope"
-    echo "  clients you wish to create. Default is 2."
     echo
     echo "--instance=instance-name"
     echo "  Use to specify the name of the operating instance to be created."
@@ -191,12 +191,15 @@ usage () {
     echo "  In a server-mode install, sets the effective user for running the"
     echo "  instance. Default is 'plone'. Ignored for non-server-mode installs."
     echo
-    echo "--with-python=/fullpathtopython2.6"
+    echo "--with-python=/fullpathtopython2.4"
     echo "  If you have an already built Python that's adequate to run"
     echo "  Zope / Plone, you may specify it here."
     echo "  virtualenv will be used to isolate the copy used for the install."
     echo
-    echo "Read the top of install.sh for more install options."
+    echo "--with-zope=/fullpathtozope2.10"
+    echo "  If you have an already built Zope that's adequate to run"
+    echo "  Plone, you may specify it here."
+    echo
     exit 1
 }
 
@@ -211,9 +214,9 @@ INSTANCE_NAME=""
 WITH_PYTHON=""
 WITH_ZOPE=""
 RUN_BUILDOUT=1
+SEPARATE_ZOPE=0
 SKIP_TOOL_TESTS=0
 INSTALL_LOG="$ORIGIN_PATH/install.log"
-CLIENT_COUNT=2
 
 
 for option
@@ -223,19 +226,24 @@ do
     case $option in
         --with-python=* | -with-python=* | --withpython=* | -withpython=* )
             if [ "$optarg" ]; then
-                WITH_PYTHON="$optarg"
+                WITH_PYTHON=$optarg
             else
                 usage
             fi
-            ;;
+        ;;
 
-        --with-site-packages )
-            WITH_SITE_PACKAGES=yes
-            ;;
+        --with-zope=* | -with-zope=* | --withzope=* | -withzope=* )
+            if [ "$optarg" ]; then
+                WITH_ZOPE=$optarg
+                SEPARATE_ZOPE=1
+            else
+                usage
+            fi
+        ;;
 
         --target=* | -target=* )
             if [ "$optarg" ]; then
-                PLONE_HOME="$optarg"
+                PLONE_HOME=$optarg
             else
                 usage
             fi
@@ -243,63 +251,47 @@ do
 
         --instance=* | -instance=* )
             if [ "$optarg" ]; then
-                INSTANCE_NAME="$optarg"
+                INSTANCE_NAME=$optarg
             else
                 usage
             fi
             ;;
 
         --user=* | -user=* )
-            if [ "$optarg" ]; then
-                EFFECTIVE_USER="$optarg"
+            if [ $optarg ]; then
+                EFFECTIVE_USER=$optarg
             else
                 usage
             fi
             ;;
 
         --zlib=* | --libz=* )
-            if [ "$optarg" ]; then
-                INSTALL_ZLIB="$optarg"
+            if [ $optarg ]; then
+                INSTALL_ZLIB=$optarg
             else
                 usage
             fi
             ;;
 
         --jpeg=* | --libjpeg=* )
-            if [ "$optarg" ]; then
-                INSTALL_JPEG="$optarg"
+            if [ $optarg ]; then
+                INSTALL_JPEG=$optarg
             else
                 usage
             fi
             ;;
 
         --readline=* | --libreadline=* )
-            if [ "$optarg" ]; then
-                INSTALL_READLINE="$optarg"
+            if [ $optarg ]; then
+                INSTALL_READLINE=$optarg
             else
                 usage
             fi
-            ;;
-
-        --lxml=* )
-            if [ "$optarg" ]; then
-                INSTALL_LXML="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --without-lxml )
-            INSTALL_LXML=no
-            ;;
-
-        --without-ssl | --without-openssl )
-            WITHOUT_SSL=1
             ;;
 
         --password=* | -password=* )
-            if [ "$optarg" ]; then
-                PASSWORD="$optarg"
+            if [ $optarg ]; then
+                PASSWORD=$optarg
             else
                 usage
             fi
@@ -309,6 +301,10 @@ do
             RUN_BUILDOUT=0
             ;;
 
+        --separate-zope* | --separatezope* )
+            SEPARATE_ZOPE=1
+            ;;
+            
         --skip-tool-tests )
             SKIP_TOOL_TESTS=1 
             # don't test for availability of gnu build tools
@@ -317,21 +313,21 @@ do
             ;;
 
         --install-log=* | --log=* )
-            if [ "$optarg" ]; then
-                INSTALL_LOG="$optarg"
+            if [ $optarg ]; then
+                INSTALL_LOG=$optarg
             else
                 usage
             fi
             ;;
             
-        --clients=* | --client=* )
+        --enable-universalsdk )
             if [ "$optarg" ]; then
-                CLIENT_COUNT="$optarg"
+                UNIVERSALSDK=$optarg
             else
-                usage
+                UNIVERSALSDK=/Developer/SDKs/MacOSX10.4u.sdk
             fi
             ;;
-            
+
         --help | -h )
             usage
             ;;
@@ -340,17 +336,17 @@ do
             case $option in
                 zeo* | cluster )
                     echo ZEO Cluster Install selected
-                    INSTALL_ZEO=1
+                	INSTALL_ZEO=1
                     ;;
                 standalone* | nozeo | stand-alone | sa )
                     echo Stand-Alone Zope Instance selected
-                    INSTALL_STANDALONE=1
+                	INSTALL_STANDALONE=1
                     ;;
                 none )
                     echo No template selected. Will use standalone template
                     echo for convenience, but not run bin/buildout.
-                    INSTALL_STANDALONE=1
-                    RUN_BUILDOUT=0
+                	INSTALL_STANDALONE=1
+                	RUN_BUILDOUT=0
                     ;;
                 *)
                     usage
@@ -363,13 +359,25 @@ done
 if [ $INSTALL_STANDALONE -eq 0 ] && [ $INSTALL_ZEO -eq 0 ]; then
     usage
 fi
+
 echo
 
 
-if [ $ROOT_INSTALL -eq 1 ]; then
-    SUDO="sudo -u $EFFECTIVE_USER"
-else
-    SUDO=""
+# set up the common build environment
+export CFLAGS='-fPIC'
+# special cases:
+if [ `uname` = 'Darwin' ]; then
+    if [ "x$UNIVERSALSDK" != "x" ];	then
+        CFLAGS="-fPIC -isysroot $UNIVERSALSDK -arch ppc -arch i386 -Wl,-syslibroot,$UNIVERSALSDK"
+        export MACOSX_DEPLOYMENT_TARGET=10.4
+    elif uname -r | grep -q '^10\.'; then
+        # we're on Snow Leopard
+        export MACOSX_DEPLOYMENT_TARGET=10.6
+    elif uname -r | grep -q '^11\.'; then
+        # we're on Lion
+        export MACOSX_DEPLOYMENT_TARGET=10.7
+        export CFLAGS='-arch x86_64 -fPIC'
+    fi
 fi
 
 
@@ -384,17 +392,17 @@ unset CDPATH
 if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if this script is not run from within it's parent folder
     if [ ! -x "$PACKAGES_DIR" ] || [ ! -x "$HSCRIPTS_DIR" ]; then
-        echo ""
-        echo "The install script directory must contain"
-        echo "$PACKAGES_DIR and $HSCRIPTS_DIR subdirectories."
-        echo ""
-        exit 1
+    	echo ""
+    	echo "The install script directory must contain"
+    	echo "$PACKAGES_DIR and $HSCRIPTS_DIR subdirectories."
+    	echo ""
+    	exit 1
     fi
 fi
 
 
 # set up log
-if [ -f "$INSTALL_LOG" ]; then
+if [ -e "$INSTALL_LOG" ]; then
     rm "$INSTALL_LOG"
 fi
 touch "$INSTALL_LOG" 2> /dev/null
@@ -415,88 +423,78 @@ seelog () {
 }
 
 untar () {
-    # unpack a tar archive, decompressing as necessary.
-    # this function is meant to isolate us from problems
-    # with versions of tar that don't support .gz or .bz2.
-    case "$1" in
-        *.tar)
-            tar -xf "$1" >> "$INSTALL_LOG"
-            ;;
-        *.tgz | *.tar.gz)
-            gunzip -c "$1" | tar -xf - >> "$INSTALL_LOG"
-            ;;
-        *.tar.bz2)
-            bunzip2 -c "$1" | tar -xf -  >> "$INSTALL_LOG"
-            ;;
-        *)
-            echo "Unable to unpack $1; extension not recognized."
-            exit 1
-    esac
-    if [ $? -gt 0 ]
-    then
-        seelog
-    fi
+	# unpack a tar archive, decompressing as necessary.
+	# this function is meant to isolate us from problems
+	# with versions of tar that don't support .gz or .bz2.
+	case "$1" in
+		*.tar)
+			"$GNU_TAR" -xf "$1" >> "$INSTALL_LOG"
+			;;
+		*.tgz | *.tar.gz)
+			"$GUNZIP" -c "$1" | "$GNU_TAR" -xf - >> "$INSTALL_LOG"
+			;;
+		*.tar.bz2)
+			"$BUNZIP2" -c "$1" | "$GNU_TAR" -xf -  >> "$INSTALL_LOG"
+			;;
+		*)
+			echo "Unable to unpack $1; extension not recognized."
+			exit 1
+	esac
+	if [ $? -gt 0 ]
+	then
+		seelog
+	fi
 }
-
 
 echo
 
 
 OFFLINE=1
-if [ ! -d "$PACKAGES_DIR" ]; then
-    if [ -d "$ONLINE_PACKAGES_DIR" ]; then
+if [ ! -e "$PACKAGES_DIR" ]; then
+    if [ -e "$ONLINE_PACKAGES_DIR" ]; then
         # we don't have the full packages directory,
         # but do have the less-complete version meant for online install.
         echo "Running in online mode."
         OFFLINE=0
-        PACKAGES_DIR="$ONLINE_PACKAGES_DIR"
-        PKG="$CWD/$PACKAGES_DIR"
+        PACKAGES_DIR=$ONLINE_PACKAGES_DIR
+        PKG=$CWD/$PACKAGES_DIR
         INSTALL_ZLIB=no
         INSTALL_JPEG=no
     fi
 fi
 
 
-if [ -x "$PLONE_HOME/Python-2.6/bin/python" ] ; then
-    HAVE_PYTHON=yes
-    if [ "x$WITH_PYTHON" != "x" ]; then
-        echo "We already have a Python environment for this target; ignoring --with-python."
-        WITH_PYTHON=''
+if [ $OFFLINE -ne 1  ] && [ "x$WITH_PYTHON" = "x" ]; then
+    # we don't have a python tarball or a --with-python
+    # specification; so let's see if we can find a system
+    # python
+    WITH_PYTHON=`which python2.4`
+    if [ $? -gt 0 ] || [ ! -x "$WITH_PYTHON" ]; then
+        echo
+        echo "Installation has failed."
+        echo "Unable to find a Python 2.4 executable or tarball."
+        echo "Use --with-python=... to specify a Python executable."
+        exit 1
     fi
 fi
-
-
-# if [ ! -n "$HAVE_PYTHON" ] && [ ! -f "$PACKAGES_DIR/$PYTHON_TB" ] && [ "x$WITH_PYTHON" = "x" ]; then
-#     # we don't have a python tarball or a --with-python
-#     # specification; so let's see if we can find a system
-#     # python
-#     WITH_PYTHON=`which python2.6`
-#     if [ $? -gt 0 ] || [ ! -x "$WITH_PYTHON" ]; then
-#         echo
-#         echo "Installation has failed."
-#         echo "Unable to find a Python 2.6 executable or tarball."
-#         echo "Use --with-python=... to specify a Python executable."
-#         exit 1
-#     fi
-# fi
-
 
 # If --with-python has been used, check the argument for our requirements.
 if [ "$WITH_PYTHON" ]; then
     if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
-        echo "Testing $WITH_PYTHON for Zope/Plone requirements...."
+        echo "\nTesting $WITH_PYTHON for Zope/Plone requirements...."
         if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py
         then
             echo "$WITH_PYTHON looks OK. We'll try to use it."
             echo
             # if the supplied Python is adequate, we don't need to build libraries
             INSTALL_ZLIB=no
-            INSTALL_READLINE=no
-            WITHOUT_SSL=1
+            if "$WITH_PYTHON" -c "import _imaging" 2> /dev/null
+            then
+                INSTALL_JPEG=no
+            fi
         else
-            echo
-            echo "***Aborting***"
-            echo "$WITH_PYTHON does not meet the requirements for Zope/Plone."
+            echo "\n***Aborting***"
+            echo "\n$WITH_PYTHON does not meet the requirements for Zope/Plone."
             echo "Specify a more suitable Python, or upgrade your Python and try again."
             echo "You may also omit --with-python and let the Unified Installer"
             echo "build its own Python. "
@@ -508,12 +506,17 @@ if [ "$WITH_PYTHON" ]; then
     fi
 elif [ `uname` = "OpenBSD" ]; then
     echo "\n***Aborting***"
-    echo "Sorry, but the Unified Installer can't build a Python 2.6 for OpenBSD."
+    echo "Sorry, but the Unified Installer can't build a Python 2.4 for OpenBSD."
     echo "There are way too many platform-specific patches required."
-    echo "Please consider adding the Python 2.6 packages and re-run using"
-    echo "--with-python to use the system Python 2.6.x."
+    echo "Please consider adding the Python 2.4 packages and re-run using"
+    echo "--with-python to use the system Python 2.4.x."
     exit 1
 fi
+
+
+# Check to see if we should be libz & libjpeg;
+# and, if we should, can we?
+. helper_scripts/checkLibs.sh
 
 
 #############################
@@ -524,83 +527,45 @@ fi
 if [ $SKIP_TOOL_TESTS -eq 0 ]; then
 
     # Abort install if no gcc
-    if [ "x$CC" = "x" ] ; then
-        echo
-        echo "Note: gcc is required for the install. Exiting now."
-        exit 1
+    GCC=`which "$GCC"` >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ] || [ ! $GCC ] || [ ! -x $GCC ]; then
+    	echo "Note: gcc is required for the install. Exiting now."
+    	exit 1
     fi
 
     # Abort install if no g++
-    if [ "x$CXX" = "x" ] ; then
-        echo
+    GPP=`which "$GPP"` >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ] || [ ! "$GPP" ] || [ ! -x "$GPP" ]; then
         echo "Note: g++ is required for the install. Exiting now."
         exit 1
     fi
 
     # Abort install if no make
-    if [ "$have_make" != "yes" ] ; then
-        echo
+    GNU_MAKE=`which "$GNU_MAKE"` >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ] || [ ! "$GNU_MAKE" ] || [ ! -x "$GNU_MAKE" ]; then
         echo "Note: make is required for the install. Exiting now."
         exit 1
     fi
 
     # Abort install if no tar
-    if [ "$have_tar" != "yes" ] ; then
-        echo
+    GNU_TAR=`which "$GNU_TAR"` >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ] || [ "x$GNU_TAR" = "x" ] || [ ! -x "$GNU_TAR" ]; then
         echo "Note: gnu tar is required for the install. Exiting now."
         exit 1
     fi
 fi # not skip tool tests
 
 # Abort install if no gunzip
-if [ "$have_gunzip" != "yes" ] ; then
-    echo
+GUNZIP=`which "$GUNZIP"` >> "$INSTALL_LOG" 2>&1
+if [ $? -gt 0 ] || [ "x$GUNZIP" = "x" ] || [ ! -x "$GUNZIP" ]; then
     echo "Note: gunzip is required for the install. Exiting now."
     exit 1
 fi
 
 # Abort install if no bunzip2
-if [ "$have_bunzip2" != "yes" ] ; then
-    echo
+BUNZIP2=`which "$BUNZIP2"` >> "$INSTALL_LOG" 2>&1
+if [ $? -gt 0 ] || [ "x$BUNZIP2" = "x" ] || [ ! -x "$BUNZIP2" ]; then
     echo "Note: bunzip2 is required for the install. Exiting now."
-    exit 1
-fi
-
-
-if [ $INSTALL_ZLIB = "auto" ] ; then
-    if [ "$HAVE_LIBZ" = "yes" ] ; then
-        INSTALL_ZLIB=no
-    else
-        INSTALL_ZLIB=yes
-    fi
-fi
-
-if [ $INSTALL_JPEG = "auto" ] ; then
-    if [ "$HAVE_LIBJPEG" = "yes" ] ; then
-        INSTALL_JPEG=no
-    else
-        INSTALL_JPEG=yes
-    fi
-fi
-
-if [ $INSTALL_READLINE = "auto" ] ; then
-    if [ "$HAVE_LIBREADLINE" = "yes" ] ; then
-        INSTALL_READLINE=no
-    else
-        INSTALL_READLINE=yes
-    fi
-fi
-
-if [ "$HAVE_LIBSSL" != "yes" ] ; then
-    echo
-    echo "Unable to find libssl or openssl/ssl.h."
-    echo "libssl and its development headers are required for Plone."
-    echo "If you're sure you have these installed, and are still getting"
-    echo "this warning, you may disable the libssl check by adding the"
-    echo "--without-ssl flag to the install command line."
-    echo "Otherwise, install your platform's openssl-dev libraries and headers"
-    echo "and try again."
-    echo
     exit 1
 fi
 
@@ -608,28 +573,13 @@ fi
 ######################################
 # Pre-install messages
 if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Root install method chosen. Will install for use by system user $EFFECTIVE_USER"
+	echo "Root install method chosen"
 else
-    echo "Rootless install method chosen. Will install for use by system user $USER"
+	echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.1.2 at $PLONE_HOME"
+echo "Installing Plone  at $PLONE_HOME"
 echo ""
-
-
-#######################################
-# create os users for root-level install
-if [ $ROOT_INSTALL -eq 1 ]; then
-    . helper_scripts/make_plone_user.sh
-    createUser "$EFFECTIVE_USER"
-    id "$TARGET_USER" > /dev/null 2>&1
-    if [ "$?" != "0" ]; then
-        echo "Creating user $TARGET_USER failed"
-        echo
-        echo "Installation has failed."
-        exit 1
-    fi
-fi # if $ROOT_INSTALL
 
 
 #######################################
@@ -637,19 +587,13 @@ fi # if $ROOT_INSTALL
 if [ ! -x "$PLONE_HOME" ]; then
     mkdir "$PLONE_HOME"
     # normalize $PLONE_HOME so we can use it in prefixes
-    if [ $? -gt 0 ] || [ ! -x "$PLONE_HOME" ]; then
-        echo "Unable to create $PLONE_HOME"
-        echo "Please check rights and pathnames."
-        echo
-        echo "Installation has failed."
-        exit 1
-    fi
     cd "$PLONE_HOME"
     PLONE_HOME=`pwd`
 fi
-
-cd "$CWD"
-
+if [ ! -x "$PLONE_HOME" ]; then
+    echo "Unable to create $PLONE_HOME"
+    exit 1
+fi
 
 cd "$PLONE_HOME"
 PLONE_HOME=`pwd`
@@ -673,28 +617,23 @@ fi
 
 cd "$CWD"
 
-if  [ "X$INSTALL_ZLIB" = "Xyes" ] || [ "X$INSTALL_JPEG" = "Xyes" ]; then
-    NEED_LOCAL=1
+if  [ "X$INSTALL_ZLIB" = "Xlocal" ] || [ "X$INSTALL_JPEG" = "Xlocal" ]; then
+	NEED_LOCAL=1
 else
-    NEED_LOCAL=0
+	NEED_LOCAL=0
 fi
 
-if [ "x$WITH_PYTHON" != "x" ] # try to use specified python
+if [ $WITH_PYTHON ] # try to use specified python
 then
     PYBNAME=`basename "$WITH_PYTHON"`
-    PY_HOME=$PLONE_HOME/Python-2.6
+    PY_HOME=$PLONE_HOME/Python-2.4
     cd "$PKG"
-    untar $VIRTUALENV_TB
-    cd $VIRTUALENV_DIR
-    if [ "X$WITH_SITE_PACKAGES" = "Xyes" ]; then
-        echo "Creating python virtual environment with site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
-    else
-        echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py --no-site-packages "$PY_HOME"
-    fi
+    untar $VENV_TB
+    cd $VENV_DIR
+    echo "Creating python virtual environment..."
+    "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     cd "$PKG"
-    rm -r $VIRTUALENV_DIR
+    rm -r $VENV_DIR
     PY=$PY_HOME/bin/python
     if [ ! -x "$PY" ]; then
         echo "\nFailed to create virtual environment for $WITH_PYTHON"
@@ -706,22 +645,14 @@ then
         ln -s "$PYBNAME" python
     fi
     cd "$CWD"
-    if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
-        echo
-        echo "Python created with virtualenv no longer passes baseline"
-        echo "tests."
-        echo "You may need to omit --with-python and let the Unified Installer"
-        echo "build its own Python. "
-        exit 1
-    fi
 else # use already-placed python or build one
-    PY_HOME=$PLONE_HOME/Python-2.6
+    PY_HOME=$PLONE_HOME/Python-2.4
     PY=$PY_HOME/bin/python
     if [ -x "$PY" ]; then
         # no point in installing zlib -- too late!
         INSTALL_ZLIB=no
         # let's see if we've already got PIL
-        if "$PY" -c "$PIL_TEST" 2> /dev/null
+        if "$PY" -c "import _imaging" 2> /dev/null
         then
             INSTALL_JPEG=no
         fi
@@ -730,11 +661,10 @@ fi
 
 
 # Now we know where our Python is, and may finish setting our paths
-LOCAL_HOME="$PY_HOME"
-EI="$PY_HOME/bin/easy_install"
-SITE_PACKAGES="$PY_HOME/lib/python2.6/site-packages"
-BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
-BUILDOUT_DIST="$PLONE_HOME/buildout-cache/downloads/dist"
+LOCAL_HOME=$PY_HOME
+EI=$PY_HOME/bin/easy_install
+SITE_PACKAGES=$PY_HOME/lib/python2.4/site-packages
+BUILDOUT_CACHE=$PLONE_HOME/buildout-cache
 
 
 if [ ! -x "$LOCAL_HOME" ]; then
@@ -745,60 +675,93 @@ if [ ! -x "$LOCAL_HOME" ]; then
     exit 1
 fi
 
+. helper_scripts/build_zlib.sh
+
+. helper_scripts/build_libjpeg.sh
+
+. helper_scripts/build_readline.sh
+
 
 if [ -x "$PY" ]; then
     echo "Python found at $PY; Skipping Python install."
-    # also skipping library builds for libraries that have
-    # to be built before python.
 else
-    # set up the common build environment unless already existing
-    if [ "x$CFLAGS" = 'x' ]; then
-        export CFLAGS='-fPIC'
-    fi
-
-    . helper_scripts/build_libjpeg.sh
-    . helper_scripts/build_zlib.sh
-    . helper_scripts/build_readline.sh
-
-    if [ `uname` = "Darwin" ]; then
-        # Remove dylib files that will prevent static linking,
-        # which we need for relocatability
-        rm -f "$PY_HOME/lib/"*.dylib
-    fi
-
     . helper_scripts/build_python.sh
-    echo "Installing distribute..."
+fi
+
+
+if [ ! -x "$EI" ]; then
+    echo "Installing setuptools..."
     cd "$PKG"
-    untar $DISTRIBUTE_TB
-    cd "$DISTRIBUTE_DIR"
+    untar "$SETUP_TB"
+    cd "$SETUP_DIR"
     "$PY" ./setup.py install >> "$INSTALL_LOG" 2>&1
     cd "$PKG"
-    rm -r "$DISTRIBUTE_DIR"
+    rm -r "$SETUP_DIR"
     if [ ! -x "$EI" ]; then
         echo "$EI missing. Aborting."
         seelog
         exit 1
     fi
-    if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py
-    then
-        echo "Python build looks OK."
-    else
-        echo
-        echo "***Aborting***"
-        echo "The built Python does not meet the requirements for Zope/Plone."
-        echo "Check messages and the install.log to find out what went wrong."
+fi
+
+
+"$PY" -c "import _imaging" 2> /dev/null
+if [ $? -gt 0 ]; then
+    echo "Installing PIL (actually Pillow)"
+    cd "$PKG"
+    untar "$PIL_TB"
+    cd "$PIL_DIR"
+    "$PY" ./setup.py install >> "$INSTALL_LOG" 2>&1
+    cd "$PKG"
+    rm -rf "$PIL_DIR"
+    "$PY" -c "import _imaging" > /dev/null
+    if [ $? -gt 0 ]; then
+        echo "Python imaging support is missing; something went wrong in the PIL or python build."
+        seelog
         exit 1
     fi
 fi
 
 
-# From here on, we don't want any ad-hoc cflags or ldflags, as
-# they will foul the modules built via distutils
-unset CFLAGS
-unset LDFLAGS
+"$PY" -c "import iniparse" 2> /dev/null
+if [ $? -gt 0 ]; then
+    echo "Installing iniparse configuration parser"
+    cd "$PKG"
+    if [ -e iniparse-*.tar.gz ]; then
+        "$EI" iniparse-* >> "$INSTALL_LOG" 2>&1
+    else
+        "$EI" iniparse >> "$INSTALL_LOG" 2>&1
+    fi
+fi
+"$PY" -c "import iniparse" 2> /dev/null
+if [ $? -gt 0 ]; then
+    echo "iniparse install failed; unable to continue."
+    seelog
+    exit 1
+fi
 
 
-if [ -f "$PKG"/buildout-cache.tar.bz2 ]; then
+"$PY" -c "import zc.buildout" 2> /dev/null
+if [ $? -gt 0 ]; then
+    echo "Installing zc.buildout"
+    cd "$PKG"
+    if [ -e zc.buildout-*.tar.gz ]; then
+        "$EI" zc.buildout-* >> "$INSTALL_LOG" 2>&1
+    else
+        "$EI" zc.buildout >> "$INSTALL_LOG" 2>&1
+    fi
+fi
+"$PY" -c "import zc.buildout" 2> /dev/null
+if [ $? -gt 0 ]; then
+    echo "zc.buildout install failed; unable to continue."
+    seelog
+    exit 1
+fi
+
+
+cd "$CWD"
+
+if [ -e "$PKG"/buildout-cache.tar.bz2 ]; then
     if [ -x "$BUILDOUT_CACHE" ]; then
         echo "Found existing buildout cache at $BUILDOUT_CACHE; skipping step."
     else
@@ -817,23 +780,51 @@ if [ -f "$PKG"/buildout-cache.tar.bz2 ]; then
 else
     mkdir "$BUILDOUT_CACHE"
     mkdir "$BUILDOUT_CACHE"/eggs
-    mkdir "$BUILDOUT_CACHE"/extends
     mkdir "$BUILDOUT_CACHE"/downloads
 fi
 
+if [ $SEPARATE_ZOPE -eq 1 ]; then
+    if [ "x$WITH_ZOPE" == "x" ]; then
+        MYZOPE="$PLONE_HOME"/"$ZOPE"
+    else
+        MYZOPE=$WITH_ZOPE
+    fi
+    if [ -e "$MYZOPE" ]; then
+        echo "$MYZOPE found; skipping separate Zope install."
+    else
+        cd "$PKG"
+        echo "Installing separate $ZOPE"
+        untar "$BUILDOUT_CACHE"/downloads/"$ZOPE".*
+        cd "$ZOPE"
+        ./configure --with-python="$PY" --prefix="$MYZOPE" >> "$INSTALL_LOG" 2>&1
+        make install >> "$INSTALL_LOG" 2>&1
+        cd "$PKG"
+        rm -r "$ZOPE"
+        if [ ! -x "$MYZOPE"/bin/mkzopeinstance.py ]; then
+            echo "Installation of Zope failed. Unable to continue"
+            seelog
+            exit 1
+        fi
+    fi
+else
+    MYZOPE=0
+fi # if separate zope
 
-if [ -x "$CWD/Plone-docs" ] && [ ! -x "$PLONE_HOME/Plone-docs" ]; then
-    echo "Copying Plone-docs"
-    cp -R "$CWD/Plone-docs" "$PLONE_HOME/Plone-docs"
-fi
-
-
-cd "$CWD"
 
 ######################
 # Postinstall steps
 ######################
 
+
+cd "$CWD"
+
+if [ $ROOT_INSTALL -eq 1 ]; then
+    . helper_scripts/make_plone_user.sh
+    createUser $EFFECTIVE_USER
+    if [ $INSTALL_ZEO -eq 1 ]; then
+        createUser $ZEO_USER
+    fi
+fi # if $ROOT_INSTALL
 
 cd "$CWD"
 
@@ -859,21 +850,20 @@ if [ $INSTALL_ZEO -eq 1 ]; then
         "$PLONE_HOME" \
         "$ZEOCLUSTER_HOME" \
         "$EFFECTIVE_USER" \
-        "$EFFECTIVE_USER" \
+        "$ZEO_USER" \
         "$PASSWORD" \
         "$ROOT_INSTALL" \
+        "$MYZOPE" \
         "$RUN_BUILDOUT" \
-        "$INSTALL_LXML" \
         "$OFFLINE" \
-        "cluster" \
-        "$INSTALL_LOG" \
-        "$CLIENT_COUNT"
+        "cluster"
     if [ $? -gt 0 ]; then
         echo "Buildout failed. Unable to continue"
         seelog
         exit 1
     fi
-    INSTANCE=$ZEOCLUSTER_HOME
+	PWFILE=$ZEOCLUSTER_HOME/adminPassword.txt
+	RMFILE=$ZEOCLUSTER_HOME/README.txt
 elif [ $INSTALL_STANDALONE -eq 1 ]; then
     if [ -x "$RINSTANCE_HOME"  ]; then
         echo "Instance target $RINSTANCE_HOME already exists; aborting install."
@@ -887,31 +877,17 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
         "0" \
         "$PASSWORD" \
         "$ROOT_INSTALL" \
+        "$MYZOPE" \
         "$RUN_BUILDOUT" \
-        "$INSTALL_LXML" \
         "$OFFLINE" \
-        "standalone" \
-        "$INSTALL_LOG" \
-        "0"
+        "standalone"
     if [ $? -gt 0 ]; then
         echo "Buildout failed. Unable to continue"
         seelog
         exit 1
     fi
-    INSTANCE=$RINSTANCE_HOME
-fi
-
-PWFILE=$INSTANCE/adminPassword.txt
-RMFILE=$INSTANCE/README.html
-
-if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Setting instance ownership to $EFFECTIVE_USER"
-    chown -R "$EFFECTIVE_USER" "$INSTANCE"
-    echo "Setting buildout cache ownership to $EFFECTIVE_USER"
-    chown -R "$EFFECTIVE_USER" "$BUILDOUT_CACHE"
-    # And the config files
-    chown root "$INSTANCE"/*.cfg
-    chmod 644 "$INSTANCE"/*.cfg
+	PWFILE=$RINSTANCE_HOME/adminPassword.txt
+	RMFILE=$RINSTANCE_HOME/README.txt
 fi
 
 
@@ -919,36 +895,36 @@ fi
 # Conclude installation
 if [ -d "$PLONE_HOME" ]; then
     if [ $SKIP_TOOL_TESTS -eq 0 ]; then
-        echo " "
-        echo "#####################################################################"
+    	echo " "
+    	echo "#####################################################################"
         if [ $RUN_BUILDOUT -eq 1 ]; then
-            echo "######################  Installation Complete  ######################"
-            echo " "
-            echo "Plone successfully installed at $PLONE_HOME"
-            echo "See $RMFILE"
-            echo "for startup instructions"
-            echo " "
-            cat $PWFILE
+        	echo "######################  Installation Complete  ######################"
+        	echo " "
+        	echo "Plone successfully installed at $PLONE_HOME"
+        	echo "See $RMFILE"
+        	echo "for startup instructions"
+        	echo " "
+    	    cat $PWFILE
         else
             echo "Buildout was skipped at your request, but the installation is"
             echo "otherwise complete and may be found at $PLONE_HOME"
         fi
-        echo " "
-        echo " "
-        echo "- If you need help, ask the mailing lists or #plone on irc.freenode.net."
-        echo "- The live support channel also exists at http://plone.org/chat"
-        echo "- You can read/post to the lists via http://plone.org/forums"
-        echo " "
-        echo "- Submit feedback and report errors at http://dev.plone.org/plone"
-        echo '(For install problems, specify component "Installer (Unified)")'
-        echo " "
+    	echo " "
+    	echo " "
+    	echo "- If you need help, ask the mailing lists or #plone on irc.freenode.net."
+    	echo "- The live support channel also exists at http://plone.org/chat"
+    	echo "- You can read/post to the lists via http://plone.org/forums"
+    	echo " "
+    	echo "- Submit feedback and report errors at http://dev.plone.org/plone"
+    	echo '(For install problems, specify component "Installer (Unified)")'
+    	echo " "
     fi
     echo "Finished at `date`" >> "$INSTALL_LOG"
 else
-    echo "There were errors during the install.  Please read readme.txt and try again."
-    echo "To report errors with the installer, visit http://dev.plone.org/plone"
-    echo 'and specify component "Installer (Unified).'
-    exit 1
+	echo "There were errors during the install.  Please read readme.txt and try again."
+	echo "To report errors with the installer, visit http://dev.plone.org/plone"
+	echo 'and specify component "Installer (Unified).'
+	exit 1
 fi
 
 cd "$ORIGIN_PATH"
