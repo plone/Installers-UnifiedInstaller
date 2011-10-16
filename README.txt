@@ -1,5 +1,5 @@
 ==============================
-Plone 4.1.2: Unified Installer
+Plone 4.0.10: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,7 +7,7 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.1.2, Zope 2.12.14, and Python 2.6.7.
+This version includes Plone 4.0.10, Zope 2.12.14, and Python 2.6.7.
 
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
 
@@ -72,7 +72,7 @@ recommended for a production deployment, while the standalone method is
 easier for a desktop-based development setup.
 
 For more detail on both root/non-root and ZEO/standalone choices, see
-"Installing on Linux / Unix / BSD":http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd
+"Installing on Linux / Unix / BSD ":http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd
 in the Plone.Org documentation section.
 
 
@@ -88,12 +88,12 @@ Python/Zope/Plone to /usr/local/Plone
 A "plone" user will be added, and Zope will be configured to
 run under that user id. You will need to start Zope as root or via sudo.
 
-To install Plone 4.1 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.0.10 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
 
-To install Plone 4.1 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.0.10 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
@@ -107,12 +107,12 @@ directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
 
-To install Plone 4.1 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.0.10 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh standalone
 
-To install Plone 4.1 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.0.10 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh zeo
@@ -142,13 +142,9 @@ Options:
   This will be created inside the target directory.
   Default is 'zinstance' for standalone, 'zeocluster' for ZEO.
 
---clients=client-count
-  Use with the "zeo" install method to specify the number of Zope
-  clients you wish to create. Default is 2.
-
---user=user-name In a root install, sets the effective user for running the
-  instance. Default is 'plone'. Ignored for non-root installs. You should always
-  use the same user within a given target.
+--user=user-name
+  In a root install, sets the effective user for running the
+  instance. Default is 'plone'. Ignored for non-root installs.
 
 --with-python=/full/path/to/python2.6
   If you have an already built Python that's adequate to run
@@ -173,10 +169,8 @@ Options:
   on platforms with odd libraries (like OS X Leopard).
 
 --without-ssl
-  Optional. Allows the build to proceed without ssl dependency tests.
-
---without-lxml
-  Prevents automatic build of lxml with static xml2 and xslt libraries
+  Optional. Allows the build to proceed without openssl development
+  libraries. SSL may not be needed in simple environments.
 
 Note that you may run install.sh repeatedly for the same target so long
 as you either use a different installation method or specify different
@@ -199,33 +193,28 @@ Dependencies
 6) posix-compliant /bin/sh
 
 
-Libraries and Utilities
-=======================
+Recommended Libraries and Utilities
+===================================
 Install libraries prior to running installer.
 Development versions of some packages are required for headers. Debian/Ubuntu
 package names are included below.
 
-Required
---------
-* Build Essentials (gcc, make)
-     build-essential
 * libssl (SSL support)
+     *Strongly recommended.*
+     Used by openid and SecureMailHost; needed for https updates.
      libssl-dev
-
-Recommended
------------
 * zlib (GZ compression)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
-     zlib-dev
+     zlib1g-dev
 * libjpeg (jpeg support)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
-     libjpeg-dev
+     libjpeg62-dev
 * readline (Python command-line history)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
      libreadline5-dev readline-common
+* libxml2 (used by marshall)
+     libxml-dev
 * wv (used to index Word documents)
      wv
      <http://wvware.sourceforge.net/>
@@ -420,7 +409,6 @@ Third-party products installed
 - libxml2-python (required for Marshall support)
 - libreadline (terminal mode command-line and prompt editing)
 - Cheetah, Paste, PasteDeploy, PasteScript, ZopeSkel
-- lxml, libxml2, libxslt
 - The buildout recipe also installs elementtree
 
 
@@ -496,8 +484,8 @@ then telling the Unified Installer to use the preinstalled Python.
 Test builds on OpenBSD 4.2 succeeded with the following packages pre-installed:
 
 bzip2-1.0.4          block-sorting file compressor, unencumbered
-python-2.6.7         interpreted object-oriented programming language
-python-expat-2.6.7   expat module for Python
+python-2.6.6         interpreted object-oriented programming language
+python-expat-2.6.6   expat module for Python
 
 If you are unable to install python-expat-2.6.7, you may need to install the
 xbase file set, which includes expat in some versions of OpenBSD (4.2). 

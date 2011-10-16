@@ -2,7 +2,7 @@
 # Build Python (with readline and zlib support)
 # note: Install readline and zlib before running this script
 #
-# $LastChangedDate: 2011-09-12 11:20:44 -0700 (Mon, 12 Sep 2011) $ $LastChangedRevision: 52004 $
+# $LastChangedDate: 2011-09-12 11:21:05 -0700 (Mon, 12 Sep 2011) $ $LastChangedRevision: 52005 $
 
 echo "Installing Python 2.6.7. This takes a while..."
 cd "$PKG"
@@ -43,7 +43,26 @@ if [ "x$UNIVERSALSDK" != "x" ];	then
     EXFLAGS="--enable-universalsdk=$UNIVERSALSDK"
 fi
 
-./configure $EXFLAGS --prefix="$PY_HOME" >> "$INSTALL_LOG" 2>&1
+if [ $NEED_LOCAL -eq 1 ]; then
+	./configure $EXFLAGS \
+		--prefix="$PY_HOME" \
+		--with-readline \
+		--with-zlib \
+		--disable-tk \
+		--with-gcc="$CC -I\"$LOCAL_HOME\"/include" \
+		--with-cxx="$CXX -I\"$LOCAL_HOME\"/include" \
+		LDFLAGS="$LDFLAGS -L\"$LOCAL_HOME\"/lib -R\"$LOCAL_HOME\"/lib" \
+		>> "$INSTALL_LOG" 2>&1
+else
+    ./configure $EXFLAGS \
+		--prefix="$PY_HOME" \
+		--with-readline \
+		--with-zlib \
+		--disable-tk \
+		--with-gcc="$CC" \
+		--with-cxx="$CXX" \
+		>> "$INSTALL_LOG" 2>&1
+fi
 
 ## OpenSolaris has netpacket/packet.h but it does not compile Modules/socketmodule.c
 if [ `uname` = 'SunOS' ]; then 

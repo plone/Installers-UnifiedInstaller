@@ -6,9 +6,28 @@ have_bunzip2=@have_bunzip2@
 have_gunzip=@have_gunzip@
 have_tar=@have_tar@
 have_make=@have_make@
-XML2_CONFIG='@have_xml2_config@'
-XSLT_CONFIG='@have_xslt_config@'
-HAVE_LIBZ=@have_libz@
-HAVE_LIBJPEG=@have_libjpeg@
-HAVE_LIBSSL=@have_ssl@
-HAVE_LIBREADLINE=@have_readline@
+
+if '@GREP@' -q "#define HAVE_ZLIB_H 1" config.log; then
+    HAVE_ZLIB_H='yes'
+fi
+if '@GREP@' -q "#define HAVE_JPEGLIB_H 1" config.log; then
+    HAVE_JPEGLIB_H='yes'
+fi
+if '@GREP@' -q "HAVE_OPENSSL_SSL_H 1" config.log; then
+    HAVE_OPENSSL_SSL_H='yes'
+fi
+if '@GREP@' -q "HAVE_READLINE_READLINE_H 1" config.log; then
+    HAVE_READLINE_READLINE_H='yes'
+fi
+if '@GREP@' -q "HAVE_LIBJPEG 1" config.log; then
+    HAVE_LIBJPEG='yes'
+fi
+if '@GREP@' -q "HAVE_LIBSSL 1" config.log; then
+    HAVE_LIBSSL='yes'
+fi
+if '@GREP@' -q "HAVE_LIBREADLINE 1" config.log; then
+    HAVE_LIBREADLINE='yes'
+fi
+if '@GREP@' -q "HAVE_LIBZ 1" config.log; then
+    HAVE_LIBZ='yes'
+fi

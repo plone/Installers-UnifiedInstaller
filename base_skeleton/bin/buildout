@@ -2,7 +2,6 @@
 
 import sys
 sys.path[0:0] = [
-    '%(DISTRIBUTE_EGG)s',
     '%(BUILDOUT_EGG)s',
   ]
 

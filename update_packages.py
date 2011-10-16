@@ -8,18 +8,18 @@ rebuilds the buildout-cache tarball from a working install.
 Strategy:
 
   * copy the buildout-cache directory from the working install
-
+  
   * eliminate older versions from both eggs and download/dist
-
+  
   * delete all the eggs with binary signatures from the eggs
     directory, keeping a list of what we've done
-
+    
   * delete all the .py[c|o] files from the installed eggs
     directory. those will be recompiled on install.
-
+    
   * Delete all but the packages which have binary build
     components from download/dist
-
+    
   * bundle it all up.
 
 Created by Steve McMahon on 2008-11-06.
@@ -45,10 +45,13 @@ def doCommand(command):
                           shell=True,
                           universal_newlines=True)
     po.communicate()
-
+    # if po.returncode:
+    #     print "Error in command: %s" % command
+    #     sys.exit(1)
+    
 
 class PackageList:
-
+    
     pkgpat = re.compile(r'(.+)-(\d.+?)\.(?:zip|egg|tar|tar.gz|tgz)$')
 
     def __init__(self, pathnames):
@@ -62,7 +65,8 @@ class PackageList:
                     name, version = mo.groups()[0:2]
                     self.packages.setdefault(name, []).append((
                         pkg_resources.parse_version(version),
-                        os.path.join(pathname, fn)))
+                        os.path.join(pathname,fn)
+                        ))
 
     def olderVersions(self):
         for eggk in self.packages.keys():
@@ -95,15 +99,16 @@ eggs = os.path.join(workDir, 'eggs')
 downloads = os.path.join(workDir, 'downloads')
 dist = os.path.join(downloads, 'dist')
 
+
 print "clean older packages"
-packages = PackageList((dist, ))
+packages = PackageList( (dist,) )
 packages.cleanOlder()
-packages = PackageList((eggs, ))
+packages = PackageList( (eggs,) )
 packages.cleanOlder()
 
 binaries = {}
 
-print "Removing installed eggs with binary components:"
+print "Removing installed eggs with binary components"
 for fn in os.listdir(eggs):
     if BINARY_SIG_RE.search(fn) is not None:
         basename = BINARY_SIG_RE.sub('', fn).replace('.egg', '')
@@ -112,7 +117,7 @@ for fn in os.listdir(eggs):
         print basename,
 print
 
-print "Removing dist packages without binary components. Remaining:"
+print "Removing dist packages without binary components"
 for fn in os.listdir(dist):
     basename = BINARY_SIG_RE.sub('', fn).replace('.tar.gz', '').replace('.zip', '')
     if basename in binaries:
@@ -126,24 +131,24 @@ if binaries:
 
 
 print "zap *.py[c|o] files from installed eggs"
-doCommand("find %s -name '*.py[co]' -exec rm {} \\;" % eggs)
+doCommand( "find %s -name '*.py[co]' -exec rm {} \\;" % eggs )
 
 print "Removing .registration.cache files"
-doCommand("find %s -name '.registration.cache' -exec rm {} \\;" % eggs)
+doCommand( "find %s -name '.registration.cache' -exec rm {} \\;" % eggs )
 
 # clean mac crapola
 doCommand('find %s -name ".DS_Store" -exec rm {} \;' % workDir)
 
 print "permission fixups"
-doCommand("find %s -type d -exec chmod 755 {} \;" % workDir)
-doCommand("find %s -type f -exec chmod 644 {} \;" % workDir)
+doCommand(  "find %s -type d -exec chmod 755 {} \;" % workDir)
+doCommand(  "find %s -type f -exec chmod 644 {} \;" % workDir)
 
 if os.path.exists(desttar):
     print "remove existing buildout cache archive"
     os.unlink(desttar)
 
 #print "generate new archive"
-doCommand("gnutar --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (desttar))
+doCommand(  "gnutar --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (desttar))
 
 # cleanup
 shutil.rmtree(workDir)

@@ -6,7 +6,7 @@
 
 WORK_DIR=~/nobackup/work
 
-NEWVER=4.1.2
+NEWVER=4.0.10
 
 SDIR=`pwd`
 
@@ -20,16 +20,8 @@ rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/*.ac
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/update_packages.py
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/to-do.txt
 cp -r packages $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/packages
-
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
-
-echo "Getting docs"
-wget http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
-tar xf Plone-${NEWVER}.tar.gz
-rm Plone-${NEWVER}.tar.gz
-mv Plone-${NEWVER}/docs Plone-docs
-rm -r Plone-${NEWVER}
-
+svn export http://svn.plone.org/svn/plone/Plone/tags/${NEWVER}/docs Plone-docs
 find . -name "._*" -exec rm {} \;
 find . -name ".DS_Store" -exec rm {} \;
 find . -type f -exec chmod 644 {} \;

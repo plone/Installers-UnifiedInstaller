@@ -1,7 +1,7 @@
 # Test the invoking Python to see if it's a good candidate
 # for running Zope 2.12.x / Plone 4.0.x.
 #
-# $LastChangedDate: 2011-10-01 13:45:45 -0700 (Sat, 01 Oct 2011) $ $LastChangedRevision: 52404 $
+# $LastChangedDate: 2010-08-27 11:48:43 -0700 (Fri, 27 Aug 2010) $ $LastChangedRevision: 39119 $
 
 import sys, os.path
 
@@ -41,13 +41,15 @@ try:
             print "support is not working."
             passed = False
 except ImportError:
-    pass
+    print "Warning: the Python Imaging Library is missing."
+    print "We'll try to build it, but watch for problems.\n"
 
 try:
     import _ssl
 except ImportError:
-    print "Failed: This Python does not have ssl support."
-    passed = False
+    print "Warning: This Python does not have ssl support."
+    print "It may still be usable for Zope, but will not support"
+    print "openid, ESMTP+TLS, or updates via https.\n"
 
 try:
     import readline

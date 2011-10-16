@@ -26,9 +26,6 @@ A few components are distributed in binary or pre-installed format
 on some platforms (e.g., OS X), and the licenses may not be in the
 compiled versions:
 
-libjpeg:
-    See jpeg.txt
-
 readline library:
     GPL
 
@@ -40,9 +37,6 @@ Python
 
 Zope
     Zope Public License, version 2.1
-
-libxml2, libxslt
-    MIT License
 
 For license specifications for Python Packages and Eggs
 see the included PKG-INFO files.

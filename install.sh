@@ -4,7 +4,7 @@
 # Created by Kamal Gill (kamalgill at mac.com)
 # Adapted for Plone 3+ and buildout by Steve McMahon (steve at dcn.org)
 #
-# $LastChangedDate: 2011-10-10 15:57:37 -0700 (Mon, 10 Oct 2011) $ $LastChangedRevision: 52415 $
+# $LastChangedDate: 2011-07-29 10:03:58 -0700 (Fri, 29 Jul 2011) $ $LastChangedRevision: 51500 $
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
@@ -19,10 +19,6 @@
 # Options:
 # --password=InstancePassword
 #   If not specified, a random password will be generated.
-#
-# --clients=client-count
-#   Use with the "zeo" install method to specify the number of Zope
-#   clients you wish to create. Default is 2.
 # 
 # --target=pathname
 #   Use to specify top-level path for installs. Plone instances
@@ -42,11 +38,6 @@
 #   If you have an already built Python that's adequate to run
 #   Zope / Plone, you may specify it here.
 #   virtualenv will be used to isolate the copy used for the install.
-#
-# --with-site-packages
-#   When --with-python is used to specify a python, that python is isolated
-#   via virtualenv using the --no-site-packages argument. Set the --with-site-
-#   packages flag if you want to include system packages.
 # 
 # --nobuildout
 #   Skip running bin/buildout. You should know what you're doing.
@@ -55,15 +46,11 @@
 # --libz=auto|yes|no
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
-# --lxml=auto|yes|no
 #
 #   auto -   to have this program determine whether or not you need the
 #            library installed. If needed, will be installed to $PLONE_HOME.
 #   yes    - to force install to $PLONE_HOME for static link
 #   no     - to force no install
-#
-# lxml note:
-# if needed, lxml is built with static xml2 and xslt libraries
 
 
 # Path for Root install
@@ -95,7 +82,6 @@ sh ./preflight -q
 . ./buildenv.sh
 
 
-INSTALL_LXML=auto
 INSTALL_ZLIB=auto
 INSTALL_JPEG=auto
 if [ `uname` = "Darwin" ]; then
@@ -120,8 +106,8 @@ HSCRIPTS_DIR=helper_scripts
 
 PYTHON_TB=Python-2.6.7.tar.bz2
 PYTHON_DIR=Python-2.6.7
-DISTRIBUTE_TB=distribute-0.6.19.tar.gz
-DISTRIBUTE_DIR=distribute-0.6.19
+DISTRIBUTE_TB=distribute-0.6.16.tar.gz
+DISTRIBUTE_DIR=distribute-0.6.16
 JPEG_TB=jpegsrc.v8c.tar.bz2
 JPEG_DIR=jpeg-8c
 READLINE_TB=readline-6.2.tar.bz2
@@ -168,7 +154,7 @@ usage () {
     echo
     echo "Use sudo (or run as root) for server-mode install."
     echo
-    echo "Options (see top of install.sh for complete list):"
+    echo "Options:"
     echo "--password=InstancePassword"
     echo "  If not specified, a random password will be generated."
     echo
@@ -176,10 +162,6 @@ usage () {
     echo "  Use to specify top-level path for installs. Plone instances"
     echo "  and Python will be built inside this directory"
     echo "  (default is $PLONE_HOME)"
-    echo 
-    echo "--clients=client-count"
-    echo "  Use with the "zeo" install method to specify the number of Zope"
-    echo "  clients you wish to create. Default is 2."
     echo
     echo "--instance=instance-name"
     echo "  Use to specify the name of the operating instance to be created."
@@ -196,7 +178,6 @@ usage () {
     echo "  Zope / Plone, you may specify it here."
     echo "  virtualenv will be used to isolate the copy used for the install."
     echo
-    echo "Read the top of install.sh for more install options."
     exit 1
 }
 
@@ -213,7 +194,6 @@ WITH_ZOPE=""
 RUN_BUILDOUT=1
 SKIP_TOOL_TESTS=0
 INSTALL_LOG="$ORIGIN_PATH/install.log"
-CLIENT_COUNT=2
 
 
 for option
@@ -227,11 +207,7 @@ do
             else
                 usage
             fi
-            ;;
-
-        --with-site-packages )
-            WITH_SITE_PACKAGES=yes
-            ;;
+        ;;
 
         --target=* | -target=* )
             if [ "$optarg" ]; then
@@ -281,18 +257,6 @@ do
             fi
             ;;
 
-        --lxml=* )
-            if [ "$optarg" ]; then
-                INSTALL_LXML="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --without-lxml )
-            INSTALL_LXML=no
-            ;;
-
         --without-ssl | --without-openssl )
             WITHOUT_SSL=1
             ;;
@@ -319,14 +283,6 @@ do
         --install-log=* | --log=* )
             if [ "$optarg" ]; then
                 INSTALL_LOG="$optarg"
-            else
-                usage
-            fi
-            ;;
-            
-        --clients=* | --client=* )
-            if [ "$optarg" ]; then
-                CLIENT_COUNT="$optarg"
             else
                 usage
             fi
@@ -492,11 +448,11 @@ if [ "$WITH_PYTHON" ]; then
             # if the supplied Python is adequate, we don't need to build libraries
             INSTALL_ZLIB=no
             INSTALL_READLINE=no
-            WITHOUT_SSL=1
+            INSTALL_JPEG=no
+            WITHOUT_SSL=yes
         else
-            echo
-            echo "***Aborting***"
-            echo "$WITH_PYTHON does not meet the requirements for Zope/Plone."
+            echo "\n***Aborting***"
+            echo "\n$WITH_PYTHON does not meet the requirements for Zope/Plone."
             echo "Specify a more suitable Python, or upgrade your Python and try again."
             echo "You may also omit --with-python and let the Unified Installer"
             echo "build its own Python. "
@@ -568,7 +524,7 @@ fi
 
 
 if [ $INSTALL_ZLIB = "auto" ] ; then
-    if [ "$HAVE_LIBZ" = "yes" ] ; then
+    if [ "$HAVE_LIBZ" = "yes" ] && [ "$HAVE_ZLIB_H" = "yes" ] ; then
         INSTALL_ZLIB=no
     else
         INSTALL_ZLIB=yes
@@ -576,7 +532,7 @@ if [ $INSTALL_ZLIB = "auto" ] ; then
 fi
 
 if [ $INSTALL_JPEG = "auto" ] ; then
-    if [ "$HAVE_LIBJPEG" = "yes" ] ; then
+    if [ "$HAVE_LIBJPEG" = "yes" ] && [ "$HAVE_JPEGLIB_H" = "yes" ] ; then
         INSTALL_JPEG=no
     else
         INSTALL_JPEG=yes
@@ -584,20 +540,18 @@ if [ $INSTALL_JPEG = "auto" ] ; then
 fi
 
 if [ $INSTALL_READLINE = "auto" ] ; then
-    if [ "$HAVE_LIBREADLINE" = "yes" ] ; then
+    if [ "$HAVE_LIBREADLINE" = "yes" ] && [ "$HAVE_READLINE_READLINE_H" = "yes" ] ; then
         INSTALL_READLINE=no
     else
         INSTALL_READLINE=yes
     fi
 fi
 
-if [ "$HAVE_LIBSSL" != "yes" ] ; then
+if ([ "$HAVE_LIBSSL" != "yes" ] || [ "$HAVE_OPENSSL_SSL_H" != "yes" ]) && [ "$WITHOUT_SSL" != '1' ] ; then
     echo
     echo "Unable to find libssl or openssl/ssl.h."
-    echo "libssl and its development headers are required for Plone."
-    echo "If you're sure you have these installed, and are still getting"
-    echo "this warning, you may disable the libssl check by adding the"
-    echo "--without-ssl flag to the install command line."
+    echo "If you wish to build without SSL support, run install.sh again with"
+    echo "--without-ssl flag."
     echo "Otherwise, install your platform's openssl-dev libraries and headers"
     echo "and try again."
     echo
@@ -613,7 +567,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.1.2 at $PLONE_HOME"
+echo "Installing Plone 4.0.10 at $PLONE_HOME"
 echo ""
 
 
@@ -686,13 +640,8 @@ then
     cd "$PKG"
     untar $VIRTUALENV_TB
     cd $VIRTUALENV_DIR
-    if [ "X$WITH_SITE_PACKAGES" = "Xyes" ]; then
-        echo "Creating python virtual environment with site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
-    else
-        echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py --no-site-packages "$PY_HOME"
-    fi
+    echo "Creating python virtual environment..."
+    "$WITH_PYTHON" virtualenv.py --no-site-packages "$PY_HOME"
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
     PY=$PY_HOME/bin/python
@@ -707,8 +656,7 @@ then
     fi
     cd "$CWD"
     if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
-        echo
-        echo "Python created with virtualenv no longer passes baseline"
+        echo "\nPython created with virtualenv no longer passes baseline"
         echo "tests."
         echo "You may need to omit --with-python and let the Unified Installer"
         echo "build its own Python. "
@@ -779,16 +727,6 @@ else
         seelog
         exit 1
     fi
-    if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py
-    then
-        echo "Python build looks OK."
-    else
-        echo
-        echo "***Aborting***"
-        echo "The built Python does not meet the requirements for Zope/Plone."
-        echo "Check messages and the install.log to find out what went wrong."
-        exit 1
-    fi
 fi
 
 
@@ -820,6 +758,12 @@ else
     mkdir "$BUILDOUT_CACHE"/extends
     mkdir "$BUILDOUT_CACHE"/downloads
 fi
+
+if [ $ROOT_INSTALL -eq 1 ]; then
+    echo "Setting buildout cache ownership to $EFFECTIVE_USER"
+    chown -R "$EFFECTIVE_USER" "$BUILDOUT_CACHE"
+fi
+
 
 
 if [ -x "$CWD/Plone-docs" ] && [ ! -x "$PLONE_HOME/Plone-docs" ]; then
@@ -863,17 +807,20 @@ if [ $INSTALL_ZEO -eq 1 ]; then
         "$PASSWORD" \
         "$ROOT_INSTALL" \
         "$RUN_BUILDOUT" \
-        "$INSTALL_LXML" \
         "$OFFLINE" \
         "cluster" \
-        "$INSTALL_LOG" \
-        "$CLIENT_COUNT"
+        "$INSTALL_LOG"
     if [ $? -gt 0 ]; then
         echo "Buildout failed. Unable to continue"
         seelog
         exit 1
     fi
-    INSTANCE=$ZEOCLUSTER_HOME
+    PWFILE=$ZEOCLUSTER_HOME/adminPassword.txt
+    RMFILE=$ZEOCLUSTER_HOME/README.html
+    if [ $ROOT_INSTALL -eq 1 ]; then
+        echo "Setting instance ownership to $EFFECTIVE_USER"
+        chown -R "$EFFECTIVE_USER" "$ZEOCLUSTER_HOME"
+    fi
 elif [ $INSTALL_STANDALONE -eq 1 ]; then
     if [ -x "$RINSTANCE_HOME"  ]; then
         echo "Instance target $RINSTANCE_HOME already exists; aborting install."
@@ -888,30 +835,20 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
         "$PASSWORD" \
         "$ROOT_INSTALL" \
         "$RUN_BUILDOUT" \
-        "$INSTALL_LXML" \
         "$OFFLINE" \
         "standalone" \
-        "$INSTALL_LOG" \
-        "0"
+        "$INSTALL_LOG"
     if [ $? -gt 0 ]; then
         echo "Buildout failed. Unable to continue"
         seelog
         exit 1
     fi
-    INSTANCE=$RINSTANCE_HOME
-fi
-
-PWFILE=$INSTANCE/adminPassword.txt
-RMFILE=$INSTANCE/README.html
-
-if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Setting instance ownership to $EFFECTIVE_USER"
-    chown -R "$EFFECTIVE_USER" "$INSTANCE"
-    echo "Setting buildout cache ownership to $EFFECTIVE_USER"
-    chown -R "$EFFECTIVE_USER" "$BUILDOUT_CACHE"
-    # And the config files
-    chown root "$INSTANCE"/*.cfg
-    chmod 644 "$INSTANCE"/*.cfg
+    PWFILE=$RINSTANCE_HOME/adminPassword.txt
+    RMFILE=$RINSTANCE_HOME/README.html
+    if [ $ROOT_INSTALL -eq 1 ]; then
+        echo "Setting instance ownership to $EFFECTIVE_USER"
+        chown -R "$EFFECTIVE_USER" "$RINSTANCE_HOME"
+    fi
 fi
 
 

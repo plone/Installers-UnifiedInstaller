@@ -5,21 +5,9 @@
 # This script is meant to be invoked by another process
 # that will choose the exec Python.
 #
-# $LastChangedDate: 2011-10-13 15:45:31 -0700 (Thu, 13 Oct 2011) $ $LastChangedRevision: 52420 $
+# $LastChangedDate: 2011-06-06 16:22:56 -0700 (Mon, 06 Jun 2011) $ $LastChangedRevision: 50300 $
 
-import sys
-import os
-import os.path
-import stat
-import subprocess
-import shutil
-import iniparse
-import platform
-import glob
-from cStringIO import StringIO
-
-from config_check import getVersion
-
+import sys, os, os.path, stat, subprocess, shutil, iniparse, platform, glob, pwd
 
 log = ''
 
@@ -32,70 +20,42 @@ ZEO_USER,
 PASSWORD,
 ROOT_INSTALL,
 RUN_BUILDOUT,
-INSTALL_LXML,
 OFFLINE,
 ITYPE,
-LOG_FILE,
-CLIENTS) = sys.argv[1:]
-
-if INSTALL_LXML == 'auto':
-    if getVersion('xml2') >= 20708 and getVersion('xslt') >= 10126:
-        print "Your platform's xml2/xslt are up-to-date. No need to build them."
-        INSTALL_STATIC_LXML = 'no'
-    else:
-        print "Your platform's xml2/xslt are missing or out-of-date. We'll need to build them."
-        INSTALL_STATIC_LXML = 'yes'
-else:
-    INSTALL_STATIC_LXML = INSTALL_LXML
-
-
-client_template = """
-
-[clientCLIENT_NUM]
-# a copy of client1, except adjusted address and var location
-<= client1
-http-address = ${buildout:clientCLIENT_NUM-address}
-event-log = ${buildout:directory}/var/clientCLIENT_NUM/event.log
-z2-log    = ${buildout:directory}/var/clientCLIENT_NUM/Z2.log
-pid-file  = ${buildout:directory}/var/clientCLIENT_NUM/clientCLIENT_NUM.pid
-lock-file = ${buildout:directory}/var/clientCLIENT_NUM/clientCLIENT_NUM.lock
-"""
-
-BASE_ADDRESS = 8080
-CLIENTS = int(CLIENTS)
-
+LOG_FILE) = sys.argv[1:]
 
 # find the full egg name for a module in the buildout-cache
 def findEgg(basename):
-    return glob.glob(
-        "%s*.egg" % os.path.join(
-            PLONE_HOME,
-            'buildout-cache',
-            'eggs',
-            basename)
-        )[0]
+    try:
+        return glob.glob(
+            "%s*.egg" % os.path.join(
+                PLONE_HOME, 
+                'buildout-cache', 
+                'eggs', 
+                basename)
+            )[0]
+    except:
+        return "%s_MISSING" % basename
 
 substitutions = {
-    "PLONE_HOME": PLONE_HOME,
-    "INSTANCE_HOME": INSTANCE_HOME,
-    "CLIENT_USER": CLIENT_USER,
-    "ZEO_USER": ZEO_USER,
-    "PASSWORD": PASSWORD,
-    "PYTHON": sys.executable,
-    "DISTRIBUTE_EGG": findEgg('distribute'),
-    "BUILDOUT_EGG": findEgg('zc.buildout'),
+    "PLONE_HOME" : PLONE_HOME,
+    "INSTANCE_HOME" : INSTANCE_HOME,
+    "CLIENT_USER" : CLIENT_USER,
+    "ZEO_USER" : ZEO_USER,
+    "PASSWORD" : PASSWORD,
+    "PYTHON" : sys.executable,
+    "DISTRIBUTE_EGG" : findEgg('distribute'),
+    "BUILDOUT_EGG" : findEgg('zc.buildout'),
 }
-
 
 # apply substitutions to a file
 def inPlaceSub(fn):
-    fd = file(fn)
+    fd = file(fn);
     contents = fd.read()
     fd.close()
-    fd = file(fn, 'w')
+    fd = file(fn, 'w');
     fd.write(contents % substitutions)
     fd.close()
-
 
 def doCommand(command):
     global log
@@ -116,17 +76,6 @@ shutil.copytree(os.path.join(UIDIR, 'base_skeleton'), INSTANCE_HOME)
 doCommand('find %s -name "._*" -exec rm {} \; > /dev/null' % INSTANCE_HOME)
 doCommand('find %s -name ".svn" | xargs rm -rf' % INSTANCE_HOME)
 
-# create a client list and client templates;
-# we'll add them to the .cfg files later
-client_list = 'client1'
-client_parts = ''
-client_addresses = '# Additional clients:\n'
-for client in range(2, CLIENTS + 1):
-    client_parts = "%s%s" % (client_parts,
-        client_template.replace('CLIENT_NUM', str(client))
-        )
-    client_list = "%s client%s" % (client_list, client)
-    client_addresses = '%sclient%d-address = %d\n' % (client_addresses, client, 8080 + client - 1)
 
 #############################
 # buildout.cfg customizations
@@ -141,19 +90,13 @@ fd = file(os.path.join(UIDIR, 'buildout_templates', template))
 buildout = fd.read()
 fd.close()
 
-# if standalone, non-root & OS X Leopard or Snow Leopard, install controller
+# if standalone, non-root & OS X Leopard or later, install controller
 if (ITYPE == 'standalone') and \
    (ROOT_INSTALL != '1') and \
    (platform.system() == 'Darwin') and \
-   (int(platform.platform().split('-')[1].split('.')[0]) in (9, 10)):
+   (int(platform.platform().split('-')[1].split('.')[0]) >= 9):
     # add to parts
     buildout = buildout.replace('parts =\n', 'parts =\n    osxcontroller')
-    wantOSX = True
-else:
-    wantOSX = False
-    buildout = buildout.replace('client1', client_list)
-    buildout = buildout.replace('# Additional clients:', client_addresses)
-
 
 # set password
 buildout = buildout.replace('__PASSWORD__', PASSWORD)
@@ -161,16 +104,11 @@ buildout = buildout.replace('__PASSWORD__', PASSWORD)
 # set effective user
 buildout = buildout.replace('__CLIENT_USER__', CLIENT_USER)
 
-# if this python doesn't have PIL, add PIL to the eggs
+# if this python doesn't have PIL, add it to the eggs
 try:
     from _imaging import jpeg_decoder
 except:
     buildout = buildout.replace('    Plone\n', '    Plone\n    Pillow\n')
-
-if INSTALL_LXML == 'no':
-    # remove the egg requirement
-    buildout = buildout.replace('    lxml\n', '')
-
 
 fn = os.path.join(INSTANCE_HOME, 'buildout.cfg')
 fd = file(fn, 'w')
@@ -183,12 +121,6 @@ os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
 # base.cfg customizations
 
 fd = file(os.path.join(UIDIR, 'buildout_templates', 'base.cfg'))
-base = fd.read()
-fd.close()
-
-base = "%s%s" % (base, client_parts)
-
-fd = StringIO(base)
 buildout = iniparse.INIConfig(fd)
 fd.close()
 
@@ -198,9 +130,9 @@ client2 = buildout.client2
 zeoServer = buildout.zeoserver
 
 # set buildout location
-# buildout.buildout['eggs-directory'] = '%s/buildout-cache/eggs' % PLONE_HOME
-# buildout.buildout['download-cache'] = '%s/buildout-cache/downloads' % PLONE_HOME
-# buildout.buildout['extends-cache'] = '%s/buildout-cache/downloads/extends' % PLONE_HOME
+buildout.buildout['eggs-directory'] = '%s/buildout-cache/eggs' % PLONE_HOME
+buildout.buildout['download-cache'] = '%s/buildout-cache/downloads' % PLONE_HOME
+buildout.buildout['extends-cache'] = '%s/buildout-cache/downloads/extends' % PLONE_HOME
 
 
 if ROOT_INSTALL == '1':
@@ -209,19 +141,17 @@ else:
     # remove chown commands
     for section in (buildout.chown, buildout['chown-zeo']):
         section.command = \
-            '\n'.join([s for s in section.command.split('\n')
-                          if len(s) and not s.count('chown')])
+            '\n'.join( [s for s in section.command.split('\n') 
+                          if len(s) and not s.count('chown')] )
 
 if ITYPE == 'standalone':
     del buildout['zeoserver']
     del buildout['client1']
+    del buildout['client2']
     del buildout['chown-zeo']
 else:
     del buildout['instance']
     del buildout['chown']
-
-if not wantOSX:
-    del buildout['osxcontroller']
 
 fn = os.path.join(INSTANCE_HOME, 'base.cfg')
 fd = file(fn, 'w')
@@ -246,24 +176,24 @@ if RUN_BUILDOUT == '1':
     logfile.close()
     log = ''
 
-    if INSTALL_STATIC_LXML == 'yes':
-        print "Building lxml with static libxml2/libxslt; this takes a while..."
-        returncode = doCommand(
-            os.path.join(INSTANCE_HOME, 'bin', 'buildout') + \
-            " -c lxml_static.cfg -NU buildout:install-from-cache=true")
-        if returncode:
-            print "\nlxml build failed. You may wish to clean up and try again"
-            print "without the lxml build by adding --without-lxml to the"
-            print "command line."
-    else:
-        print "Skipping static libxml2/libxslt build."
-        returncode = 0
+    # CLIENT_USER should own everything we create
+    if ROOT_INSTALL == '1':
+        doCommand('chown -R "%s" "%s"' % (CLIENT_USER, INSTANCE_HOME))
+        # switch effective user so that we don't run buildout as root, 
+        print "Switching user to %s" % CLIENT_USER
+        uid, gid = pwd.getpwnam(CLIENT_USER)[2:4]
+        os.seteuid(uid)
 
-    if not returncode:
-        print "Building Zope/Plone; this takes a while..."
-        returncode = doCommand(
-            os.path.join(INSTANCE_HOME, 'bin', 'buildout') + \
-            " -NU buildout:install-from-cache=true")
+    print "Running buildout; this takes a while..."
+
+    if OFFLINE == '1':
+        returncode = doCommand(os.path.join(INSTANCE_HOME, 'bin', 'buildout') + " -NU buildout:install-from-cache=true")
+    else:
+        returncode = doCommand(os.path.join(INSTANCE_HOME, 'bin', 'buildout') + " -NU")
+    
+    if ROOT_INSTALL == '1':
+        # return to root
+        os.seteuid(os.getuid())
 
     logfile = file(LOG_FILE, 'a')
     logfile.write(log)
@@ -275,18 +205,19 @@ if RUN_BUILDOUT == '1':
         sys.exit(returncode)
 
     if ITYPE == 'standalone':
-        if not (os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'instance')) and
+        if not ( os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'instance')) and
                  os.path.exists(os.path.join(INSTANCE_HOME, 'parts', 'instance')) and
-                 os.path.exists(os.path.join(INSTANCE_HOME, 'var'))):
+                 os.path.exists(os.path.join(INSTANCE_HOME, 'var')) ):
             print "Parts of the install are missing. Buildout must have failed. Aborting."
             sys.exit(1)
     else:
-        if not (os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'zeoserver')) and
+        if not ( os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'zeoserver')) and
                  os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'client1')) and
                  os.path.exists(os.path.join(INSTANCE_HOME, 'parts', 'client1')) and
-                 os.path.exists(os.path.join(INSTANCE_HOME, 'var'))):
+                 os.path.exists(os.path.join(INSTANCE_HOME, 'var')) ):
             print "Parts of the install are missing. Buildout must have failed. Aborting."
             sys.exit(1)
 
 else:
     print "Skipping bin/buildout at your request."
+

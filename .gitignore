@@ -8,3 +8,4 @@ config.log
 config.status
 autom4te.cache
 Plone-docs
+tests/testout.txt
