@@ -1,0 +1,63 @@
+#!/bin/sh
+# /etc/init.d/plone
+# Startup script for standalone Zope
+#
+# adapted for Ubuntu paths, Plone 3.0 version and LSB functions
+#
+# description: Zope, a web application server
+# this works as is for a default universal plone linux install
+#
+# config: /usr/local/plone/zinstance/buildout.cfg
+
+# LSB Source function library
+. /lib/lsb/init-functions
+
+RETVAL=0
+
+# this is for the default install path for Plone-3.0-buildout
+instancepath="/usr/local/Plone/zinstance"
+
+prog="plone"
+
+start() {
+    log_begin_msg "Starting $prog server..."
+    ${instancepath}/bin/plonectl start
+    return $?
+}
+
+stop() {
+
+    log_begin_msg "Stopping $prog server..."
+    ${instancepath}/bin/plonectl stop
+    return $?
+}
+
+restart() {
+   stop
+   start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    echo "Zope Server:"
+    output=`${instancepath}/bin/zopectl status`
+    echo $output
+    ;;
+  restart)
+    restart
+    ;;
+  condrestart)
+    [ -e /var/lock/$prog ] && restart
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+    RETVAL=2
+esac
+
+exit $RETVAL

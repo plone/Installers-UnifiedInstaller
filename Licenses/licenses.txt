@@ -1,0 +1,58 @@
+The Plone Content Management System is copyright (c) 2000-2010
+by the Plone Foundation.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 2
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+MA 02111-1307 USA.
+
+----------------------
+Unified Installer Kit
+
+Support programs and libraries distributed with this installer
+have various licenses. Most of these are distributed with full
+source code, and have licensing terms included.
+
+A few components are distributed in binary or pre-installed format
+on some platforms (e.g., OS X), and the licenses may not be in the
+compiled versions:
+
+libjpeg:
+    See jpeg.txt
+
+readline library:
+    GPL
+
+zlib library:
+    See zlib.txt
+
+Python
+    Python Software Foundation License, Version 2
+
+Zope
+    Zope Public License, version 2.1
+
+libxml2, libxslt
+    MIT License
+
+For license specifications for Python Packages and Eggs
+see the included PKG-INFO files.
+
+Licenses specified in eggs include:
+
+* Creative Commons Attribution-NonCommercial-ShareAlike 2.5 License
+* BSD License
+* GNU General Public License (GPL)
+* GNU Library or Lesser General Public License (LGPL)
+* MIT License
+* Python Software Foundation License
+* Zope Public License

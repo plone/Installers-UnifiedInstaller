@@ -1,0 +1,63 @@
+Unreleased
+
+    - Don't install OSX controller on Lion (no wx).
+
+4.1.2
+
+    - Update to 4.1.2
+
+    - Try to detect libxml2/libxslt if installed; check versions. Only build
+      statically if missing or out-of-date.
+
+    - 4.1 requires ssl (optional with earlier versions). Make it much clearer
+      that this is required. Fixes #12248.
+
+    - Refine some of the dependency tests.
+
+    - Earlier debian multiarch detection code would fail if multiple multiarch
+      directories were present. Fixed, thanks to jgrigera for the solution.
+      issue #12188
+
+4.1 - 20110907
+
+    - Fixes for building on Fedora 15, issue #12103. Removed some configure
+      options that only worked with Python 2.4.x. I don't know why they
+      only caused problems with Fedora 15.
+
+4.1 - 20110830
+
+    - Add --clients=# option to specify # of zeo clients created.
+
+    - Add --with-site-packages option to use virtualenv without the
+      extra isolation.
+
+    - Provide more options to control lxml install.
+
+4.1 - 20110726
+
+    - Adapt to work with OS X 10.7. This mainly involved updating readline
+      and libjpeg to most-current versions.
+
+4.1
+
+    - Update to 4.1
+
+4.1rc3 + Zope-Hotfix-20110622
+
+    - Add Zope-Hotfix-20110622
+    
+    - Update to Python 2.6.7, VirtualEnv 1.6.1
+    
+    - Fixes to lxml build for root installs. Separate lxml build.
+
+4.1rc3
+
+    - Add lxml with static xml2 and xslt.
+
+    - Add patch for Natty's multiarch. Fixes problem with inability to build
+      Python zlib support when libraries are in /usr/lib/x86_64-linux-gnu.
+    
+    - Switched from PIL to Pillow>=1.7.1, as it has support for the nutty
+      natty multiarch paths.
+
+4.1rc2

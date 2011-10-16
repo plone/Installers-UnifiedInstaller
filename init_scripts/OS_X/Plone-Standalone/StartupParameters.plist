@@ -1,0 +1,5 @@
+{
+  Description     = "Plone Server";
+  Provides        = ("Plone");
+  Uses            = ("Disks", "NFS");
+}

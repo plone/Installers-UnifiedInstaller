@@ -1,0 +1,28 @@
+#!/bin/sh
+
+##
+# Plone Server -- Cluster Configuration
+##
+
+. /etc/rc.common
+
+StartService ()
+{
+    echo "Starting Plone"
+	/Applications/Plone/zeocluster/bin/plonectl start
+}
+
+StopService ()
+{
+	echo "Stopping Plone"
+	/Applications/Plone/zeocluster/bin/plonectl stop
+}
+
+RestartService ()
+{
+    echo "Restarting Plone"
+	/Applications/Plone/zeocluster/bin/plonectl stop
+	/Applications/Plone/zeocluster/bin/plonectl start
+}
+
+RunService "$1"

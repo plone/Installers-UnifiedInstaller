@@ -1,0 +1,77 @@
+#!/bin/sh
+# /etc/init.d/plone-standalone
+# Startup script for Zope with ZEOstandalone
+#
+# This script works on Red Hat / Fedora Core style Linuxes
+#
+# chkconfig: 345 80 20
+# description: Zope, a web application server
+# this works as is for a default universal plone linux install
+#
+# Typical installation:
+# sudo cp plone-standalone /etc/rc.d/init.d/plone
+# sudo chmod 755 /etc/rc.d/init.d/plone
+# sudo /sbin/chkconfig --add plone
+#
+# Typical removal:
+# sudo /sbin/chkconfig --del plone
+#
+# config: /usr/local/plone/zinstance/buildout.cfg
+
+# Source function library.
+if [ -f /etc/init.d/functions ] ; then
+        . /etc/init.d/functions
+elif [ -f /etc/rc.d/init.d/functions ] ; then
+        . /etc/rc.d/init.d/functions
+else
+        exit 0
+fi
+
+RETVAL=0
+
+# this is for the default install path for Plone-3.0-buildout
+standalonepath="/usr/local/Plone/zinstance"
+prog="plone"
+
+start() {
+    echo -n $"Starting $prog: "
+    ${standalonepath}/bin/plonectl start
+    return $?
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    ${standalonepath}/bin/plonectl stop
+    echo $output
+    return $?
+}
+
+restart() {
+   stop
+   start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    echo "Zope Server:"
+    output=`${standalonepath}/bin/zopectl status`
+    echo $output
+    ;;
+  restart)
+    restart
+    ;;
+  condrestart)
+    [ -e /var/lock/subsys/$prog ] && restart
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+    RETVAL=2
+esac
+
+exit $RETVAL

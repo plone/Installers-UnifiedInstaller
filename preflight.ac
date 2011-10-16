@@ -1,0 +1,44 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.64])
+AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
+# AC_CONFIG_SRCDIR([config.h.in])
+# AC_CONFIG_HEADERS([config.h])
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_CXX
+
+AC_CHECK_PROG(have_bunzip2, bunzip2, yes)
+AC_CHECK_PROG(have_tar, tar, yes)
+AC_CHECK_PROG(have_gunzip, gunzip, yes)
+AC_CHECK_PROG(have_make, make, yes)
+
+AC_PATH_PROG(have_xml2_config, xml2-config)
+AC_PATH_PROG(have_xslt_config, xslt-config)
+
+# checks for libraries and headers
+
+AC_CHECK_HEADER([openssl/ssl.h], AC_SUBST(have_ssl_h, yes), AC_SUBST(have_ssl_h, no))
+
+AC_SUBST(have_readline, no)
+AC_CHECK_LIB(readline, main, AC_CHECK_HEADER([readline/readline.h], AC_SUBST(have_readline, yes)))
+
+AC_SUBST(have_libz, no)
+AC_CHECK_LIB(z, gzread, AC_CHECK_HEADER([zlib.h], AC_SUBST(have_libz, yes)))
+
+AC_SUBST(have_libjpeg, no)
+AC_CHECK_LIB(jpeg, jpeg_read_header, AC_CHECK_HEADER([jpeglib.h], AC_SUBST(have_libjpeg, yes)))
+
+AC_SUBST(have_ssl, no)
+AC_CHECK_LIB(ssl, SSL_accept, 
+    AC_CHECK_HEADER([ssl.h], AC_SUBST(have_ssl, yes))
+    AC_CHECK_HEADER([openssl/ssl.h], AC_SUBST(have_ssl, yes))
+)
+
+
+
+AC_CONFIG_FILES([buildenv.sh])
+AC_OUTPUT

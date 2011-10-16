@@ -1,0 +1,28 @@
+#!/bin/sh
+
+##
+# Plone Server -- Standalone Configuration
+##
+
+. /etc/rc.common
+
+StartService ()
+{
+        echo "Starting Plone"
+	/Applications/Plone/zinstance/bin/plonectl start
+}
+
+StopService ()
+{
+	echo "Stopping Plone"
+	/Applications/Plone/zinstance/bin/plonectl stop
+}
+
+RestartService ()
+{
+    echo "Restarting Plone"
+	/Applications/Plone/zinstance/bin/plonectl stop
+	/Applications/Plone/zinstance/bin/plonectl start
+}
+
+RunService "$1"
