@@ -1,5 +1,13 @@
 Unreleased
 
+    - Add packages/ patch files (but not binaries) to git repo to make sure 
+      they're tracked.
+
+    - If sslv2 is not available, apply patch to remove the requirement from 
+      the Python build. Fixes problems with python ssl support build on
+      platforms like Ubuntu 11.10 where sslv2 is disabled.
+      Thanks to oggers for researching this.
+
     - Don't install OSX controller on Lion (no wx).
 
 4.1.2

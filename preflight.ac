@@ -38,7 +38,7 @@ AC_CHECK_LIB(ssl, SSL_accept,
     AC_CHECK_HEADER([openssl/ssl.h], AC_SUBST(have_ssl, yes))
 )
 
-
+AC_CHECK_LIB(ssl, ssl2_accept, AC_SUBST(have_ssl2, yes), AC_SUBST(have_ssl2, no))
 
 AC_CONFIG_FILES([buildenv.sh])
 AC_OUTPUT

@@ -35,7 +35,7 @@ readline library:
 zlib library:
     See zlib.txt
 
-Python
+Python and Python patches
     Python Software Foundation License, Version 2
 
 Zope

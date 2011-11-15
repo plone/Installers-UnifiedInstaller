@@ -21,6 +21,7 @@ rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/update_packages.py
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/to-do.txt
 cp -r packages $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/packages
 
+mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"

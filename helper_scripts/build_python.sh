@@ -29,6 +29,16 @@ if [ $? -gt 0 ]; then
 	exit 1
 fi
 
+if [ "$HAVE_SSL2" != "yes" ]; then
+    echo "Patching for disabled ssl2"
+    patch -p0 < ../issue12012-sslv2.txt >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ]; then
+    	echo "Failed to patch for disabled ssl2."
+    	seelog
+    	exit 1
+    fi
+fi
+
 # Look for Darwin
 if [ `uname` = 'Darwin' ]; then
 	# if /opt/local is available, make sure it's included in the component
