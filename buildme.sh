@@ -14,12 +14,14 @@ cd $WORK_DIR
 rm -r Plone-${NEWVER}-UnifiedInstaller Plone-${NEWVER}-UnifiedInstaller.tgz
 
 cd $SDIR
-svn export . $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
+cp -R ${SDIR}/ $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/
+rm -rf $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/.git
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/.gitignore
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/buildme.sh
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/*.ac
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/update_packages.py
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/to-do.txt
-cp -r packages $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/packages
+rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/Plone-docs
 
 mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
