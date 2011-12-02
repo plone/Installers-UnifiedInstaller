@@ -1,5 +1,5 @@
 ==============================
-Plone 4.1.2: Unified Installer
+Plone 4.1.3: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,7 +7,7 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.1.2, Zope 2.12.14, and Python 2.6.7.
+This version includes Plone 4.1.3, Zope 2.12.14, and Python 2.6.7.
 
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
 

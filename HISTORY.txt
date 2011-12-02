@@ -1,4 +1,10 @@
-Unreleased
+4.1.3 - 2011-12-01
+
+    - Update to 4.1.3.
+    
+    - Allow easy specification of environment variables.
+    
+    - Move the version-specific dist specification to the editable section.
 
     - Add packages/ patch files (but not binaries) to git repo to make sure 
       they're tracked.
