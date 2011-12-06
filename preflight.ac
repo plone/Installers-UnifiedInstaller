@@ -15,6 +15,7 @@ AC_CHECK_PROG(have_bunzip2, bunzip2, yes)
 AC_CHECK_PROG(have_tar, tar, yes)
 AC_CHECK_PROG(have_gunzip, gunzip, yes)
 AC_CHECK_PROG(have_make, make, yes)
+AC_CHECK_PROG(have_patch, patch, yes)
 
 AC_PATH_PROG(have_xml2_config, xml2-config)
 AC_PATH_PROG(have_xslt_config, xslt-config)

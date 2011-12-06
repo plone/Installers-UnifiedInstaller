@@ -84,17 +84,6 @@ ZEOCLUSTER_HOME=zeocluster
 # a stand-alone (non-zeo) instance will go here (inside $PLONE_HOME):
 RINSTANCE_HOME=zinstance
 
-
-# build environment setup
-# use configure (renamed preflight) to create a build environment file
-# that will allow us to check for headers and tools the same way
-# that the cmmi process will.
-test -f ./buildenv.sh && rm -f ./buildenv.sh
-sh ./preflight -q
-# suck in the results as shell variables that we can test.
-. ./buildenv.sh
-
-
 INSTALL_LXML=auto
 INSTALL_ZLIB=auto
 INSTALL_JPEG=auto
@@ -390,6 +379,33 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         echo ""
         exit 1
     fi
+
+    # Abort install if no cc
+    which cc > /dev/null
+    if [ $? -gt 0 ]; then
+        echo
+        echo "Error: gcc is required for the install."
+        echo "See README.txt for dependencies."
+        exit 1
+    fi
+
+    # build environment setup
+    # use configure (renamed preflight) to create a build environment file
+    # that will allow us to check for headers and tools the same way
+    # that the cmmi process will.
+    test -f ./buildenv.sh && rm -f ./buildenv.sh
+    sh ./preflight -q
+    if [ $? -gt 0 ] || [ ! -x "buildenv.sh" ]; then
+        echo ""
+        echo "Unable to run preflight check. Basic build tools are missing."
+        echo "You may get more information about what went wrong by running"
+        echo "sh ./preflight"
+        echo "Aborting installation."
+        echo ""
+        exit 1
+    fi
+    # suck in the results as shell variables that we can test.
+    . ./buildenv.sh
 fi
 
 
@@ -548,6 +564,13 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     if [ "$have_tar" != "yes" ] ; then
         echo
         echo "Note: gnu tar is required for the install. Exiting now."
+        exit 1
+    fi
+
+    # Abort install if no patch
+    if [ "$have_patch" != "yes" ] ; then
+        echo
+        echo "Note: gnu patch program is required for the install. Exiting now."
         exit 1
     fi
 fi # not skip tool tests

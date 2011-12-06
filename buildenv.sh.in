@@ -6,6 +6,7 @@ have_bunzip2=@have_bunzip2@
 have_gunzip=@have_gunzip@
 have_tar=@have_tar@
 have_make=@have_make@
+have_patch=@have_patch@
 XML2_CONFIG='@have_xml2_config@'
 XSLT_CONFIG='@have_xslt_config@'
 HAVE_LIBZ=@have_libz@

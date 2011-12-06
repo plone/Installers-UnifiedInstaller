@@ -1,3 +1,10 @@
+4.1.3 - 2011-12-06
+
+    - preflight tool tests were not being skipped when --skip-tool-tests flag
+      was set. This caused the OS X binary installer to fail if gcc was missing.
+      
+    - Check for availability of patch program. Fixes #12408.
+
 4.1.3 - 2011-12-01
 
     - Update to 4.1.3.
