@@ -395,7 +395,7 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # that the cmmi process will.
     test -f ./buildenv.sh && rm -f ./buildenv.sh
     sh ./preflight -q
-    if [ $? -gt 0 ] || [ ! -x "buildenv.sh" ]; then
+    if [ $? -gt 0 ] || [ ! -f "buildenv.sh" ]; then
         echo ""
         echo "Unable to run preflight check. Basic build tools are missing."
         echo "You may get more information about what went wrong by running"
@@ -573,21 +573,34 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         echo "Note: gnu patch program is required for the install. Exiting now."
         exit 1
     fi
+
+    # Abort install if no gunzip
+    if [ "$have_gunzip" != "yes" ] ; then
+        echo
+        echo "Note: gunzip is required for the install. Exiting now."
+        exit 1
+    fi
+
+    # Abort install if no bunzip2
+    if [ "$have_bunzip2" != "yes" ] ; then
+        echo
+        echo "Note: bunzip2 is required for the install. Exiting now."
+        exit 1
+    fi
+
+    if [ "$HAVE_LIBSSL" != "yes" ] ; then
+        echo
+        echo "Unable to find libssl or openssl/ssl.h."
+        echo "libssl and its development headers are required for Plone."
+        echo "If you're sure you have these installed, and are still getting"
+        echo "this warning, you may disable the libssl check by adding the"
+        echo "--without-ssl flag to the install command line."
+        echo "Otherwise, install your platform's openssl-dev libraries and headers"
+        echo "and try again."
+        echo
+        exit 1
+    fi
 fi # not skip tool tests
-
-# Abort install if no gunzip
-if [ "$have_gunzip" != "yes" ] ; then
-    echo
-    echo "Note: gunzip is required for the install. Exiting now."
-    exit 1
-fi
-
-# Abort install if no bunzip2
-if [ "$have_bunzip2" != "yes" ] ; then
-    echo
-    echo "Note: bunzip2 is required for the install. Exiting now."
-    exit 1
-fi
 
 
 if [ $INSTALL_ZLIB = "auto" ] ; then
@@ -612,19 +625,6 @@ if [ $INSTALL_READLINE = "auto" ] ; then
     else
         INSTALL_READLINE=yes
     fi
-fi
-
-if [ "$HAVE_LIBSSL" != "yes" ] ; then
-    echo
-    echo "Unable to find libssl or openssl/ssl.h."
-    echo "libssl and its development headers are required for Plone."
-    echo "If you're sure you have these installed, and are still getting"
-    echo "this warning, you may disable the libssl check by adding the"
-    echo "--without-ssl flag to the install command line."
-    echo "Otherwise, install your platform's openssl-dev libraries and headers"
-    echo "and try again."
-    echo
-    exit 1
 fi
 
 
