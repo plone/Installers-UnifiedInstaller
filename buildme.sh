@@ -6,7 +6,7 @@
 
 WORK_DIR=~/nobackup/work
 
-NEWVER=4.1.3
+NEWVER=4.2b1
 
 SDIR=`pwd`
 
