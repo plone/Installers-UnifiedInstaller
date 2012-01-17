@@ -1,3 +1,6 @@
+4.2.x - unreleased
+    - if --with-python is used, there is no need to check for ssl libraries.
+
 4.2b1 - unreleased
 
     - Adapt to 4.2b1. 4.1 is now a maintenance branch, 4.2 the master.
