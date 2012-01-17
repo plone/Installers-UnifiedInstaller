@@ -588,7 +588,7 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         exit 1
     fi
 
-    if [ "$HAVE_LIBSSL" != "yes" ] ; then
+    if [ "$HAVE_LIBSSL" != "yes" ] && [ "x$WITH_PYTHON" = "x" ]; then
         echo
         echo "Unable to find libssl or openssl/ssl.h."
         echo "libssl and its development headers are required for Plone."

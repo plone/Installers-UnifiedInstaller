@@ -217,7 +217,7 @@ Recommended
 * zlib (GZ compression)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
-     zlib-dev
+     zlibg-dev
 * libjpeg (jpeg support)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
@@ -234,6 +234,11 @@ Recommended
      poppler-utils
      <http://poppler.freedesktop.org/>
      May be installed after Plone install.
+* libxml2, libxslt
+    If these are up-to-date, the installer will use them rather than building
+    static libraries of its own.
+    libxml2-dev
+    libxslt1-dev
 
 
 Install Location, Root Install
