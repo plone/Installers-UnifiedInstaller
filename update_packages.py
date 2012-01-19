@@ -143,7 +143,7 @@ if os.path.exists(desttar):
     os.unlink(desttar)
 
 #print "generate new archive"
-doCommand("gnutar --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (desttar))
+doCommand("tar --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (desttar))
 
 # cleanup
 shutil.rmtree(workDir)
