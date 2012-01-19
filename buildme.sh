@@ -15,8 +15,17 @@ fi
 if [ -n "`which wget`" ]; then
   WGET='wget'
 else
-  echo "Using curl"
+  echo "Using curl, because wget was not found"
   WGET='curl -O'
+fi
+
+# gnutar or tar?
+if [ -n "`which gnutar`" ]; then
+  TAR='gnutar'
+else
+  echo "Using tar, because gnutar was not found"
+  echo "Warning: Using tar rather than gnutar may have unintended consequences."
+  TAR='tar'
 fi
 
 NEWVER=4.2b1
@@ -41,7 +50,7 @@ cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
 $WGET http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
-tar xf Plone-${NEWVER}.tar.gz
+$TAR xf Plone-${NEWVER}.tar.gz
 rm Plone-${NEWVER}.tar.gz
 mv Plone-${NEWVER}/docs Plone-docs
 rm -r Plone-${NEWVER}
@@ -54,7 +63,7 @@ find . -type d -exec chmod 755 {} \;
 
 
 cd $WORK_DIR
-gnutar --owner 0 --group 0 -zcf Plone-${NEWVER}-UnifiedInstaller.tgz Plone-${NEWVER}-UnifiedInstaller
+$TAR --owner 0 --group 0 -zcf Plone-${NEWVER}-UnifiedInstaller.tgz Plone-${NEWVER}-UnifiedInstaller
 rm -r Plone-${NEWVER}-UnifiedInstaller
-tar zxf Plone-${NEWVER}-UnifiedInstaller.tgz
+$TAR zxf Plone-${NEWVER}-UnifiedInstaller.tgz
 cd Plone-${NEWVER}-UnifiedInstaller
