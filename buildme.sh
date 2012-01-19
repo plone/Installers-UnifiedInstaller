@@ -1,10 +1,23 @@
 #!/bin/sh
 
-# script to build a UI tarball; requires a ~/nobackup/work directory.
+# Script to build a UnifiedInstaller tarball
+# By default the target built against is the ~/nobackup/work directory.
+# You can optionally give the target as the first argument.
 # packages should already be updated; particularly the
 # build-cache tarball.
 
 WORK_DIR=~/nobackup/work
+if [ -n "$1" ]; then
+  WORK_DIR=$1
+fi
+
+# wget or curl?
+if [ -n "`which wget`" ]; then
+  WGET='wget'
+else
+  echo "Using curl"
+  WGET='curl -O'
+fi
 
 NEWVER=4.2b1
 
@@ -27,7 +40,7 @@ mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
-wget http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
+$WGET http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
 tar xf Plone-${NEWVER}.tar.gz
 rm Plone-${NEWVER}.tar.gz
 mv Plone-${NEWVER}/docs Plone-docs
