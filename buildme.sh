@@ -1,10 +1,32 @@
 #!/bin/sh
 
-# script to build a UI tarball; requires a ~/nobackup/work directory.
+# Script to build a UnifiedInstaller tarball
+# By default the target built against is the ~/nobackup/work directory.
+# You can optionally give the target as the first argument.
 # packages should already be updated; particularly the
 # build-cache tarball.
 
 WORK_DIR=~/nobackup/work
+if [ -n "$1" ]; then
+  WORK_DIR=$1
+fi
+
+# wget or curl?
+if [ -n "`which wget`" ]; then
+  WGET='wget'
+else
+  echo "Using curl, because wget was not found"
+  WGET='curl -O'
+fi
+
+# gnutar or tar?
+if [ -n "`which gnutar`" ]; then
+  TAR='gnutar'
+else
+  echo "Using tar, because gnutar was not found"
+  echo "Warning: Using tar rather than gnutar may have unintended consequences."
+  TAR='tar'
+fi
 
 NEWVER=4.2b1
 
@@ -27,8 +49,8 @@ mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
-wget http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
-tar xf Plone-${NEWVER}.tar.gz
+$WGET http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
+$TAR xf Plone-${NEWVER}.tar.gz
 rm Plone-${NEWVER}.tar.gz
 mv Plone-${NEWVER}/docs Plone-docs
 rm -r Plone-${NEWVER}
@@ -41,7 +63,7 @@ find . -type d -exec chmod 755 {} \;
 
 
 cd $WORK_DIR
-gnutar --owner 0 --group 0 -zcf Plone-${NEWVER}-UnifiedInstaller.tgz Plone-${NEWVER}-UnifiedInstaller
+$TAR --owner 0 --group 0 -zcf Plone-${NEWVER}-UnifiedInstaller.tgz Plone-${NEWVER}-UnifiedInstaller
 rm -r Plone-${NEWVER}-UnifiedInstaller
-tar zxf Plone-${NEWVER}-UnifiedInstaller.tgz
+$TAR zxf Plone-${NEWVER}-UnifiedInstaller.tgz
 cd Plone-${NEWVER}-UnifiedInstaller
