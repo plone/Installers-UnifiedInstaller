@@ -142,8 +142,26 @@ if os.path.exists(desttar):
     print "remove existing buildout cache archive"
     os.unlink(desttar)
 
-#print "generate new archive"
-doCommand("tar --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (desttar))
+# GNU tar is required for this task...
+# BSD tar does not have the same set of options that we require.
+# Does the system have 'tar' set or symlinked to gnutar?
+p = subprocess.Popen(['tar', '--version'], stdout=subprocess.PIPE)
+stdout = p.communicate()[0]
+has_gnutar = False
+if stdout.find('GNU') >= 0:
+    has_gnutar = True
+    tar_command = 'tar'
+else:
+    # Check for the existance of the 'gnutar' command.
+    rcode = subprocess.call(['which', 'gnutar'])
+    if rcode == 0:
+        has_gnutar = True
+        tar_command = 'gnutar'
+if not has_gnutar:
+    raise RuntimeError("GNU tar is required to complete this packaging.")
 
+#print "generate new archive"
+doCommand("%s --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (tar_command, desttar))
+    
 # cleanup
 shutil.rmtree(workDir)
