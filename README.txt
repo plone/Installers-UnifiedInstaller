@@ -1,5 +1,5 @@
 ==============================
-Plone 4.1.3: Unified Installer
+Plone 4.1.4: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,7 +7,7 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.1.3, Zope 2.12.14, and Python 2.6.7.
+This version includes Plone 4.1.4, Zope 2.12.14, and Python 2.6.7.
 
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
 
@@ -217,7 +217,7 @@ Recommended
 * zlib (GZ compression)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
-     zlibg-dev
+     zlib-dev
 * libjpeg (jpeg support)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
@@ -234,11 +234,6 @@ Recommended
      poppler-utils
      <http://poppler.freedesktop.org/>
      May be installed after Plone install.
-* libxml2, libxslt
-    If these are up-to-date, the installer will use them rather than building
-    static libraries of its own.
-    libxml2-dev
-    libxslt1-dev
 
 
 Install Location, Root Install

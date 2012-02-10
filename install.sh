@@ -588,7 +588,7 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         exit 1
     fi
 
-    if [ "$HAVE_LIBSSL" != "yes" ] && [ "x$WITH_PYTHON" = "x" ]; then
+    if [ "$HAVE_LIBSSL" != "yes" ] ; then
         echo
         echo "Unable to find libssl or openssl/ssl.h."
         echo "libssl and its development headers are required for Plone."
@@ -636,7 +636,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.1.3 at $PLONE_HOME"
+echo "Installing Plone 4.1.4 at $PLONE_HOME"
 echo ""
 
 
