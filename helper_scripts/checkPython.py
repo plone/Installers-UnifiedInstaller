@@ -1,7 +1,6 @@
 # Test the invoking Python to see if it's a good candidate
 # for running Zope 2.12.x / Plone 4.0.x.
 #
-# $LastChangedDate: 2011-10-01 13:45:45 -0700 (Sat, 01 Oct 2011) $ $LastChangedRevision: 52404 $
 
 import sys, os.path
 

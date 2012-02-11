@@ -17,7 +17,6 @@
 # It creates a random cleartext password that can be fed into
 # mkzopeinstance.py in Zope 2.7
 #
-# $LastChangedDate: 2008-08-03 10:21:34 -0700 (Sun, 03 Aug 2008) $ $LastChangedRevision: 21978 $
 
 
 import random

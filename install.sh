@@ -4,7 +4,6 @@
 # Created by Kamal Gill (kamalgill at mac.com)
 # Adapted for Plone 3+ and buildout by Steve McMahon (steve at dcn.org)
 #
-# $LastChangedDate: 2011-10-10 15:57:37 -0700 (Mon, 10 Oct 2011) $ $LastChangedRevision: 52415 $
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
@@ -636,7 +635,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.2b1 at $PLONE_HOME"
+echo "Installing Plone 4.2b2 at $PLONE_HOME"
 echo ""
 
 
