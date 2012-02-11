@@ -2,7 +2,6 @@
 # Add user account via platform-specific methods
 # if necessary.
 #
-# $LastChangedDate: 2010-09-16 12:54:42 -0700 (Thu, 16 Sep 2010) $ $LastChangedRevision: 39955 $
 
 createUser () {
 

@@ -1,7 +1,6 @@
 =======================
 Unified Installer Tests
 =======================
-$LastChangedDate: 2011-10-10 15:57:37 -0700 (Mon, 10 Oct 2011) $ $LastChangedRevision: 52415 $
 
 -----------
 Setup stuff
@@ -13,7 +12,7 @@ Setup stuff
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/Users/steve/nobackup/plonetest'
+    >>> testTarget = '/home/steve/plonetest'
     >>> withPython = '/opt/local/bin/python'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)

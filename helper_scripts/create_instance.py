@@ -5,7 +5,6 @@
 # This script is meant to be invoked by another process
 # that will choose the exec Python.
 #
-# $LastChangedDate: 2011-10-13 15:45:31 -0700 (Thu, 13 Oct 2011) $ $LastChangedRevision: 52420 $
 
 import sys
 import os

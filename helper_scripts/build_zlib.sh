@@ -4,7 +4,6 @@
 # is going to try to build a shared library for it's own use.
 # The "-fPIC" flag is thus required for some platforms.
 #
-# $LastChangedDate: 2010-09-16 12:54:42 -0700 (Thu, 16 Sep 2010) $ $LastChangedRevision: 39955 $
 
 
 if [ "X$INSTALL_ZLIB" = "Xyes" ] && [ ! -f "$LOCAL_HOME/lib/libz.a" ]

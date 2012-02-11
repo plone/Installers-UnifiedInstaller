@@ -2,7 +2,6 @@
 # Build Python (with readline and zlib support)
 # note: Install readline and zlib before running this script
 #
-# $LastChangedDate: 2011-09-12 11:20:44 -0700 (Mon, 12 Sep 2011) $ $LastChangedRevision: 52004 $
 
 echo "Installing Python 2.6.7. This takes a while..."
 cd "$PKG"
