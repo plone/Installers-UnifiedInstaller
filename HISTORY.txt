@@ -1,4 +1,7 @@
 4.2.x - unreleased
+
+    - More general fix for debian multiarch. Fixes #12188.
+
     - if --with-python is used, there is no need to check for ssl libraries.
 
 4.2b1 - unreleased
