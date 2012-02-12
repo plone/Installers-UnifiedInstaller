@@ -2,18 +2,19 @@
 # for running Zope 2.12.x / Plone 4.2.x.
 #
 
-import sys, os.path
+import sys
+import os.path
 
 passed = True
 
 # check version
 vi = sys.version_info[:3]
-if vi < (2, 6, 0) or vi >= (2, 7, 0) :
+if vi < (2, 6, 0) or vi >= (2, 7, 0):
     print "Failed: Python version must be 2.6+."
     # not much point in further testing.
     sys.exit(1)
 
-if not os.path.isfile( os.path.join(sys.prefix, 'include', 'python2.6', 'Python.h') ):
+if not os.path.isfile(os.path.join(sys.prefix, 'include', 'python2.6', 'Python.h')):
     print "Failed: We need to be able to use Python.h, which is missing."
     print "You may be able to resolve this by installing the python-dev package."
     passed = False
