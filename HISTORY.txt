@@ -1,3 +1,7 @@
+4.1.4 - pending
+
+    - More general fix for debian multiarch. Fixes #12188.
+
 4.1.3 - 2011-12-06
 
     - preflight tool tests were not being skipped when --skip-tool-tests flag

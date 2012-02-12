@@ -9,8 +9,9 @@ untar "$PYTHON_TB"
 chmod -R 755 "$PYTHON_DIR"
 cd "$PYTHON_DIR"
 
-# Look for Debian/Ubuntu Multiarch
-if [ -d /usr/lib/`uname -m`-linux-gnu ]; then
+# Look for Debian/Ubuntu Multiarch libraries
+ls -d /usr/lib/*-linux-gnu  > /dev/null 2>&1
+if [ $? -eq 0 ]; then
     echo "Patching for Debian/Ubuntu Multiarch"
     patch < ../multiarch-patch.txt >> "$INSTALL_LOG" 2>&1
     if [ $? -gt 0 ]; then
