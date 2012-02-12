@@ -1,5 +1,5 @@
 # Test the invoking Python to see if it's a good candidate
-# for running Zope 2.12.x / Plone 4.0.x.
+# for running Zope 2.12.x / Plone 4.2.x.
 #
 
 import sys, os.path
