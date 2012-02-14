@@ -23,13 +23,18 @@ Strategy:
   * bundle it all up.
 
 Created by Steve McMahon on 2008-11-06.
-Copyright (c) 2008-11, Plone Foundation. Licensed under GPL v 2.
+Copyright (c) 2008-12, Plone Foundation. Licensed under GPL v 2.
 """
 
-import os.path, re, pkg_resources, shutil, subprocess, sys
+import os.path
+import re
+import pkg_resources
+import shutil
+import subprocess
+import sys
 
 
-BINARY_SIG_RE = re.compile(r'-py2.[4-6]-.+(?=.egg)')
+BINARY_SIG_RE = re.compile(r'-py2.[7]-.+(?=.egg)')
 PY_SIG = '-.py2.6'
 
 if len(sys.argv) != 2:
@@ -69,7 +74,7 @@ class PackageList:
             eggv = self.packages[eggk]
             if len(eggv) > 1:
                 eggv.sort()
-                for i in range(0, len(eggv)-1):
+                for i in range(0, len(eggv) - 1):
                     yield eggv[i][1]
 
     def cleanOlder(self):
@@ -162,6 +167,6 @@ if not has_gnutar:
 
 #print "generate new archive"
 doCommand("%s --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (tar_command, desttar))
-    
+
 # cleanup
 shutil.rmtree(workDir)

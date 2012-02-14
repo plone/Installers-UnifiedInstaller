@@ -71,7 +71,7 @@ Test a ZEO install
 
     target should have basic kit
     >>> sorted(os.listdir(testTarget))
-    ['Plone-docs', 'Python-2.6', 'buildout-cache', 'zeocluster']
+    ['Plone-docs', 'Python-2.7', 'buildout-cache', 'zeocluster']
 
     There should now be a buildout skeleton in zeocluster
     >>> sorted(os.listdir('%s/zeocluster' % testTarget))
@@ -245,7 +245,7 @@ Test a standalone install
 
     target should have basic kit
     >>> sorted(os.listdir(testTarget))
-    ['Plone-docs', 'Python-2.6', 'buildout-cache', 'zeocluster', 'zinstance']
+    ['Plone-docs', 'Python-2.7', 'buildout-cache', 'zeocluster', 'zinstance']
 
     There should now be a buildout skeleton in zinstance
     >>> [item for item in sorted(os.listdir('%s/zinstance' % testTarget)) if item != 'PloneController.app']
@@ -353,10 +353,10 @@ Test a --withpython install
 
     target should have basic kit
     >>> sorted(os.listdir(ntestTarget))
-    ['Plone-docs', 'Python-2.6', 'buildout-cache', 'zeocluster']
+    ['Plone-docs', 'Python-2.7', 'buildout-cache', 'zeocluster']
 
     and, the python directory should look like we have a successful virtualenv install
-    >>> sd = sorted(os.listdir('%s/Python-2.6/bin' % ntestTarget))
+    >>> sd = sorted(os.listdir('%s/Python-2.7/bin' % ntestTarget))
 
     >>> 'python' in sd
     True

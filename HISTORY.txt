@@ -1,6 +1,6 @@
 4.2.x - unreleased
 
-    - More general fix for debian multiarch. Fixes #12188.
+    - Adapt to use Python 2.7.x.
 
     - if --with-python is used, there is no need to check for ssl libraries.
 

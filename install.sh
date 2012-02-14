@@ -37,7 +37,7 @@
 #   In a server-mode install, sets the effective user for running the
 #   instance. Default is 'plone'. Ignored for non-server-mode installs.
 # 
-# --with-python=/fullpathtopython2.6
+# --with-python=/fullpathtopython2.7.x
 #   If you have an already built Python that's adequate to run
 #   Zope / Plone, you may specify it here.
 #   virtualenv will be used to isolate the copy used for the install.
@@ -106,8 +106,8 @@ ONLINE_PACKAGES_DIR=opackages
 
 HSCRIPTS_DIR=helper_scripts
 
-PYTHON_TB=Python-2.6.7.tar.bz2
-PYTHON_DIR=Python-2.6.7
+PYTHON_TB=Python-2.7.2.tar.bz2
+PYTHON_DIR=Python-2.7.2
 DISTRIBUTE_TB=distribute-0.6.19.tar.gz
 DISTRIBUTE_DIR=distribute-0.6.19
 JPEG_TB=jpegsrc.v8c.tar.bz2
@@ -472,7 +472,7 @@ if [ ! -d "$PACKAGES_DIR" ]; then
 fi
 
 
-if [ -x "$PLONE_HOME/Python-2.6/bin/python" ] ; then
+if [ -x "$PLONE_HOME/Python-2.7/bin/python" ] ; then
     HAVE_PYTHON=yes
     if [ "x$WITH_PYTHON" != "x" ]; then
         echo "We already have a Python environment for this target; ignoring --with-python."
@@ -704,7 +704,7 @@ fi
 if [ "x$WITH_PYTHON" != "x" ] # try to use specified python
 then
     PYBNAME=`basename "$WITH_PYTHON"`
-    PY_HOME=$PLONE_HOME/Python-2.6
+    PY_HOME=$PLONE_HOME/Python-2.7
     cd "$PKG"
     untar $VIRTUALENV_TB
     cd $VIRTUALENV_DIR
@@ -737,7 +737,7 @@ then
         exit 1
     fi
 else # use already-placed python or build one
-    PY_HOME=$PLONE_HOME/Python-2.6
+    PY_HOME=$PLONE_HOME/Python-2.7
     PY=$PY_HOME/bin/python
     if [ -x "$PY" ]; then
         # no point in installing zlib -- too late!

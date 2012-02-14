@@ -9,12 +9,12 @@ passed = True
 
 # check version
 vi = sys.version_info[:3]
-if vi < (2, 6, 0) or vi >= (2, 7, 0):
-    print "Failed: Python version must be 2.6+."
+if vi < (2, 7, 0) or vi >= (2, 8, 0):
+    print "Failed: Python version must be 2.7.x."
     # not much point in further testing.
     sys.exit(1)
 
-if not os.path.isfile(os.path.join(sys.prefix, 'include', 'python2.6', 'Python.h')):
+if not os.path.isfile(os.path.join(sys.prefix, 'include', 'python2.7', 'Python.h')):
     print "Failed: We need to be able to use Python.h, which is missing."
     print "You may be able to resolve this by installing the python-dev package."
     passed = False

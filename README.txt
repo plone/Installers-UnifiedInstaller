@@ -245,7 +245,7 @@ Install Location, Root Install
 - Base install at /usr/local/Plone by default. This may be changed
   with the --target installation option. If you change it, you'll also need
   to change the paths below.
-- Python installed at /usr/local/Plone/Python-2.6
+- Python installed at /usr/local/Plone/Python-2.7
 - For ZEO Cluster
 	- ZEO cluster (server and 2 clients) installed and configured at /usr/local/Plone/zeocluster
 	  Both --target and --name options may change this.
@@ -267,7 +267,7 @@ Install Location, Root-less Install
 - Base install at $HOME/Plone, where $HOME is the user's home
   directory, by default. This may be changed with the --target installation
   option. If you change it, you'll also need to change the paths below.
-- Python installed at $HOME/Plone/Python-2.6
+- Python installed at $HOME/Plone/Python-2.7
 - For ZEO Cluster
 	- ZEO cluster (server and 2 clients) installed and configured at $HOME/Plone/zeocluster
 	  Both --target and --name options may change this.
@@ -500,7 +500,7 @@ then telling the Unified Installer to use the preinstalled Python.
 Test builds on OpenBSD 4.2 succeeded with the following packages pre-installed:
 
 bzip2-1.0.4          block-sorting file compressor, unencumbered
-python-2.6.7         interpreted object-oriented programming language
+python-2.7.2         interpreted object-oriented programming language
 python-expat-2.6.7   expat module for Python
 
 If you are unable to install python-expat-2.6.7, you may need to install the
@@ -529,8 +529,8 @@ Live backup is possible. See http://plone.org/documentation/how-to/backup-plone
 Coexistence with System Python
 ==============================
 The Python installed by the Unified Installer should *not* interfere with
-any other Python on your system.  The Installer bundles Python 2.6.7,
-placing it at /usr/local/Plone/Python-2.6 or $HOME/Plone/Python-2.6.
+any other Python on your system.  The Installer bundles Python 2.7.2,
+placing it at /usr/local/Plone/Python-2.7 or $HOME/Plone/Python-2.7.
 
 
 Developer Options
