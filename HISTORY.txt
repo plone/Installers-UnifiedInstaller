@@ -1,4 +1,4 @@
-4.1.4 - pending
+4.1.4 - 2012-02-15
 
     - More general fix for debian multiarch. Fixes #12188.
 
