@@ -6,7 +6,7 @@
 
 WORK_DIR=~/nobackup/work
 
-NEWVER=4.1.4
+NEWVER=4.1.5
 
 SDIR=`pwd`
 
@@ -27,9 +27,9 @@ mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
-wget http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
-tar xf Plone-${NEWVER}.tar.gz
-rm Plone-${NEWVER}.tar.gz
+wget http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.zip
+unzip Plone-${NEWVER}.zip
+rm Plone-${NEWVER}.zip
 mv Plone-${NEWVER}/docs Plone-docs
 rm -r Plone-${NEWVER}
 

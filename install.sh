@@ -105,8 +105,8 @@ ONLINE_PACKAGES_DIR=opackages
 
 HSCRIPTS_DIR=helper_scripts
 
-PYTHON_TB=Python-2.6.7.tar.bz2
-PYTHON_DIR=Python-2.6.7
+PYTHON_TB=Python-2.6.8.tar.bz2
+PYTHON_DIR=Python-2.6.8
 DISTRIBUTE_TB=distribute-0.6.19.tar.gz
 DISTRIBUTE_DIR=distribute-0.6.19
 JPEG_TB=jpegsrc.v8c.tar.bz2
@@ -634,7 +634,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.1.4 at $PLONE_HOME"
+echo "Installing Plone 4.1.5 at $PLONE_HOME"
 echo ""
 
 

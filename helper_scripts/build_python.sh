@@ -3,7 +3,7 @@
 # note: Install readline and zlib before running this script
 #
 
-echo "Installing Python 2.6.7. This takes a while..."
+echo "Installing Python 2.6.8. This takes a while..."
 cd "$PKG"
 untar "$PYTHON_TB"
 chmod -R 755 "$PYTHON_DIR"
@@ -73,7 +73,7 @@ then
 fi
 if [ ! -x "$PY_HOME/bin/python" ]
 then
-	echo "Install of Python 2.6.7 has failed."
+	echo "Install of Python 2.6.8 has failed."
 	seelog
     exit 1
 fi

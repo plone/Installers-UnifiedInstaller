@@ -1,3 +1,12 @@
+4.1.5 - 2012-04-26
+
+  - Update to 4.1.5.
+
+  - Update Python to 2.6.8. Specify PYTHONHASHSEED random environment variable.
+
+  - Include an unreleased version of z3c.recipe.staticlxml that applies a patch
+    for CVE-2011-3919. XXX: This should be replaced or removed when unnecessary.
+
 4.1.4 - 2012-02-15
 
     - More general fix for debian multiarch. Fixes #12188.
