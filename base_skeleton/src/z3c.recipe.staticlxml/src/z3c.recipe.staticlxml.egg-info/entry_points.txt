@@ -1,0 +1,3 @@
+[zc.buildout]
+default = z3c.recipe.staticlxml:Recipe
+

@@ -1,4 +1,16 @@
-4.2.x - unreleased
+4.2rc1 - 2012-05-15
+
+    - Adapt to 4.2rc1.
+
+    - Update Python to 2.7.3. Set PYTHONHASHSEED environment variable to "random".
+
+    - Include an unreleased version of z3c.recipe.staticlxml that applies a patch
+      for CVE-2011-3919. XXX: This should be replaced or removed when unnecessary.
+
+4.2b2 - 2012-02-15
+
+    - Stop bundling zlib/libz. This is a required library on nearly every
+      platform.
 
     - Adapt to use Python 2.7.x.
 

@@ -1,5 +1,5 @@
 ==============================
-Plone 4.2b2: Unified Installer
+Plone 4.2rc1: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,7 +7,7 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.2b2, Zope 2.12.14, and Python 2.6.7.
+This version includes Plone 4.2rc1, Zope 2.12.14, and Python 2.6.7.
 
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
 
@@ -500,7 +500,7 @@ then telling the Unified Installer to use the preinstalled Python.
 Test builds on OpenBSD 4.2 succeeded with the following packages pre-installed:
 
 bzip2-1.0.4          block-sorting file compressor, unencumbered
-python-2.7.2         interpreted object-oriented programming language
+python-2.7.3         interpreted object-oriented programming language
 python-expat-2.6.7   expat module for Python
 
 If you are unable to install python-expat-2.6.7, you may need to install the
@@ -529,7 +529,7 @@ Live backup is possible. See http://plone.org/documentation/how-to/backup-plone
 Coexistence with System Python
 ==============================
 The Python installed by the Unified Installer should *not* interfere with
-any other Python on your system.  The Installer bundles Python 2.7.2,
+any other Python on your system.  The Installer bundles Python 2.7.3,
 placing it at /usr/local/Plone/Python-2.7 or $HOME/Plone/Python-2.7.
 
 

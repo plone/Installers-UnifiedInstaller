@@ -13,8 +13,8 @@ Setup stuff
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/Users/steve/nobackup/plonetest'
-    >>> withPython = '/opt/local/bin/python'
+    >>> testTarget = '/home/steve/plonetest'
+    >>> withPython = '/usr/bin/python'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
 
@@ -57,14 +57,14 @@ Running install.sh with no options should result in a usage message:
 Test a ZEO install
 ------------------
 
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libz=yes --libreadline=yes --without-lxml' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libreadline=yes --without-lxml' % testTarget)
     
     >>> returncode and (stdout + stderr)
     0
 
     >>> print stdout
     ZEO Cluster Install selected...
-    Installing Plone 4.2b2 at ...
+    Installing Plone 4.2rc1 at ...
     Plone successfully installed at ...
       Username: admin
       Password: admin...
@@ -199,7 +199,7 @@ Test a ZEO install
 
     Check Banner
     >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
-    Zope/(2.13..., python 2.6.7, darwin) ZServer/1.1
+    Zope/(2.13..., python 2.7...) ZServer/1.1
 
     Stop it
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl stop' % testTarget)
@@ -303,7 +303,7 @@ Test a standalone install
 
     Check Banner
     >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
-    Zope/(2.13..., python 2.6...) ZServer/1.1
+    Zope/(2.13..., python 2.7...) ZServer/1.1
 
     Stop it
     >>> stdout, stderr, returncode = doCommand('%s/zinstance/bin/instance stop' % testTarget)
@@ -331,7 +331,7 @@ Test an --instance=... install
 
     >>> print stdout
     ZEO Cluster Install selected...
-    Installing Plone 4.2b2 at ...
+    Installing Plone 4.2rc1 at ...
     Plone successfully installed at ...
       Username: admin
       Password: admin...
