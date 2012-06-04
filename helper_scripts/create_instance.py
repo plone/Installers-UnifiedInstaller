@@ -254,6 +254,13 @@ if RUN_BUILDOUT == '1':
             print "\nlxml build failed. You may wish to clean up and try again"
             print "without the lxml build by adding --without-lxml to the"
             print "command line."
+        else:
+            # cleanup; if we leave around .installed.cfg, it will give
+            # us a cascade of misleading messages and under some circumstances
+            # fail during the next buildout.
+            os.remove('.installed.cfg')
+            # we also don't need the part remnants
+            shutil.rmtree('parts/lxml')
     else:
         print "Skipping static libxml2/libxslt build."
         returncode = 0

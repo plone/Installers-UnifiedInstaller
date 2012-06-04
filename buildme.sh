@@ -28,7 +28,7 @@ else
   TAR='tar'
 fi
 
-NEWVER=4.2b2
+NEWVER=4.2rc1
 
 SDIR=`pwd`
 
@@ -49,9 +49,9 @@ mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
-$WGET http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.tar.gz
-$TAR xf Plone-${NEWVER}.tar.gz
-rm Plone-${NEWVER}.tar.gz
+$WGET http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.zip
+unzip Plone-${NEWVER}.zip
+rm Plone-${NEWVER}.zip
 mv Plone-${NEWVER}/docs Plone-docs
 rm -r Plone-${NEWVER}
 

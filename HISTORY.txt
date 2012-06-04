@@ -1,4 +1,21 @@
-4.2.x - unreleased
+4.1.5 - 2012-06-04
+
+    - Having the z3c.recipe.staticlxml recipe in src caused a problem when the
+      static lxml build couldn't be cleaned up when the plone buildout ran. Fixed.
+
+4.2rc1 - 2012-05-15
+
+    - Adapt to 4.2rc1.
+
+    - Update Python to 2.7.3. Set PYTHONHASHSEED environment variable to "random".
+
+    - Include an unreleased version of z3c.recipe.staticlxml that applies a patch
+      for CVE-2011-3919. XXX: This should be replaced or removed when unnecessary.
+
+4.2b2 - 2012-02-15
+
+    - Stop bundling zlib/libz. This is a required library on nearly every
+      platform.
 
     - Adapt to use Python 2.7.x.
 
@@ -12,21 +29,21 @@
 
     - preflight tool tests were not being skipped when --skip-tool-tests flag
       was set. This caused the OS X binary installer to fail if gcc was missing.
-      
+
     - Check for availability of patch program. Fixes #12408.
 
 4.1.3 - 2011-12-01
 
     - Update to 4.1.3.
-    
+
     - Allow easy specification of environment variables.
-    
+
     - Move the version-specific dist specification to the editable section.
 
-    - Add packages/ patch files (but not binaries) to git repo to make sure 
+    - Add packages/ patch files (but not binaries) to git repo to make sure
       they're tracked.
 
-    - If sslv2 is not available, apply patch to remove the requirement from 
+    - If sslv2 is not available, apply patch to remove the requirement from
       the Python build. Fixes problems with python ssl support build on
       platforms like Ubuntu 11.10 where sslv2 is disabled.
       Thanks to oggers for researching this.
@@ -76,9 +93,9 @@
 4.1rc3 + Zope-Hotfix-20110622
 
     - Add Zope-Hotfix-20110622
-    
+
     - Update to Python 2.6.7, VirtualEnv 1.6.1
-    
+
     - Fixes to lxml build for root installs. Separate lxml build.
 
 4.1rc3
@@ -87,7 +104,7 @@
 
     - Add patch for Natty's multiarch. Fixes problem with inability to build
       Python zlib support when libraries are in /usr/lib/x86_64-linux-gnu.
-    
+
     - Switched from PIL to Pillow>=1.7.1, as it has support for the nutty
       natty multiarch paths.
 

@@ -13,13 +13,13 @@ Setup stuff
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/Users/steve/nobackup/plonetest'
-    >>> withPython = '/opt/local/bin/python'
+    >>> testTarget = '/Users/steve/nobackup/plonetest/'
+    >>> withPython = '/opt/local/bin/python2.7'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
 
-This test should be run from the directory with install.sh    
-    
+This test should be run from the directory with install.sh
+
     >>> os.chdir(os.path.join(os.getcwd(), '..'))
     >>> os.path.exists('install.sh')
     True
@@ -57,14 +57,14 @@ Running install.sh with no options should result in a usage message:
 Test a ZEO install
 ------------------
 
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libz=yes --libreadline=yes --without-lxml' % testTarget)
-    
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libreadline=yes --without-lxml' % testTarget)
+
     >>> returncode and (stdout + stderr)
     0
 
     >>> print stdout
     ZEO Cluster Install selected...
-    Installing Plone 4.2b2 at ...
+    Installing Plone 4.2rc1 at ...
     Plone successfully installed at ...
       Username: admin
       Password: admin...
@@ -80,7 +80,7 @@ Test a ZEO install
     Parts should look good
     >>> sorted(os.listdir('%s/zeocluster/parts' % testTarget))
     ['README.txt', 'client1', 'client2', 'zeoserver']
-    
+
     parts/README.html should be a warning
     >>> print open('%s/zeocluster/parts/README.txt' % testTarget).read()
     WARNING:...run bin/buildout...
@@ -107,7 +107,7 @@ Test a ZEO install
     ...    zeo_uid = pwd.getpwnam('plone')[2]
     ... else:
     ...    plone_uid = zeo_uid = uid
-    
+
     >>> os.stat('%s/zeocluster/var/filestorage' % testTarget)[stat.ST_UID] == zeo_uid
     True
 
@@ -123,22 +123,22 @@ Test a ZEO install
 
     Check the python
     ----------------
-    
+
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import jpeg_decoder"' % testTarget)
     >>> returncode
     0
     >>> stderr
     ''
-    
+
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import zip_decoder"' % testTarget)
     >>> returncode
     0
     >>> stderr
     ''
-    
+
     Run it
     ------
-    
+
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zeoserver start' % testTarget)
     >>> returncode
     0
@@ -149,7 +149,7 @@ Test a ZEO install
     # ...
     # daemon process started, pid=...
     # <BLANKLINE>
-    
+
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client1 start' % testTarget)
     >>> returncode
     0
@@ -160,7 +160,7 @@ Test a ZEO install
     # ...
     # daemon process started, pid=...
     # <BLANKLINE>
-    
+
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client2 start' % testTarget)
     >>> returncode
     0
@@ -171,16 +171,16 @@ Test a ZEO install
     # ...
     # daemon process started, pid=...
     # <BLANKLINE>
-    
+
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
-    
+
     >>> returncode
     0
 
     >>> stderr
     ''
-    
+
     >>> time.sleep(10)
 
     # >>> print stdout
@@ -188,7 +188,7 @@ Test a ZEO install
     # client1: program running; pid=...
     # client2: program running; pid=...
     # <BLANKLINE>
-    
+
     Fetch root page via client1
     >>> urllib2.urlopen('http://localhost:8080/').read()
     '...Plone is up and running...
@@ -199,11 +199,11 @@ Test a ZEO install
 
     Check Banner
     >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
-    Zope/(2.13..., python 2.6.7, darwin) ZServer/1.1
+    Zope/(2.13..., python 2.7...) ZServer/1.1
 
     Stop it
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl stop' % testTarget)
-    
+
     >>> returncode
     0
 
@@ -253,8 +253,8 @@ Test a standalone install
 
     Parts should look good
     >>> sorted(os.listdir('%s/zinstance/parts' % testTarget))
-    ['README.txt', 'instance', 'lxml']
-    
+    ['README.txt', 'instance', ]
+
     parts/README.html should be a warning
     >>> print open('%s/zeocluster/parts/README.txt' % testTarget).read()
     WARNING:...run bin/buildout...
@@ -277,12 +277,12 @@ Test a standalone install
     # ...
     # daemon process started, pid=...
     # <BLANKLINE>
-    
+
     >>> time.sleep(10)
 
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zinstance/bin/instance status' % testTarget)
-    
+
     >>> returncode
     0
 
@@ -303,11 +303,11 @@ Test a standalone install
 
     Check Banner
     >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
-    Zope/(2.13..., python 2.6...) ZServer/1.1
+    Zope/(2.13..., python 2.7...) ZServer/1.1
 
     Stop it
     >>> stdout, stderr, returncode = doCommand('%s/zinstance/bin/instance stop' % testTarget)
-    
+
     >>> returncode
     0
 
@@ -325,13 +325,13 @@ Test an --instance=... install
 ------------------------------
 
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --instance=zeocluster2' % testTarget)
-    
+
     >>> returncode and (stdout + stderr)
     0
 
     >>> print stdout
     ZEO Cluster Install selected...
-    Installing Plone 4.2b2 at ...
+    Installing Plone 4.2rc1 at ...
     Plone successfully installed at ...
       Username: admin
       Password: admin...

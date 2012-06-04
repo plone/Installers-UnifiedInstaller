@@ -51,7 +51,6 @@
 #   Skip running bin/buildout. You should know what you're doing.
 # 
 # Library build control options:
-# --libz=auto|yes|no
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
 # --lxml=auto|yes|no
@@ -106,18 +105,16 @@ ONLINE_PACKAGES_DIR=opackages
 
 HSCRIPTS_DIR=helper_scripts
 
-PYTHON_TB=Python-2.7.2.tar.bz2
-PYTHON_DIR=Python-2.7.2
-DISTRIBUTE_TB=distribute-0.6.19.tar.gz
-DISTRIBUTE_DIR=distribute-0.6.19
+PYTHON_TB=Python-2.7.3.tar.bz2
+PYTHON_DIR=Python-2.7.3
+DISTRIBUTE_TB=distribute-0.6.24.tar.gz
+DISTRIBUTE_DIR=distribute-0.6.24
 JPEG_TB=jpegsrc.v8c.tar.bz2
 JPEG_DIR=jpeg-8c
 READLINE_TB=readline-6.2.tar.bz2
 READLINE_DIR=readline-6.2
-ZLIB_TB=zlib-1.2.5.tar.bz2
-ZLIB_DIR=zlib-1.2.5
-VIRTUALENV_TB=virtualenv-1.6.1.tar.bz2
-VIRTUALENV_DIR=virtualenv-1.6.1
+VIRTUALENV_TB=virtualenv-1.7.tar.bz2
+VIRTUALENV_DIR=virtualenv-1.7
 
 # check for PIL and jpeg support
 PIL_TEST="from _imaging import jpeg_decoder"
@@ -240,14 +237,6 @@ do
         --user=* | -user=* )
             if [ "$optarg" ]; then
                 EFFECTIVE_USER="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --zlib=* | --libz=* )
-            if [ "$optarg" ]; then
-                INSTALL_ZLIB="$optarg"
             else
                 usage
             fi
@@ -587,6 +576,15 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         exit 1
     fi
 
+    # Abort install if no libz
+    if [ "$HAVE_LIBZ" != "yes" ] ; then
+        echo
+        echo "Note: libz library and headers are required for the install."
+        echo "The package name for this may be zlib-dev."
+        echo "Exiting now."
+        exit 1
+    fi
+
     if [ "$HAVE_LIBSSL" != "yes" ] && [ "x$WITH_PYTHON" = "x" ]; then
         echo
         echo "Unable to find libssl or openssl/ssl.h."
@@ -601,14 +599,6 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     fi
 fi # not skip tool tests
 
-
-if [ $INSTALL_ZLIB = "auto" ] ; then
-    if [ "$HAVE_LIBZ" = "yes" ] ; then
-        INSTALL_ZLIB=no
-    else
-        INSTALL_ZLIB=yes
-    fi
-fi
 
 if [ $INSTALL_JPEG = "auto" ] ; then
     if [ "$HAVE_LIBJPEG" = "yes" ] ; then
@@ -635,7 +625,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.2b2 at $PLONE_HOME"
+echo "Installing Plone 4.2rc1 at $PLONE_HOME"
 echo ""
 
 
@@ -779,7 +769,6 @@ else
     fi
 
     . helper_scripts/build_libjpeg.sh
-    . helper_scripts/build_zlib.sh
     . helper_scripts/build_readline.sh
 
     if [ `uname` = "Darwin" ]; then
