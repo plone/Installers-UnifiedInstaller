@@ -1,7 +1,6 @@
 =======================
 Unified Installer Tests
 =======================
-$LastChangedDate: 2011-10-10 15:57:37 -0700 (Mon, 10 Oct 2011) $ $LastChangedRevision: 52415 $
 
 -----------
 Setup stuff
@@ -58,7 +57,11 @@ Test a ZEO install
 ------------------
 
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libreadline=yes --without-lxml' % testTarget)
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 061e534bdc199d1c7bdb1e4671052e8f7f652641
     >>> returncode and (stdout + stderr)
     0
 
