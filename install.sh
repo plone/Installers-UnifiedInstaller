@@ -7,14 +7,14 @@
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
-# 
+#
 # Install methods available:
 #    standalone - install standalone zope instance
 #    zeo        - install zeo cluster
 #    none       - will not run final buildout
-# 
+#
 # Use sudo (or run as root) for server-mode install.
-# 
+#
 # Options:
 # --password=InstancePassword
 #   If not specified, a random password will be generated.
@@ -22,21 +22,21 @@
 # --clients=client-count
 #   Use with the "zeo" install method to specify the number of Zope
 #   clients you wish to create. Default is 2.
-# 
+#
 # --target=pathname
 #   Use to specify top-level path for installs. Plone instances
 #   and Python will be built inside this directory
-# 
+#
 # --instance=instance-name
 #   Use to specify the name of the operating instance to be created.
 #   This will be created inside the target directory if there's
 #   no slash in the string..
 #   Default is 'zinstance' for standalone, 'zeocluster' for ZEO.
-# 
+#
 # --user=user-name
 #   In a server-mode install, sets the effective user for running the
 #   instance. Default is 'plone'. Ignored for non-server-mode installs.
-# 
+#
 # --with-python=/fullpathtopython2.7.x
 #   If you have an already built Python that's adequate to run
 #   Zope / Plone, you may specify it here.
@@ -46,10 +46,10 @@
 #   When --with-python is used to specify a python, that python is isolated
 #   via virtualenv using the --no-site-packages argument. Set the --with-site-
 #   packages flag if you want to include system packages.
-# 
+#
 # --nobuildout
 #   Skip running bin/buildout. You should know what you're doing.
-# 
+#
 # Library build control options:
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
@@ -161,7 +161,7 @@ usage () {
     echo "  Use to specify top-level path for installs. Plone instances"
     echo "  and Python will be built inside this directory"
     echo "  (default is $PLONE_HOME)"
-    echo 
+    echo
     echo "--clients=client-count"
     echo "  Use with the "zeo" install method to specify the number of Zope"
     echo "  clients you wish to create. Default is 2."
@@ -281,15 +281,15 @@ do
                 usage
             fi
             ;;
-        
+
         --nobuild* | --no-build*)
             RUN_BUILDOUT=0
             ;;
 
         --skip-tool-tests )
-            SKIP_TOOL_TESTS=1 
+            SKIP_TOOL_TESTS=1
             # don't test for availability of gnu build tools
-            # this is mainly meant to be used when binaries 
+            # this is mainly meant to be used when binaries
             # are known to be installed already
             ;;
 
@@ -300,7 +300,7 @@ do
                 usage
             fi
             ;;
-            
+
         --clients=* | --client=* )
             if [ "$optarg" ]; then
                 CLIENT_COUNT="$optarg"
@@ -308,7 +308,7 @@ do
                 usage
             fi
             ;;
-            
+
         --help | -h )
             usage
             ;;
@@ -625,7 +625,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.2rc1 at $PLONE_HOME"
+echo "Installing Plone 4.2rc2 at $PLONE_HOME"
 echo ""
 
 
@@ -818,7 +818,7 @@ if [ -f "$PKG"/buildout-cache.tar.bz2 ]; then
         untar "$PKG"/buildout-cache.tar.bz2
         # compile .pyc files in cache
         echo "Compiling .py files in egg cache"
-        "$PY" "$PLONE_HOME"/Python*/lib/python*/compileall.py "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1    
+        "$PY" "$PLONE_HOME"/Python*/lib/python*/compileall.py "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
     fi
     if [ ! -x "$BUILDOUT_CACHE"/eggs ]; then
         echo "Buildout cache unpack failed. Unable to continue."

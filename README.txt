@@ -1,5 +1,5 @@
 ==============================
-Plone 4.2rc1: Unified Installer
+Plone 4.2rc2: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,7 +7,7 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.2rc1, Zope 2.12.14, and Python 2.6.7.
+This version includes Plone 4.2rc2, Zope 2.12.14, and Python 2.6.7.
 
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
 
@@ -81,7 +81,7 @@ For a super-user (root) installation
 If you run the installation with root privileges, it will install
 Python/Zope/Plone to /usr/local/Plone
 
-[Darwin (OS X) Note: Under Darwin, the default installation is to 
+[Darwin (OS X) Note: Under Darwin, the default installation is to
 /Applications/Plone for the root install. Please replace /usr/local with
 /Applications in the instructions below.]
 
@@ -134,7 +134,7 @@ Options:
   and Python will be built inside this directory.
   Default is /usr/local/Plone for root install,
   $HOME/Plone for non-root.
-  
+
   PLEASE NOTE: Your pathname should not include spaces.
 
 --instance=instance-name
@@ -167,7 +167,7 @@ Options:
 --libjpeg=(auto|yes|no)
   Overrides the automatic determination of whether and where to
   install the libjpeg JPEG library.
-  
+
 --readline=(auto|yes|no)
   Optional. Installs a local readline library. Only necessary
   on platforms with odd libraries (like OS X Leopard).
@@ -381,7 +381,7 @@ Root Install Notes
 ==================
 
 If you install as root, the installer will set you instance up for operation
-under a specific user id. The id, "plone" unless you specify otherwise, will be 
+under a specific user id. The id, "plone" unless you specify otherwise, will be
 created if it doesn't exist.
 
 The Zope daemon will be set up run under this user id, and the user will be the
@@ -453,33 +453,33 @@ Mac OS X Server
 If you are using LDAP for directory services, the install.sh script may be
 unable to reliably create users and groups.
 
-In a custom environment such as this, scripted creation of users and groups 
+In a custom environment such as this, scripted creation of users and groups
 for a root installation of Plone may be inappropriate.
 
-You can use Workgroup Manager (Apple Server Admin Tools) to create  
-groups that are typical to a production installation of Plone: 
+You can use Workgroup Manager (Apple Server Admin Tools) to create
+groups that are typical to a production installation of Plone:
    plone
    zeo
 
-then create users with UIDs below 500: 
+then create users with UIDs below 500:
    plone
    zeo
 
-For each user: 
- * match the Primary Group ID to the corresponding group 
- * decide whether to allow a shell 
- * specify the path to the home directory. 
+For each user:
+ * match the Primary Group ID to the corresponding group
+ * decide whether to allow a shell
+ * specify the path to the home directory.
 
-For root installation of a ZEO cluster on Mac OS X, custom paths might be: 
+For root installation of a ZEO cluster on Mac OS X, custom paths might be:
 
 /Applications/Plone/homes/plone
 /Applications/Plone/homes/zeo
 
--- when scripted installation of Plone proceeds, 
-   it will make that directory hierarchy for you. 
+-- when scripted installation of Plone proceeds,
+   it will make that directory hierarchy for you.
 
-After you configure users and groups to suit your planned use of Plone, 
-you can re-run install.sh. 
+After you configure users and groups to suit your planned use of Plone,
+you can re-run install.sh.
 
 
 Solaris (need further check)
@@ -504,12 +504,12 @@ python-2.7.3         interpreted object-oriented programming language
 python-expat-2.6.7   expat module for Python
 
 If you are unable to install python-expat-2.6.7, you may need to install the
-xbase file set, which includes expat in some versions of OpenBSD (4.2). 
+xbase file set, which includes expat in some versions of OpenBSD (4.2).
 
 Then, when you run the Unified Installer, add the command-line argument:
 
     --with-python=/usr/local/bin/python2.6
-    
+
 
 Uninstall instructions
 ======================
