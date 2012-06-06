@@ -12,8 +12,8 @@ Setup stuff
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/Users/steve/nobackup/plonetest/'
-    >>> withPython = '/opt/local/bin/python2.7'
+    >>> testTarget = '/home/steve/plonetest'
+    >>> withPython = '/usr/bin/python2.7'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
 
@@ -56,12 +56,7 @@ Running install.sh with no options should result in a usage message:
 Test a ZEO install
 ------------------
 
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libreadline=yes --without-lxml' % testTarget)
-<<<<<<< HEAD
-
-=======
-
->>>>>>> 061e534bdc199d1c7bdb1e4671052e8f7f652641
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libreadline=yes' % testTarget)
     >>> returncode and (stdout + stderr)
     0
 
@@ -256,7 +251,7 @@ Test a standalone install
 
     Parts should look good
     >>> sorted(os.listdir('%s/zinstance/parts' % testTarget))
-    ['README.txt', 'instance', ]
+    ['README.txt', 'instance']
 
     parts/README.html should be a warning
     >>> print open('%s/zeocluster/parts/README.txt' % testTarget).read()
