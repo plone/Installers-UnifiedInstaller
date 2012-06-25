@@ -266,10 +266,6 @@ do
             fi
             ;;
 
-        --without-lxml )
-            INSTALL_LXML=no
-            ;;
-
         --without-ssl | --without-openssl )
             WITHOUT_SSL=1
             ;;
