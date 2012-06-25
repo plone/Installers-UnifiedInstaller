@@ -57,7 +57,8 @@ normal user. There are serious security implications to this choice.
 The non-root method produces an install that will run the Zope server
 with the same privileges as the installing user. This is probably not an
 acceptable security profile for a production server, but may be
-acceptable for testing and development purposes.
+acceptable for testing and development purposes or if you create an
+unprivileged user exclusively for this purpose.
 
 The 'root' method produces an install that runs the Zope server as a
 distinct user identity with minimal privileges (unless you add them).
@@ -150,7 +151,7 @@ Options:
   instance. Default is 'plone'. Ignored for non-root installs. You should always
   use the same user within a given target.
 
---with-python=/full/path/to/python2.6
+--with-python=/full/path/to/python2.7
   If you have an already built Python that's adequate to run
   Zope / Plone, you may specify it here.
   virtualenv will be used to isolate the copy used for the install.
@@ -174,9 +175,6 @@ Options:
 
 --without-ssl
   Optional. Allows the build to proceed without ssl dependency tests.
-
---without-lxml
-  Prevents automatic build of lxml with static xml2 and xslt libraries
 
 Note that you may run install.sh repeatedly for the same target so long
 as you either use a different installation method or specify different
@@ -210,6 +208,7 @@ Required
 * Build Essentials (gcc, make)
      build-essential
 * libssl (SSL support)
+     Unless you use --with-python
      libssl-dev
 
 Recommended
@@ -222,6 +221,11 @@ Recommended
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
      libjpeg-dev
+* libxml2, libxslt
+    If these are up-to-date, the installer will use them rather than building
+    static libraries of its own.
+    libxml2-dev
+    libxslt1-dev
 * readline (Python command-line history)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
@@ -234,11 +238,6 @@ Recommended
      poppler-utils
      <http://poppler.freedesktop.org/>
      May be installed after Plone install.
-* libxml2, libxslt
-    If these are up-to-date, the installer will use them rather than building
-    static libraries of its own.
-    libxml2-dev
-    libxslt1-dev
 
 Install Location, Root Install
 ==============================
@@ -420,8 +419,6 @@ Third-party products installed
 ==============================
 - PIL (Python Imaging Library)
 - libjpeg (JPEG library, usually installed to target/Python2.6/lib)
-- libz (compression, usually installed to target/Python2.6/lib)
-- libxml2-python (required for Marshall support)
 - libreadline (terminal mode command-line and prompt editing)
 - Cheetah, Paste, PasteDeploy, PasteScript, ZopeSkel
 - lxml, libxml2, libxslt
@@ -435,11 +432,9 @@ version of sh fails on test expressions, you may need to edit the
 install script to specify use of zsh, bash or a later version of sh.
 
 The install script requires several GNU build utilities such as gcc,
-g++, make, gunzip, bunzip2 and tar. You may need to edit your shell
-paths or set compile or link flags in some environments to make
-sure you use the GNU tools..
+g++, make, gunzip, bunzip2 and tar.
 
-The install script tries to find zlib, readline and libjpeg libraries.
+The install script tries to find readline and libjpeg libraries.
 If it can't find them, it installs them locally in the target directory.
 If the library detection code in the installation script doesn't meet your
 needs, you may force a particular choice by editing the script.

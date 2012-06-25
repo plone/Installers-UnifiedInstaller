@@ -53,15 +53,6 @@
 # Library build control options:
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
-# --lxml=auto|yes|no
-#
-#   auto -   to have this program determine whether or not you need the
-#            library installed. If needed, will be installed to $PLONE_HOME.
-#   yes    - to force install to $PLONE_HOME for static link
-#   no     - to force no install
-#
-# lxml note:
-# if needed, lxml is built with static xml2 and xslt libraries
 
 
 # Path for Root install
@@ -253,14 +244,6 @@ do
         --readline=* | --libreadline=* )
             if [ "$optarg" ]; then
                 INSTALL_READLINE="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --lxml=* )
-            if [ "$optarg" ]; then
-                INSTALL_LXML="$optarg"
             else
                 usage
             fi
