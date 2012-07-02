@@ -1,4 +1,6 @@
-4.2rc3 - unreleased
+4.2 - 2012-07-02
+
+   - Adapt to 4.2.
 
    - --without-lxml is no longer supported, as lxml is required. Option removed.
 
