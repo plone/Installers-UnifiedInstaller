@@ -140,18 +140,8 @@ fd = file(os.path.join(UIDIR, 'buildout_templates', template))
 buildout = fd.read()
 fd.close()
 
-# if standalone, non-root & OS X Leopard or Snow Leopard, install controller
-if (ITYPE == 'standalone') and \
-   (ROOT_INSTALL != '1') and \
-   (platform.system() == 'Darwin') and \
-   (int(platform.platform().split('-')[1].split('.')[0]) in (9, 10)):
-    # add to parts
-    buildout = buildout.replace('parts =\n', 'parts =\n    osxcontroller')
-    wantOSX = True
-else:
-    wantOSX = False
-    buildout = buildout.replace('client1', client_list)
-    buildout = buildout.replace('# Additional clients:', client_addresses)
+buildout = buildout.replace('client1', client_list)
+buildout = buildout.replace('# Additional clients:', client_addresses)
 
 
 # set password
@@ -218,9 +208,6 @@ if ITYPE == 'standalone':
 else:
     del buildout['instance']
     del buildout['chown']
-
-if not wantOSX:
-    del buildout['osxcontroller']
 
 fn = os.path.join(INSTANCE_HOME, 'base.cfg')
 fd = file(fn, 'w')
