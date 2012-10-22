@@ -1,3 +1,18 @@
+4.2.2 installer update
+
+    - Update readme to point to install and maintain section
+      of collective dev man.
+
+    - Allow Python 2.6.x or 2.7.x. Resolves #13265.
+
+    - Add automatic log rotation for clients. Resolves #13184.
+
+    - Adapt to Plone 4.2.2. Update libjpeg, distribute and virtualenv.
+
+4.2.1
+
+    - Update Plone to 4.2.1.
+
 4.2 installer update - 2012-07-08
 
    - Remove osxcontroller support. This only worked on OS X 10.5 & 10.6, which

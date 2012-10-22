@@ -1,5 +1,6 @@
 .svn
 .DS_Store
+._*
 *.pyc
 install.log
 buildenv.sh
@@ -9,3 +10,4 @@ autom4te.cache
 Plone-docs
 *.gz
 *.bz2
+testout.txt

@@ -1,5 +1,5 @@
 ==============================
-Plone 4.2: Unified Installer
+Plone 4.2.2: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,9 +7,16 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.2, Zope 2.12.14, and Python 2.6.7.
+This version includes Plone 4.2.2, Zope 2.13.x, and Python 2.7.x.
 
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
+
+For a guide to installing and maintaining Plone, see
+http://collective-docs.readthedocs.org/en/latest/index.html#installing-and-maintaining-plone-sites
+
+If you are a deploying Plone for production, read
+``Basics of Plone Production Deployment <http://collective-docs.readthedocs.org/en/latest/hosting/basics/index.html>`_
+before continuing.
 
 *Important:* Back up your existing Plone site prior to running the installer
 or running buildout to update.
@@ -89,12 +96,12 @@ Python/Zope/Plone to /usr/local/Plone
 A "plone" user will be added, and Zope will be configured to
 run under that user id. You will need to start Zope as root or via sudo.
 
-To install Plone 4.1 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.2 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
 
-To install Plone 4.1 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.2 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
@@ -108,12 +115,12 @@ directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
 
-To install Plone 4.1 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.2 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh standalone
 
-To install Plone 4.1 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.2 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh zeo
@@ -160,10 +167,6 @@ Options:
 
 --password=InstancePassword
   If not specified, a random password will be generated.
-
---libz=(auto|yes|no)
-  Overrides the automatic determination of whether and where to
-  install the libz compression library.
 
 --libjpeg=(auto|yes|no)
   Overrides the automatic determination of whether and where to

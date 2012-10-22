@@ -98,14 +98,14 @@ HSCRIPTS_DIR=helper_scripts
 
 PYTHON_TB=Python-2.7.3.tar.bz2
 PYTHON_DIR=Python-2.7.3
-DISTRIBUTE_TB=distribute-0.6.24.tar.gz
-DISTRIBUTE_DIR=distribute-0.6.24
-JPEG_TB=jpegsrc.v8c.tar.bz2
-JPEG_DIR=jpeg-8c
+DISTRIBUTE_TB=distribute-0.6.28.tar.gz
+DISTRIBUTE_DIR=distribute-0.6.28
+JPEG_TB=jpegsrc.v8d.tar.bz2
+JPEG_DIR=jpeg-8d
 READLINE_TB=readline-6.2.tar.bz2
 READLINE_DIR=readline-6.2
-VIRTUALENV_TB=virtualenv-1.7.tar.bz2
-VIRTUALENV_DIR=virtualenv-1.7
+VIRTUALENV_TB=virtualenv-1.8.2.tar.bz2
+VIRTUALENV_DIR=virtualenv-1.8.2
 
 # check for PIL and jpeg support
 PIL_TEST="from _imaging import jpeg_decoder"
@@ -604,7 +604,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.2 at $PLONE_HOME"
+echo "Installing Plone 4.2.2 at $PLONE_HOME"
 echo ""
 
 
