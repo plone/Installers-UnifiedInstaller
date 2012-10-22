@@ -40,10 +40,16 @@ cp -R ${SDIR}/ $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/
 rm -rf $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/.git
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/.gitignore
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/buildme.sh
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/*.ac
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/preflight.ac
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/update_packages.py
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/to-do.txt
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/install.log
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/config.status
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/config.log
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/buildenv.sh
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/tests/testout.txt
 rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/Plone-docs
+rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/autom4te.cache
 
 mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
