@@ -104,7 +104,7 @@ JPEG_TB=jpegsrc.v8d.tar.bz2
 JPEG_DIR=jpeg-8d
 READLINE_TB=readline-6.2.tar.bz2
 READLINE_DIR=readline-6.2
-VIRTUALENV_TB=virtualenv-1.8.2.tar.bz2
+VIRTUALENV_TB=virtualenv-1.8.2.tar.gz
 VIRTUALENV_DIR=virtualenv-1.8.2
 
 # check for PIL and jpeg support

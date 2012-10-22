@@ -1,2 +1,0 @@
-z3c
-z3c.recipe

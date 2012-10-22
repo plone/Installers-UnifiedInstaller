@@ -1,5 +1,9 @@
 4.2.2 installer update
 
+    - libxml2/libxslt has finally been updated to cover CVE-2011-3919.
+      Updated libxml2 & libxslt version specs and removed dev version
+      of z3c.recipe.staticlxml.
+
     - Update readme to point to install and maintain section
       of collective dev man.
 
