@@ -1,4 +1,10 @@
-4.1.5 - 2012-06-04
+4.1.6 - 20121109
+
+  - Incorporate PloneHotfix20121106
+
+4.1.6 - 20120604
+
+  - Update to 4.1.6.
 
   - Having the z3c.recipe.staticlxml recipe in src caused a problem when the
     static lxml build couldn't be cleaned up when the plone buildout ran. Fixed.
