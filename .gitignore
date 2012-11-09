@@ -9,3 +9,4 @@ autom4te.cache
 Plone-docs
 *.gz
 *.bz2
+tests/testout.txt
