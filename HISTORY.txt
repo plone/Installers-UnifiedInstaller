@@ -1,4 +1,12 @@
-4.2.2 installer update
+4.2.2 - update 2012-11-09
+
+    - Incorporate Products.PloneHotfix20121106 == 1.2
+
+4.2.2 - update 2012-10-24
+
+    - Step back to libxml2 2.8.0. 2.9.0 won't build on OS X.
+
+4.2.2 - 2012-10-23
 
     - libxml2/libxslt has finally been updated to cover CVE-2011-3919.
       Updated libxml2 & libxslt version specs and removed dev version
