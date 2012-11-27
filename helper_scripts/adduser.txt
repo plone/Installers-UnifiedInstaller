@@ -1,1 +1,0 @@
-plone::::::Plone Admin:/nonexistent:/usr/sbin/nologin:*

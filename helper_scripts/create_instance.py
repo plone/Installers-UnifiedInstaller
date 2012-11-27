@@ -6,38 +6,81 @@
 # that will choose the exec Python.
 #
 
-import sys
+import argparse
+import glob
+import random
 import os
 import os.path
-import stat
 import subprocess
 import shutil
-import iniparse
-import platform
-import glob
+import stat
+import sys
 from cStringIO import StringIO
 
+import iniparse
 from config_check import getVersion
 
 
-log = ''
+def createPassword():
+    pw_choices = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                  "abcdefghijklmnopqrstuvwxyz"
+                  "0123456789")
+    pw = ''
+    for i in range(12):
+        pw = pw + random.choice(pw_choices)
+    return pw
 
-# pick up globals from command line
-(UIDIR,
-PLONE_HOME,
-INSTANCE_HOME,
-CLIENT_USER,
-ZEO_USER,
-PASSWORD,
-ROOT_INSTALL,
-RUN_BUILDOUT,
-INSTALL_LXML,
-OFFLINE,
-ITYPE,
-LOG_FILE,
-CLIENTS) = sys.argv[1:]
 
-if INSTALL_LXML == 'auto':
+# find the full egg name for a module in the buildout-cache
+def findEgg(basename, plone_home):
+    return glob.glob(
+        "%s*.egg" % os.path.join(
+            plone_home,
+            'buildout-cache',
+            'eggs',
+            basename)
+        )[0]
+
+
+def doCommand(command):
+    po = subprocess.Popen(command,
+                          shell=True,
+                          universal_newlines=True,
+                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout, stderr = po.communicate()
+    sys.stderr.write(stdout)
+    return po.returncode
+
+
+# apply substitutions to a file
+def inPlaceSub(fn, substitutions):
+    fd = file(fn)
+    contents = fd.read()
+    fd.close()
+    fd = file(fn, 'w')
+    fd.write(contents % substitutions)
+    fd.close()
+
+
+argparser = argparse.ArgumentParser(description="Plone instance creation utility")
+argparser.add_argument('--uidir', required=True)
+argparser.add_argument('--plone_home', required=True)
+argparser.add_argument('--instance_home', default='zinstance')
+argparser.add_argument('--daemon_user', default='plone_daemon')
+argparser.add_argument('--buildout_user', default='plone_buildout')
+argparser.add_argument('--password', required=False)
+argparser.add_argument('--root_install', required=False, default='0', choices='01')
+argparser.add_argument('--run_buildout', required=False, default='1', choices='01')
+argparser.add_argument('--install_lxml', required=False, default='auto', choices=('yes', 'no', 'auto'))
+argparser.add_argument('--itype', default='standalone', choices=('cluster', 'standalone'))
+argparser.add_argument('--clients', required=False, default='2')
+opt = argparser.parse_args()
+if not opt.password:
+    opt.password = createPassword()
+opt.root_install = bool(int(opt.root_install))
+opt.run_buildout = bool(int(opt.run_buildout))
+
+if opt.install_lxml == 'auto':
     if getVersion('xml2') >= 20708 and getVersion('xslt') >= 10126:
         print "Your platform's xml2/xslt are up-to-date. No need to build them."
         INSTALL_STATIC_LXML = 'no'
@@ -45,7 +88,7 @@ if INSTALL_LXML == 'auto':
         print "Your platform's xml2/xslt are missing or out-of-date. We'll need to build them."
         INSTALL_STATIC_LXML = 'yes'
 else:
-    INSTALL_STATIC_LXML = INSTALL_LXML
+    INSTALL_STATIC_LXML = opt.install_lxml
 
 
 client_template = """
@@ -61,59 +104,32 @@ lock-file = ${buildout:directory}/var/clientCLIENT_NUM/clientCLIENT_NUM.lock
 """
 
 BASE_ADDRESS = 8080
-CLIENTS = int(CLIENTS)
+CLIENTS = int(opt.clients)
 
+if opt.root_install:
+    sudo_command = "sudo -u %s " % opt.buildout_user
+else:
+    sudo_command = ""
 
-# find the full egg name for a module in the buildout-cache
-def findEgg(basename):
-    return glob.glob(
-        "%s*.egg" % os.path.join(
-            PLONE_HOME,
-            'buildout-cache',
-            'eggs',
-            basename)
-        )[0]
 
 substitutions = {
-    "PLONE_HOME": PLONE_HOME,
-    "INSTANCE_HOME": INSTANCE_HOME,
-    "CLIENT_USER": CLIENT_USER,
-    "ZEO_USER": ZEO_USER,
-    "PASSWORD": PASSWORD,
+    "PLONE_HOME": opt.plone_home,
+    "INSTANCE_HOME": opt.instance_home,
+    "DAEMON_USER": opt.daemon_user,
+    "BUILDOUT_USER": opt.buildout_user,
+    "PASSWORD": opt.password,
     "PYTHON": sys.executable,
-    "DISTRIBUTE_EGG": findEgg('distribute'),
-    "BUILDOUT_EGG": findEgg('zc.buildout'),
+    "DISTRIBUTE_EGG": findEgg('distribute', opt.plone_home),
+    "BUILDOUT_EGG": findEgg('zc.buildout', opt.plone_home),
 }
 
 
-# apply substitutions to a file
-def inPlaceSub(fn):
-    fd = file(fn)
-    contents = fd.read()
-    fd.close()
-    fd = file(fn, 'w')
-    fd.write(contents % substitutions)
-    fd.close()
-
-
-def doCommand(command):
-    global log
-
-    po = subprocess.Popen(command,
-                          shell=True,
-                          universal_newlines=True,
-                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdout, stderr = po.communicate()
-    log += stdout
-    return po.returncode
-
-
 print "Copying buildout skeleton"
-shutil.copytree(os.path.join(UIDIR, 'base_skeleton'), INSTANCE_HOME)
+shutil.copytree(os.path.join(opt.uidir, 'base_skeleton'), opt.instance_home)
 
 # remove OS X and svn detritus (this is mainly helpful for installer development)
-doCommand('find %s -name "._*" -exec rm {} \; > /dev/null' % INSTANCE_HOME)
-doCommand('find %s -name ".svn" | xargs rm -rf' % INSTANCE_HOME)
+doCommand('find %s -name "._*" -exec rm {} \; > /dev/null' % opt.instance_home)
+doCommand('find %s -name ".svn" | xargs rm -rf' % opt.instance_home)
 
 # create a client list and client templates;
 # we'll add them to the .cfg files later
@@ -131,12 +147,12 @@ for client in range(2, CLIENTS + 1):
 # buildout.cfg customizations
 
 # read appropriate buildout template
-dest = os.path.join(INSTANCE_HOME, 'buildout.cfg')
-if ITYPE == 'standalone':
+dest = os.path.join(opt.instance_home, 'buildout.cfg')
+if opt.itype == 'standalone':
     template = 'standalone.cfg'
 else:
     template = 'cluster.cfg'
-fd = file(os.path.join(UIDIR, 'buildout_templates', template))
+fd = file(os.path.join(opt.uidir, 'buildout_templates', template))
 buildout = fd.read()
 fd.close()
 
@@ -145,23 +161,19 @@ buildout = buildout.replace('# Additional clients:', client_addresses)
 
 
 # set password
-buildout = buildout.replace('__PASSWORD__', PASSWORD)
+buildout = buildout.replace('__PASSWORD__', opt.password)
 
 # set effective user
-buildout = buildout.replace('__CLIENT_USER__', CLIENT_USER)
+buildout = buildout.replace('__CLIENT_USER__', opt.daemon_user)
 
 # if this python doesn't have PIL, add PIL to the eggs
 try:
     from _imaging import jpeg_decoder
+    jpeg_decoder  # avoid warning
 except:
     buildout = buildout.replace('    Plone\n', '    Plone\n    Pillow\n')
 
-if INSTALL_LXML == 'no':
-    # remove the egg requirement
-    buildout = buildout.replace('    lxml\n', '')
-
-
-fn = os.path.join(INSTANCE_HOME, 'buildout.cfg')
+fn = os.path.join(opt.instance_home, 'buildout.cfg')
 fd = file(fn, 'w')
 fd.write(buildout)
 fd.close()
@@ -171,7 +183,7 @@ os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
 #############################
 # base.cfg customizations
 
-fd = file(os.path.join(UIDIR, 'buildout_templates', 'base.cfg'))
+fd = file(os.path.join(opt.uidir, 'buildout_templates', 'base.cfg'))
 base = fd.read()
 fd.close()
 
@@ -186,14 +198,8 @@ client1 = buildout.client1
 client2 = buildout.client2
 zeoServer = buildout.zeoserver
 
-# set buildout location
-# buildout.buildout['eggs-directory'] = '%s/buildout-cache/eggs' % PLONE_HOME
-# buildout.buildout['download-cache'] = '%s/buildout-cache/downloads' % PLONE_HOME
-# buildout.buildout['extends-cache'] = '%s/buildout-cache/downloads/extends' % PLONE_HOME
-
-
-if ROOT_INSTALL == '1':
-    buildout.unifiedinstaller['sudo-command'] = ' sudo -u %s' % CLIENT_USER
+if opt.root_install:
+    buildout.unifiedinstaller['sudo-command'] = ' sudo -u %s' % opt.daemon_user
 else:
     # remove chown commands
     for section in (buildout.chown, buildout['chown-zeo']):
@@ -201,7 +207,7 @@ else:
             '\n'.join([s for s in section.command.split('\n')
                           if len(s) and not s.count('chown')])
 
-if ITYPE == 'standalone':
+if opt.itype == 'standalone':
     del buildout['zeoserver']
     del buildout['client1']
     del buildout['chown-zeo']
@@ -209,7 +215,7 @@ else:
     del buildout['instance']
     del buildout['chown']
 
-fn = os.path.join(INSTANCE_HOME, 'base.cfg')
+fn = os.path.join(opt.instance_home, 'base.cfg')
 fd = file(fn, 'w')
 fd.write(str(buildout))
 fd.close()
@@ -219,23 +225,18 @@ os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
 # boostrapping is problematic when the python may not have the right
 # components; so, let's fix up the bin/buildout ourselves.
 print "Fixing up bin/buildout"
-inPlaceSub(os.path.join(INSTANCE_HOME, 'bin', 'buildout'))
+inPlaceSub(os.path.join(opt.instance_home, 'bin', 'buildout'), substitutions)
 
 
 ################
 # Start the fun!
-if RUN_BUILDOUT == '1':
-    os.chdir(INSTANCE_HOME)
-
-    logfile = file(LOG_FILE, 'a')
-    logfile.write(log)
-    logfile.close()
-    log = ''
+if opt.run_buildout:
+    os.chdir(opt.instance_home)
 
     if INSTALL_STATIC_LXML == 'yes':
         print "Building lxml with static libxml2/libxslt; this takes a while..."
         returncode = doCommand(
-            os.path.join(INSTANCE_HOME, 'bin', 'buildout') + \
+            os.path.join(opt.instance_home, 'bin', 'buildout') + \
             " -c lxml_static.cfg -NU buildout:install-from-cache=true")
         if returncode:
             print "\nlxml build failed. You may wish to clean up and try again"
@@ -255,29 +256,24 @@ if RUN_BUILDOUT == '1':
     if not returncode:
         print "Building Zope/Plone; this takes a while..."
         returncode = doCommand(
-            os.path.join(INSTANCE_HOME, 'bin', 'buildout') + \
+            os.path.join(opt.instance_home, 'bin', 'buildout') + \
             " -NU buildout:install-from-cache=true")
-
-    logfile = file(LOG_FILE, 'a')
-    logfile.write(log)
-    logfile.close()
-    log = ''
 
     if returncode:
         print "Buildout returned an error code: %s; Aborting." % returncode
         sys.exit(returncode)
 
-    if ITYPE == 'standalone':
-        if not (os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'instance')) and
-                 os.path.exists(os.path.join(INSTANCE_HOME, 'parts', 'instance')) and
-                 os.path.exists(os.path.join(INSTANCE_HOME, 'var'))):
+    if opt.itype == 'standalone':
+        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'instance')) and
+                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'instance')) and
+                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
             print "Parts of the install are missing. Buildout must have failed. Aborting."
             sys.exit(1)
     else:
-        if not (os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'zeoserver')) and
-                 os.path.exists(os.path.join(INSTANCE_HOME, 'bin', 'client1')) and
-                 os.path.exists(os.path.join(INSTANCE_HOME, 'parts', 'client1')) and
-                 os.path.exists(os.path.join(INSTANCE_HOME, 'var'))):
+        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'zeoserver')) and
+                 os.path.exists(os.path.join(opt.instance_home, 'bin', 'client1')) and
+                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'client1')) and
+                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
             print "Parts of the install are missing. Buildout must have failed. Aborting."
             sys.exit(1)
 
