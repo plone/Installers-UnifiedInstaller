@@ -900,7 +900,6 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     INSTALL_METHOD="standalone"
     CLIENT_COUNT=0
 fi
-pwd
 $SUDO "$PY" "$CWD/helper_scripts/create_instance.py" \
     "--uidir=$CWD" \
     "--plone_home=$PLONE_HOME" \
