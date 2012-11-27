@@ -364,6 +364,12 @@ echo
 
 
 if [ $ROOT_INSTALL -eq 1 ]; then
+    which sudo > /dev/null
+    if [ $? -gt 0 ]; then
+        echo "sudo utility is required to do a server-mode install."
+        echo
+        exit 1
+    fi
     SUDO="sudo -u $BUILDOUT_USER"
 else
     SUDO=""
