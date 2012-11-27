@@ -20,6 +20,18 @@ from cStringIO import StringIO
 import iniparse
 from config_check import getVersion
 
+client_template = """
+
+[clientCLIENT_NUM]
+# a copy of client1, except adjusted address and var location
+<= client1
+http-address = ${buildout:clientCLIENT_NUM-address}
+event-log = ${buildout:var-dir}/clientCLIENT_NUM/event.log
+z2-log    = ${buildout:var-dir}/clientCLIENT_NUM/Z2.log
+pid-file  = ${buildout:var-dir}/clientCLIENT_NUM/clientCLIENT_NUM.pid
+lock-file = ${buildout:var-dir}/clientCLIENT_NUM/clientCLIENT_NUM.lock
+"""
+
 
 def createPassword():
     pw_choices = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -90,18 +102,6 @@ if opt.install_lxml == 'auto':
 else:
     INSTALL_STATIC_LXML = opt.install_lxml
 
-
-client_template = """
-
-[clientCLIENT_NUM]
-# a copy of client1, except adjusted address and var location
-<= client1
-http-address = ${buildout:clientCLIENT_NUM-address}
-event-log = ${buildout:directory}/var/clientCLIENT_NUM/event.log
-z2-log    = ${buildout:directory}/var/clientCLIENT_NUM/Z2.log
-pid-file  = ${buildout:directory}/var/clientCLIENT_NUM/clientCLIENT_NUM.pid
-lock-file = ${buildout:directory}/var/clientCLIENT_NUM/clientCLIENT_NUM.lock
-"""
 
 BASE_ADDRESS = 8080
 CLIENTS = int(opt.clients)
