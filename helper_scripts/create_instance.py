@@ -15,21 +15,17 @@ import subprocess
 import shutil
 import stat
 import sys
-from cStringIO import StringIO
 
 import iniparse
 from config_check import getVersion
 
-client_template = """
-
-[clientCLIENT_NUM]
-# a copy of client1, except adjusted address and var location
-<= client1
-http-address = ${buildout:clientCLIENT_NUM-address}
-event-log = ${buildout:var-dir}/clientCLIENT_NUM/event.log
-z2-log    = ${buildout:var-dir}/clientCLIENT_NUM/Z2.log
-pid-file  = ${buildout:var-dir}/clientCLIENT_NUM/clientCLIENT_NUM.pid
-lock-file = ${buildout:var-dir}/clientCLIENT_NUM/clientCLIENT_NUM.lock
+BASE_ADDRESS = 8080
+ADD_CLIENTS_MARKER = "# __ZEO_CLIENTS_HERE__\n"
+CLIENT_TEMPLATE = """
+[client%(client_num)d]
+<= client_base
+recipe = plone.recipe.zope2instance
+http-address = %(client_port)d
 """
 
 
@@ -74,6 +70,9 @@ def inPlaceSub(fn, substitutions):
     fd.close()
 
 
+##########################################################
+# Get command line arguments
+#
 argparser = argparse.ArgumentParser(description="Plone instance creation utility")
 argparser.add_argument('--uidir', required=True)
 argparser.add_argument('--plone_home', required=True)
@@ -92,6 +91,9 @@ if not opt.password:
 opt.root_install = bool(int(opt.root_install))
 opt.run_buildout = bool(int(opt.run_buildout))
 
+##########################################################
+# Determine if we need a static lxml build
+#
 if opt.install_lxml == 'auto':
     if getVersion('xml2') >= 20708 and getVersion('xslt') >= 10126:
         print "Your platform's xml2/xslt are up-to-date. No need to build them."
@@ -102,9 +104,6 @@ if opt.install_lxml == 'auto':
 else:
     INSTALL_STATIC_LXML = opt.install_lxml
 
-
-BASE_ADDRESS = 8080
-CLIENTS = int(opt.clients)
 
 if opt.root_install:
     sudo_command = "sudo -u %s " % opt.buildout_user
@@ -124,6 +123,9 @@ substitutions = {
 }
 
 
+##########################################################
+# Copy the buildout skeleton into place, clean up a bit
+#
 print "Copying buildout skeleton"
 shutil.copytree(os.path.join(opt.uidir, 'base_skeleton'), opt.instance_home)
 
@@ -131,93 +133,66 @@ shutil.copytree(os.path.join(opt.uidir, 'base_skeleton'), opt.instance_home)
 doCommand('find %s -name "._*" -exec rm {} \; > /dev/null' % opt.instance_home)
 doCommand('find %s -name ".svn" | xargs rm -rf' % opt.instance_home)
 
-# create a client list and client templates;
-# we'll add them to the .cfg files later
-client_list = 'client1'
-client_parts = ''
-client_addresses = '# Additional clients:\n'
-for client in range(2, CLIENTS + 1):
-    client_parts = "%s%s" % (client_parts,
-        client_template.replace('CLIENT_NUM', str(client))
-        )
-    client_list = "%s client%s" % (client_list, client)
-    client_addresses = '%sclient%d-address = %d\n' % (client_addresses, client, 8080 + client - 1)
 
-#############################
+##########################################################
 # buildout.cfg customizations
+#
+CLIENTS = int(opt.clients)
 
-# read appropriate buildout template
-dest = os.path.join(opt.instance_home, 'buildout.cfg')
+buildout = iniparse.RawConfigParser()
+buildout.read(os.path.join(opt.uidir, 'buildout_templates', 'buildout.cfg'))
+
+# set the parts list
+parts = buildout.get('buildout', 'parts').split('\n')
 if opt.itype == 'standalone':
-    template = 'standalone.cfg'
+    parts.remove('client1')
+    parts.remove('zeoserver')
 else:
-    template = 'cluster.cfg'
-fd = file(os.path.join(opt.uidir, 'buildout_templates', template))
-buildout = fd.read()
-fd.close()
-
-buildout = buildout.replace('client1', client_list)
-buildout = buildout.replace('# Additional clients:', client_addresses)
+    parts.remove('instance')
+    parts.remove('repozo')
+    client_index = parts.index('client1')
+    for client in range(1, CLIENTS):
+        parts.insert(client_index + client, 'client%d' % (client + 1))
+if not opt.root_install:
+    parts.remove('setpermissions')
+buildout.set('buildout', 'parts', '\n'.join(parts))
 
 
 # set password
-buildout = buildout.replace('__PASSWORD__', opt.password)
+buildout.set('buildout', 'effective-user', opt.daemon_user)
 
 # set effective user
-buildout = buildout.replace('__CLIENT_USER__', opt.daemon_user)
+buildout.set('buildout', 'user', "admin:%s" % opt.password)
 
-# if this python doesn't have PIL, add PIL to the eggs
-try:
-    from _imaging import jpeg_decoder
-    jpeg_decoder  # avoid warning
-except:
-    buildout = buildout.replace('    Plone\n', '    Plone\n    Pillow\n')
+# remove unneeded sections
+if opt.itype == 'standalone':
+    buildout.remove_section('zeoserver')
+else:
+    buildout.remove_section('instance')
 
+# Insert variable number of zeo client specs. This doesn't fit the iniparse
+# model because the clients need to be inserted at particular
+# points without fouling comments or section order.
+iniparse.tidy(buildout)
+buildout = str(buildout.data)
+if opt.itype == 'standalone':
+    # remove extra clients marker
+    buildout = buildout.replace(ADD_CLIENTS_MARKER, '')
+else:
+    client_parts = ''
+    client_addresses = ''
+    for client in range(1, CLIENTS + 1):
+        options = {
+            'client_num': client,
+            'client_port': BASE_ADDRESS + client - 1,
+        }
+        client_parts = "%s%s" % (client_parts, CLIENT_TEMPLATE % options)
+    buildout = buildout.replace(ADD_CLIENTS_MARKER, client_parts)
+
+# write out buildout.cfg
 fn = os.path.join(opt.instance_home, 'buildout.cfg')
 fd = file(fn, 'w')
 fd.write(buildout)
-fd.close()
-os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
-
-
-#############################
-# base.cfg customizations
-
-fd = file(os.path.join(opt.uidir, 'buildout_templates', 'base.cfg'))
-base = fd.read()
-fd.close()
-
-base = "%s%s" % (base, client_parts)
-
-fd = StringIO(base)
-buildout = iniparse.INIConfig(fd)
-fd.close()
-
-mainClient = buildout.instance
-client1 = buildout.client1
-client2 = buildout.client2
-zeoServer = buildout.zeoserver
-
-if opt.root_install:
-    buildout.unifiedinstaller['sudo-command'] = ' sudo -u %s' % opt.daemon_user
-else:
-    # remove chown commands
-    for section in (buildout.chown, buildout['chown-zeo']):
-        section.command = \
-            '\n'.join([s for s in section.command.split('\n')
-                          if len(s) and not s.count('chown')])
-
-if opt.itype == 'standalone':
-    del buildout['zeoserver']
-    del buildout['client1']
-    del buildout['chown-zeo']
-else:
-    del buildout['instance']
-    del buildout['chown']
-
-fn = os.path.join(opt.instance_home, 'base.cfg')
-fd = file(fn, 'w')
-fd.write(str(buildout))
 fd.close()
 os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
 

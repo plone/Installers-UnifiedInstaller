@@ -17,7 +17,7 @@ class ConfigNamespace(object):
 
     # Methods that must be implemented by subclasses
 
-    def __getitem__(self, key):
+    def _getitem(self, key):
         return NotImplementedError(key)
 
     def __setitem__(self, key, value):
@@ -32,7 +32,15 @@ class ConfigNamespace(object):
     def _new_namespace(self, name):
         raise NotImplementedError(name)
 
-    # Machinery for converting dotted access into contained access
+    def __contains__(self, key):
+        try:
+            self._getitem(key)
+        except KeyError:
+            return False
+        return True
+
+    # Machinery for converting dotted access into container access,
+    # and automatically creating new sections/namespaces.
     #
     # To distinguish between accesses of class members and namespace
     # keys, we first call object.__getattribute__().  If that succeeds,
@@ -43,10 +51,18 @@ class ConfigNamespace(object):
     # not just in the __init__() function.  See BasicNamespace for
     # an example.
 
+    def __getitem__(self, key):
+        try:
+            return self._getitem(key)
+        except KeyError:
+            return Undefined(key, self)
+
     def __getattr__(self, name):
         try:
-            return self.__getitem__(name)
+            return self._getitem(name)
         except KeyError:
+            if name.startswith('__') and name.endswith('__'):
+                raise AttributeError
             return Undefined(name, self)
 
     def __setattr__(self, name, value):
@@ -63,9 +79,10 @@ class ConfigNamespace(object):
         except AttributeError:
             self.__delitem__(name)
 
-    def __getstate__(self):
-        return self.__dict__
-
+    # During unpickling, Python checks if the class has a __setstate__
+    # method.  But, the data dicts have not been initialised yet, which
+    # leads to  _getitem and hence __getattr__ raising an exception.  So
+    # we explicitly impement default __setstate__ behavior.
     def __setstate__(self, state):
         self.__dict__.update(state)
 
@@ -82,6 +99,10 @@ class Undefined(object):
         object.__setattr__(self, 'namespace', namespace)
 
     def __setattr__(self, name, value):
+        obj = self.namespace._new_namespace(self.name)
+        obj[name] = value
+
+    def __setitem__(self, name, value):
         obj = self.namespace._new_namespace(self.name)
         obj[name] = value
 
@@ -164,7 +185,7 @@ class BasicConfig(ConfigNamespace):
     def __init__(self):
         self._data = {}
 
-    def __getitem__(self, key):
+    def _getitem(self, key):
         return self._data[key]
 
     def __setitem__(self, key, value):
@@ -215,11 +236,11 @@ class BasicConfig(ConfigNamespace):
             name_components = name.split('.')
             ns = self
             for n in name_components[:-1]:
-                try:
+                if n in ns:
                     ns = ns[n]
                     if not isinstance(ns, ConfigNamespace):
                         raise TypeError('value-namespace conflict', n)
-                except KeyError:
+                else:
                     ns = ns._new_namespace(n)
             ns[name_components[-1]] = value
 
@@ -259,11 +280,11 @@ def update_config(target, source):
     for name in source:
         value = source[name]
         if isinstance(value, ConfigNamespace):
-            try:
+            if name in target:
                 myns = target[name]
                 if not isinstance(myns, ConfigNamespace):
                     raise TypeError('value-namespace conflict')
-            except KeyError:
+            else:
                 myns = target._new_namespace(name)
             update_config(myns, value)
         else:
