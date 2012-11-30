@@ -167,7 +167,7 @@ usage () {
     echo "  In a server-mode install, sets the effective user for running the"
     echo "  instance. Default is 'plone'. Ignored for non-server-mode installs."
     echo
-    echo "--with-python=/fullpathtopython2.6"
+    echo "--with-python=/fullpathtopython2.7"
     echo "  If you have an already built Python that's adequate to run"
     echo "  Zope / Plone, you may specify it here."
     echo "  virtualenv will be used to isolate the copy used for the install."

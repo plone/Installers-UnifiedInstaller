@@ -421,7 +421,7 @@ Apply settings by running bin/buildout in your buildout installation directory.
 Third-party products installed
 ==============================
 - PIL (Python Imaging Library)
-- libjpeg (JPEG library, usually installed to target/Python2.6/lib)
+- libjpeg (JPEG library)
 - libreadline (terminal mode command-line and prompt editing)
 - Cheetah, Paste, PasteDeploy, PasteScript, ZopeSkel
 - lxml, libxml2, libxslt
@@ -506,7 +506,7 @@ xbase file set, which includes expat in some versions of OpenBSD (4.2).
 
 Then, when you run the Unified Installer, add the command-line argument:
 
-    --with-python=/usr/local/bin/python2.6
+    --with-python=/usr/local/bin/python2.7
 
 
 Uninstall instructions
