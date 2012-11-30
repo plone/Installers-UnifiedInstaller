@@ -77,6 +77,8 @@ argparser = argparse.ArgumentParser(description="Plone instance creation utility
 argparser.add_argument('--uidir', required=True)
 argparser.add_argument('--plone_home', required=True)
 argparser.add_argument('--instance_home', default='zinstance')
+argparser.add_argument('--instance_var', default=None)
+argparser.add_argument('--backup_dir', default=None)
 argparser.add_argument('--daemon_user', default='plone_daemon')
 argparser.add_argument('--buildout_user', default='plone_buildout')
 argparser.add_argument('--password', required=False)
@@ -155,6 +157,7 @@ else:
         parts.insert(client_index + client, 'client%d' % (client + 1))
 if not opt.root_install:
     parts.remove('setpermissions')
+    parts.remove('precompiler')
 buildout.set('buildout', 'parts', '\n'.join(parts))
 
 
@@ -163,6 +166,11 @@ buildout.set('buildout', 'effective-user', opt.daemon_user)
 
 # set effective user
 buildout.set('buildout', 'user', "admin:%s" % opt.password)
+
+if opt.instance_var:
+    buildout.set('buildout', 'var-dir', opt.instance_var)
+if opt.backup_dir:
+    buildout.set('buildout', 'backups-dir', opt.backup_dir)
 
 # remove unneeded sections
 if opt.itype == 'standalone':

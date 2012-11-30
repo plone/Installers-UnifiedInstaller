@@ -61,6 +61,14 @@
 # --nobuildout
 #   Skip running bin/buildout. You should know what you're doing.
 #
+# --var=pathname
+#   Full pathname to the directory where you'd like to put the "var"
+#   components of the install. By default target/instance/var.
+#
+# --backup=pathname
+#   Full pathname to the directory where you'd like to put the backup
+#   directories for the install. By default target/instance/var.
+#
 # Library build control options:
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
@@ -245,6 +253,22 @@ do
         --instance=* | -instance=* )
             if [ "$optarg" ]; then
                 INSTANCE_NAME="$optarg"
+            else
+                usage
+            fi
+            ;;
+
+        --var=* | -var=* )
+            if [ "$optarg" ]; then
+                INSTANCE_VAR="$optarg"
+            else
+                usage
+            fi
+            ;;
+
+        --backup=* | -backup=* )
+            if [ "$optarg" ]; then
+                BACKUP_DIR="$optarg"
             else
                 usage
             fi
@@ -911,6 +935,9 @@ $SUDO "$PY" "$CWD/helper_scripts/create_instance.py" \
     "--install_lxml=$INSTALL_LXML" \
     "--itype=$INSTALL_METHOD" \
     "--password=$PASSWORD" \
+    "--instance_var=$INSTANCE_VAR" \
+    "--backup_dir=$BACKUP_DIR" \
+    "--instance_home=$INSTANCE_HOME" \
     "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
 if [ $? -gt 0 ]; then
     echo "Buildout failed. Unable to continue"
@@ -922,14 +949,14 @@ echo "Buildout completed"
 PWFILE=$INSTANCE_HOME/adminPassword.txt
 RMFILE=$INSTANCE_HOME/README.html
 
-if [ $ROOT_INSTALL -eq 1 ]; then
-    chmod 600 "$INSTANCE_HOME"/*.cfg
-    chmod 654 "$INSTANCE_HOME"/bin/*
-    chmod 744 "$INSTANCE_HOME"/bin/buildout
-    chmod 755 "$INSTANCE_HOME"/bin/zopeskel
-    chown -R "$DAEMON_USER":"$PLONE_GROUP" "$INSTANCE_HOME"/var
-    chmod -R 770 "$INSTANCE_HOME"/var
-fi
+# if [ $ROOT_INSTALL -eq 1 ]; then
+#     chmod 600 "$INSTANCE_HOME"/*.cfg
+#     chmod 654 "$INSTANCE_HOME"/bin/*
+#     chmod 744 "$INSTANCE_HOME"/bin/buildout
+#     chmod 755 "$INSTANCE_HOME"/bin/zopeskel
+#     chown -R "$DAEMON_USER":"$PLONE_GROUP" "$INSTANCE_HOME"/var
+#     chmod -R 770 "$INSTANCE_HOME"/var
+# fi
 
 #######################
 # Conclude installation
