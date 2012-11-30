@@ -55,7 +55,7 @@
 #
 # --with-site-packages
 #   When --with-python is used to specify a python, that python is isolated
-#   via virtualenv using the --no-site-packages argument. Set the --with-site-
+#   via virtualenv without site packages. Set the --with-site-
 #   packages flag if you want to include system packages.
 #
 # --nobuildout
@@ -745,7 +745,7 @@ then
         "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     else
         echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py --no-site-packages "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     fi
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
