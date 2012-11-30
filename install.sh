@@ -449,21 +449,6 @@ if [ -x "$PLONE_HOME/Python-2.7/bin/python" ] ; then
 fi
 
 
-# if [ ! -n "$HAVE_PYTHON" ] && [ ! -f "$PACKAGES_DIR/$PYTHON_TB" ] && [ "x$WITH_PYTHON" = "x" ]; then
-#     # we don't have a python tarball or a --with-python
-#     # specification; so let's see if we can find a system
-#     # python
-#     WITH_PYTHON=`which python2.6`
-#     if [ $? -gt 0 ] || [ ! -x "$WITH_PYTHON" ]; then
-#         echo
-#         echo "Installation has failed."
-#         echo "Unable to find a Python 2.6 executable or tarball."
-#         echo "Use --with-python=... to specify a Python executable."
-#         exit 1
-#     fi
-# fi
-
-
 # If --with-python has been used, check the argument for our requirements.
 if [ "$WITH_PYTHON" ]; then
     if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
@@ -723,7 +708,6 @@ fi
 # Now we know where our Python is, and may finish setting our paths
 LOCAL_HOME="$PY_HOME"
 EI="$PY_HOME/bin/easy_install"
-SITE_PACKAGES="$PY_HOME/lib/python2.6/site-packages"
 BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
 BUILDOUT_DIST="$PLONE_HOME/buildout-cache/downloads/dist"
 
