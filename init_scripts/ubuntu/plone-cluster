@@ -14,7 +14,7 @@
 
 RETVAL=0
 
-# this is for the default install path for Plone-3.0-buildout
+# this is for the default install path for Plone-4.x-buildout
 clusterpath="/usr/local/Plone/zeocluster"
 
 prog="plone"
