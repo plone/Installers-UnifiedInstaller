@@ -106,13 +106,6 @@ if opt.install_lxml == 'auto':
 else:
     INSTALL_STATIC_LXML = opt.install_lxml
 
-
-if opt.root_install:
-    sudo_command = "sudo -u %s " % opt.buildout_user
-else:
-    sudo_command = ""
-
-
 substitutions = {
     "PLONE_HOME": opt.plone_home,
     "INSTANCE_HOME": opt.instance_home,
@@ -123,7 +116,6 @@ substitutions = {
     "DISTRIBUTE_EGG": findEgg('distribute', opt.plone_home),
     "BUILDOUT_EGG": findEgg('zc.buildout', opt.plone_home),
 }
-
 
 ##########################################################
 # Copy the buildout skeleton into place, clean up a bit
@@ -160,12 +152,14 @@ if not opt.root_install:
     parts.remove('precompiler')
 buildout.set('buildout', 'parts', '\n'.join(parts))
 
-
 # set password
-buildout.set('buildout', 'effective-user', opt.daemon_user)
-
-# set effective user
 buildout.set('buildout', 'user', "admin:%s" % opt.password)
+
+# set effective users
+buildout.set('buildout', 'effective-user', opt.daemon_user)
+buildout.set('buildout', 'buildout-user', opt.buildout_user)
+if not opt.root_install:
+    buildout.set('buildout', 'need-sudo', "no")
 
 if opt.instance_var:
     buildout.set('buildout', 'var-dir', opt.instance_var)
