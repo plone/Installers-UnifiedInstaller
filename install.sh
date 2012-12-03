@@ -35,11 +35,11 @@
 #
 # --user=user-name
 #   In a server-mode install, sets the effective user for running the
-#   instance. Default is 'plone_user'. Ignored for non-server-mode installs.
+#   instance. Default is 'plone_daemon'. Ignored for non-server-mode installs.
 #
 # --owner=owner-name
 #   In a server-mode install, sets the overall owner of the installation.
-#   Default is 'buildout_user'. This is the user id that should be employed
+#   Default is 'plone_buildout'. This is the user id that should be employed
 #   to run buildout or make src or product changes.
 #   Ignored for non-server-mode installs.
 #
