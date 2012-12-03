@@ -217,14 +217,16 @@ if opt.run_buildout:
     os.chdir(opt.instance_home)
 
     if INSTALL_STATIC_LXML == 'yes':
-        print "Building lxml with static libxml2/libxslt; this takes a while..."
+        print "Building lxml with static libxml2/libxslt; this requires Internet access,"
+        print "and takes a while..."
         returncode = doCommand(
             os.path.join(opt.instance_home, 'bin', 'buildout') + \
-            " -c lxml_static.cfg -NU buildout:install-from-cache=true")
+            " -c lxml_static.cfg")
         if returncode:
-            print "\nlxml build failed. You may wish to clean up and try again"
-            print "without the lxml build by adding --without-lxml to the"
-            print "command line."
+            print "\nstatic lxml build failed. You may wish to try installing your platform's"
+            print "most current libxml2/libxslt libraries (dev versions). Then, run bin/buildout for the"
+            print "installation target. If compatible libxml2/libxslt libraries are found, lxml will"
+            print "be built automatically."
         else:
             # cleanup; if we leave around .installed.cfg, it will give
             # us a cascade of misleading messages and under some circumstances
