@@ -68,17 +68,13 @@ class RawConfigParser(object):
 
         The DEFAULT section is not acknowledged.
         """
-        try:
-            self.data[section]
-            return True
-        except KeyError:
-            return False
+        return (section in self.data)
 
     def options(self, section):
         """Return a list of option names for the given section name."""
-        try:
+        if section in self.data:
             return list(self.data[section])
-        except KeyError:
+        else:
             raise NoSectionError(section)
 
     def read(self, filenames):
@@ -119,19 +115,20 @@ class RawConfigParser(object):
             raise NoSectionError(section)
         if vars is not None and option in vars:
             value = vars[option]
-        try:
-            sec = self.data[section]
+
+        sec = self.data[section]
+        if option in sec:
             return sec._compat_get(option)
-        except KeyError:
+        else:
             raise NoOptionError(option, section)
 
     def items(self, section):
-        try:
+        if section in self.data:
             ans = []
             for opt in self.data[section]:
                 ans.append((opt, self.get(section, opt)))
             return ans
-        except KeyError:
+        else:
             raise NoSectionError(section)
 
     def getint(self, section, option):
@@ -151,21 +148,17 @@ class RawConfigParser(object):
 
     def has_option(self, section, option):
         """Check for the existence of a given option in a given section."""
-        try:
+        if section in self.data:
             sec = self.data[section]
-        except KeyError:
+        else:
             raise NoSectionError(section)
-        try:
-            sec[option]
-            return True
-        except KeyError:
-            return False
+        return (option in sec)
 
     def set(self, section, option, value):
         """Set an option."""
-        try:
+        if section in self.data:
             self.data[section][option] = value
-        except KeyError:
+        else:
             raise NoSectionError(section)
 
     def write(self, fp):
@@ -174,15 +167,14 @@ class RawConfigParser(object):
 
     def remove_option(self, section, option):
         """Remove an option."""
-        try:
+        if section in self.data:
             sec = self.data[section]
-        except KeyError:
+        else:
             raise NoSectionError(section)
-        try:
-            sec[option]
+        if option in sec:
             del sec[option]
             return 1
-        except KeyError:
+        else:
             return 0
 
     def remove_section(self, section):

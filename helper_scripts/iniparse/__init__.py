@@ -3,11 +3,23 @@
 # Copyright (c) 2007 Tim Lauridsen <tla@rasmil.dk>
 # All Rights Reserved.  See LICENSE-PSF & LICENSE for details.
 
-from ini import INIConfig
+from ini import INIConfig, change_comment_syntax
 from config import BasicConfig, ConfigNamespace
 from compat import RawConfigParser, ConfigParser, SafeConfigParser
+from utils import tidy
+
+from ConfigParser import DuplicateSectionError,    \
+                  NoSectionError, NoOptionError,   \
+                  InterpolationMissingOptionError, \
+                  InterpolationDepthError,         \
+                  InterpolationSyntaxError,        \
+                  DEFAULTSECT, MAX_INTERPOLATION_DEPTH
 
 __all__ = [
-    'INIConfig', 'BasicConfig', 'ConfigNamespace',
+    'BasicConfig', 'ConfigNamespace',
+    'INIConfig', 'tidy', 'change_comment_syntax',
     'RawConfigParser', 'ConfigParser', 'SafeConfigParser',
+    'DuplicateSectionError', 'NoSectionError', 'NoOptionError',
+    'InterpolationMissingOptionError', 'InterpolationDepthError',
+    'InterpolationSyntaxError', 'DEFAULTSECT', 'MAX_INTERPOLATION_DEPTH',
 ]

@@ -54,6 +54,7 @@ Outline of this document
 
 Installation Instructions
 =========================
+
 The installer will compile Python, Zope, and key required libraries from
 source. (Basic build tools and common libraries are required. See
 "Dependencies" and "Recommended Libraries" below.)
@@ -83,9 +84,9 @@ For more detail on both root/non-root and ZEO/standalone choices, see
 "Installing on Linux / Unix / BSD":http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd
 in the Plone.Org documentation section.
 
-
 For a super-user (root) installation
 ------------------------------------
+
 If you run the installation with root privileges, it will install
 Python/Zope/Plone to /usr/local/Plone
 
@@ -93,8 +94,9 @@ Python/Zope/Plone to /usr/local/Plone
 /Applications/Plone for the root install. Please replace /usr/local with
 /Applications in the instructions below.]
 
-A "plone" user will be added, and Zope will be configured to
-run under that user id. You will need to start Zope as root or via sudo.
+Two Plone users will be created: plone_daemon and plone_buildout.
+You will need to start Plone as plone_daemon and run buildout
+as plone_buildout..
 
 To install Plone 4.2 in a stand-alone (single Zope instance) configuration:
 
@@ -213,13 +215,16 @@ Required
 * libssl (SSL support)
      Unless you use --with-python
      libssl-dev
+* zlib (GZ compression)
+     zlibg-dev
 
 Recommended
 -----------
-* zlib (GZ compression)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
-     zlibg-dev
+
+The installer will try to build these for you if they are missing from
+your system. But, the more of these that you install as system libraries,
+the less likely you are to have install problems.
+
 * libjpeg (jpeg support)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
@@ -233,6 +238,12 @@ Recommended
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
      libreadline5-dev readline-common
+
+Optional
+--------
+
+Mainly used to support indexing of office-automation documents.
+
 * wv (used to index Word documents)
      wv
      <http://wvware.sourceforge.net/>
@@ -244,10 +255,13 @@ Recommended
 
 Install Location, Root Install
 ==============================
+
 - Base install at /usr/local/Plone by default. This may be changed
   with the --target installation option. If you change it, you'll also need
   to change the paths below.
+
 - Python installed at /usr/local/Plone/Python-2.7
+
 - For ZEO Cluster
 	- ZEO cluster (server and 2 clients) installed and configured at /usr/local/Plone/zeocluster
 	  Both --target and --name options may change this.
@@ -255,6 +269,7 @@ Install Location, Root Install
 	  (You may also install products via buildout.)
 	- Data.fs (ZODB) at /usr/local/Plone/zeocluster/var/filestorage
 	- adminPassword.txt at /usr/local/Plone/zeocluster/adminPassword.txt
+
 - For Stand-Alone:
 	- Zope Instance installed and configured at /usr/local/Plone/zinstance
 	  Both --target and --name options may change this.
@@ -266,6 +281,7 @@ Install Location, Root Install
 
 Install Location, Root-less Install
 ===================================
+
 - Base install at $HOME/Plone, where $HOME is the user's home
   directory, by default. This may be changed with the --target installation
   option. If you change it, you'll also need to change the paths below.
@@ -291,57 +307,46 @@ Startup/Shutdown/Restart/Status instructions
 
 Root Install
 ------------
-Stand-Alone:
-	To start Plone,
-		>> sudo /usr/local/Plone/zinstance/bin/plonectl start
 
-	To stop Plone,
-		>> sudo /usr/local/Plone/zinstance/bin/plonectl stop
+To start Plone::
 
-	To check status,
-		>> sudo /usr/local/Plone/zinstance/bin/plonectl status
+		>> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl start
 
-ZEO Cluster:
-	To start Plone,
-		>> sudo /usr/local/Plone/zeocluster/bin/plonectl start
+To stop Plone::
 
-	To stop Plone,
-		>> sudo /usr/local/Plone/zeocluster/bin/plonectl stop
+		>> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl stop
 
-	To restart Plone,
-		>> sudo /usr/local/Plone/zeocluster/bin/plonectl restart
+To restart Plone::
 
-	To check status,
-		>> sudo /usr/local/Plone/zeocluster/bin/plonectl status
+        >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl restart
+
+To check status::
+
+		>> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl status
 
 Root-less Install
 -----------------
-Stand-Alone:
-	To start Plone,
-		>> $HOME/Plone/zinstance/bin/plonectl start
 
-	To stop Plone,
-		>> $HOME/Plone/zinstance/bin/plonectl stop
+To start Plone::
 
-	To check status,
-		>> $HOME/Plone/zinstance/bin/plonectl status
-
-ZEO Cluster:
-	To start Plone,
 		>> $HOME/Plone/zeocluster/bin/plonectl start
 
-	To stop Plone,
+To stop Plone::
+
 		>> $HOME/Plone/zeocluster/bin/plonectl stop
 
-	To restart Plone,
+To restart Plone::
+
 		>> $HOME/Plone/zeocluster/bin/plonectl restart
 
-	To check status,
+To check status::
+
 		>> $HOME/Plone/zeocluster/bin/plonectl status
 
 
 Ports
 =====
+
 Stand-Alone:
 	- Zope server runs on port 8080
 
@@ -351,6 +356,7 @@ ZEO Cluster:
 	- ZEO server runs on port 8100
 	- ZEO client1 runs on port 8080
 	- ZEO client2 runs on port 8081
+    ...
 
 	Edit buildout.cfg and run bin/buildout to change ports.
 
@@ -383,7 +389,23 @@ Root Install Notes
 ==================
 
 If you install as root, the installer will set you instance up for operation
-under a specific user id. The id, "plone" unless you specify otherwise, will be
+under specific user and group ids.
+
+user: plone_daemon
+    This user id will be used to own the "var" and "backup" components of
+    the install. You should run Plone using this user id::
+
+        sudo -u plone_daemon bin/plonectl start
+
+user: plone_buildout
+    This user id will own everything else in your installation. You must
+    run buildout using this user id::
+
+        sudo -u plone_buildout bin/buildout
+
+group: plone_group
+
+ The id, "plone" unless you specify otherwise, will be
 created if it doesn't exist.
 
 The Zope daemon will be set up run under this user id, and the user will be the
@@ -403,6 +425,7 @@ risk.
 
 Updating After Installation
 ===========================
+
 Always back up your installation before customizing or updating.
 
 Customizing the installation
@@ -420,12 +443,12 @@ Apply settings by running bin/buildout in your buildout installation directory.
 
 Third-party products installed
 ==============================
+
 - PIL (Python Imaging Library)
 - libjpeg (JPEG library)
 - libreadline (terminal mode command-line and prompt editing)
 - Cheetah, Paste, PasteDeploy, PasteScript, ZopeSkel
 - lxml, libxml2, libxslt
-- The buildout recipe also installs elementtree
 
 
 Platform Notes

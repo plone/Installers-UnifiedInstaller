@@ -21,6 +21,7 @@ Example:
     >>> print cfg['foo-ext'].special
     1
     >>> cfg.foo.newopt = 'hi!'
+    >>> cfg.baz.enabled = 0
 
     >>> print cfg
     # configure foo-application
@@ -30,6 +31,9 @@ Example:
     newopt = hi!
     [foo-ext]
     special = 1
+    <BLANKLINE>
+    [baz]
+    enabled = 0
 
 """
 
@@ -157,6 +161,14 @@ class OptionLine(LineType):
         return cls(name, value, sep, comment, csep, coff, line)
     parse = classmethod(parse)
 
+
+def change_comment_syntax(comment_chars='%;#', allow_rem=False):
+    comment_chars = re.sub(r'([\]\-\^])', r'\\\1', comment_chars)
+    regex = r'^(?P<csep>[%s]' % comment_chars
+    if allow_rem:
+        regex += '|[rR][eE][mM]'
+    regex += r')(?P<comment>.*)$'
+    CommentLine.regex = re.compile(regex)
 
 class CommentLine(LineType):
     regex = re.compile(r'^(?P<csep>[;#]|[rR][eE][mM])'
@@ -339,7 +351,7 @@ class INISection(config.ConfigNamespace):
             value = re.sub('\n+', '\n', value)
         return value
 
-    def __getitem__(self, key):
+    def _getitem(self, key):
         if key == '__name__':
             return self._lines[-1].name
         if self._optionxform: key = self._optionxform(key)
@@ -461,7 +473,7 @@ class INIConfig(config.ConfigNamespace):
     _optionxform = _make_xform_property('_optionxform', 'optionxform')
     _sectionxform = _make_xform_property('_sectionxform', 'optionxform')
 
-    def __getitem__(self, key):
+    def _getitem(self, key):
         if key == DEFAULTSECT:
             return self._defaults
         if self._sectionxform: key = self._sectionxform(key)
@@ -627,4 +639,5 @@ class INIConfig(config.ConfigNamespace):
 
         if exc:
             raise exc
+
 

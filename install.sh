@@ -35,7 +35,18 @@
 #
 # --user=user-name
 #   In a server-mode install, sets the effective user for running the
-#   instance. Default is 'plone'. Ignored for non-server-mode installs.
+#   instance. Default is 'plone_daemon'. Ignored for non-server-mode installs.
+#
+# --owner=owner-name
+#   In a server-mode install, sets the overall owner of the installation.
+#   Default is 'plone_buildout'. This is the user id that should be employed
+#   to run buildout or make src or product changes.
+#   Ignored for non-server-mode installs.
+#
+# --group=group-name
+#   In a server-mode install, sets the effective group for the daemon and
+#   buildout users. Default is 'plone_group'.
+#   Ignored for non-server-mode installs.
 #
 # --with-python=/fullpathtopython2.7.x
 #   If you have an already built Python that's adequate to run
@@ -44,11 +55,19 @@
 #
 # --with-site-packages
 #   When --with-python is used to specify a python, that python is isolated
-#   via virtualenv using the --no-site-packages argument. Set the --with-site-
+#   via virtualenv without site packages. Set the --with-site-
 #   packages flag if you want to include system packages.
 #
 # --nobuildout
 #   Skip running bin/buildout. You should know what you're doing.
+#
+# --var=pathname
+#   Full pathname to the directory where you'd like to put the "var"
+#   components of the install. By default target/instance/var.
+#
+# --backup=pathname
+#   Full pathname to the directory where you'd like to put the backup
+#   directories for the install. By default target/instance/var.
 #
 # Library build control options:
 # --libjpeg=auto|yes|no
@@ -83,8 +102,11 @@ else
   INSTALL_READLINE=auto
 fi
 
-# default user ids for effective user in root installs; ignored in non-root.
-EFFECTIVE_USER=plone
+# default user/group ids for root installs; ignored in non-root.
+DAEMON_USER=plone_daemon
+BUILDOUT_USER=plone_buildout
+PLONE_GROUP=plone_group
+
 
 # End of commonly configured options.
 #################################################
@@ -119,7 +141,8 @@ else
     ROOT_INSTALL=0
     # set paths to local versions
     PLONE_HOME=$LOCAL_HOME
-    EFFECTIVE_USER=$USER
+    DAEMON_USER=$USER
+    BUILDOUT_USER=$USER
 fi
 
 
@@ -159,13 +182,23 @@ usage () {
     echo
     echo "--instance=instance-name"
     echo "  Use to specify the name of the operating instance to be created."
-    echo "  This will be created inside the target directory unless there's"
-    echo "  a slash in the specification."
+    echo "  This will be created inside the target directory."
     echo "  Default is 'zinstance' for standalone, 'zeocluster' for ZEO."
     echo
     echo "--user=user-name"
     echo "  In a server-mode install, sets the effective user for running the"
-    echo "  instance. Default is 'plone'. Ignored for non-server-mode installs."
+    echo "  instance. Default is 'plone_daemon'. Ignored for non-server-mode installs."
+    echo
+    echo "--owner=owner-name"
+    echo "  In a server-mode install, sets the overall owner of the installation."
+    echo "  Default is 'buildout_user'. This is the user id that should be employed"
+    echo "  to run buildout or make src or product changes."
+    echo "  Ignored for non-server-mode installs."
+    echo
+    echo "--group=group-name"
+    echo "  In a server-mode install, sets the effective group for the daemon and"
+    echo "  buildout users. Default is 'plone_group'."
+    echo "  Ignored for non-server-mode installs."
     echo
     echo "--with-python=/fullpathtopython2.7"
     echo "  If you have an already built Python that's adequate to run"
@@ -225,9 +258,41 @@ do
             fi
             ;;
 
+        --var=* | -var=* )
+            if [ "$optarg" ]; then
+                INSTANCE_VAR="$optarg"
+            else
+                usage
+            fi
+            ;;
+
+        --backup=* | -backup=* )
+            if [ "$optarg" ]; then
+                BACKUP_DIR="$optarg"
+            else
+                usage
+            fi
+            ;;
+
         --user=* | -user=* )
             if [ "$optarg" ]; then
-                EFFECTIVE_USER="$optarg"
+                DAEMON_USER="$optarg"
+            else
+                usage
+            fi
+            ;;
+
+        --owner=* | -owner=* )
+            if [ "$optarg" ]; then
+                BUILDOUT_USER="$optarg"
+            else
+                usage
+            fi
+            ;;
+
+        --group=* | -group=* )
+            if [ "$optarg" ]; then
+                PLONE_GROUP="$optarg"
             else
                 usage
             fi
@@ -323,7 +388,13 @@ echo
 
 
 if [ $ROOT_INSTALL -eq 1 ]; then
-    SUDO="sudo -u $EFFECTIVE_USER"
+    which sudo > /dev/null
+    if [ $? -gt 0 ]; then
+        echo "sudo utility is required to do a server-mode install."
+        echo
+        exit 1
+    fi
+    SUDO="sudo -u $BUILDOUT_USER"
 else
     SUDO=""
 fi
@@ -584,7 +655,9 @@ fi
 ######################################
 # Pre-install messages
 if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Root install method chosen. Will install for use by system user $EFFECTIVE_USER"
+    echo "Root install method chosen. Will install for use by users:"
+    echo "  ZEO & Client Daemons:      $DAEMON_USER"
+    echo "  Code Resources & buildout: $BUILDOUT_USER"
 else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
@@ -596,15 +669,18 @@ echo ""
 #######################################
 # create os users for root-level install
 if [ $ROOT_INSTALL -eq 1 ]; then
-    . helper_scripts/make_plone_user.sh
-    createUser "$EFFECTIVE_USER"
-    id "$TARGET_USER" > /dev/null 2>&1
-    if [ "$?" != "0" ]; then
-        echo "Creating user $TARGET_USER failed"
-        echo
-        echo "Installation has failed."
-        exit 1
-    fi
+    # source user/group utilities
+    . helper_scripts/user_group_utilities.sh
+
+    # see if we know how to do this on this platfrom
+    check_ug_ability
+
+    create_group $PLONE_GROUP
+    create_user $DAEMON_USER $PLONE_GROUP
+    check_user $DAEMON_USER $PLONE_GROUP
+    create_user $BUILDOUT_USER $PLONE_GROUP
+    check_user $BUILDOUT_USER $PLONE_GROUP
+
 fi # if $ROOT_INSTALL
 
 
@@ -647,6 +723,17 @@ else
     RINSTANCE_HOME=$PLONE_HOME/$RINSTANCE_HOME
 fi
 
+# Determine and check instance home
+if [ $INSTALL_ZEO -eq 1 ]; then
+    INSTANCE_HOME=$ZEOCLUSTER_HOME
+elif [ $INSTALL_STANDALONE -eq 1 ]; then
+    INSTANCE_HOME=$RINSTANCE_HOME
+fi
+if [ -x "$INSTANCE_HOME" ]; then
+    echo "Instance target $INSTANCE_HOME already exists; aborting install."
+    exit 1
+fi
+
 cd "$CWD"
 
 if  [ "X$INSTALL_ZLIB" = "Xyes" ] || [ "X$INSTALL_JPEG" = "Xyes" ]; then
@@ -667,7 +754,7 @@ then
         "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     else
         echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py --no-site-packages "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     fi
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
@@ -711,7 +798,6 @@ EI="$PY_HOME/bin/easy_install"
 BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
 BUILDOUT_DIST="$PLONE_HOME/buildout-cache/downloads/dist"
 
-
 if [ ! -x "$LOCAL_HOME" ]; then
     mkdir "$LOCAL_HOME"
 fi
@@ -719,7 +805,6 @@ if [ ! -x "$LOCAL_HOME" ]; then
     echo "Unable to create $LOCAL_HOME"
     exit 1
 fi
-
 
 if [ -x "$PY" ]; then
     echo "Python found at $PY; Skipping Python install."
@@ -795,7 +880,6 @@ else
     mkdir "$BUILDOUT_CACHE"/downloads
 fi
 
-
 if [ -x "$CWD/Plone-docs" ] && [ ! -x "$PLONE_HOME/Plone-docs" ]; then
     echo "Copying Plone-docs"
     cp -R "$CWD/Plone-docs" "$PLONE_HOME/Plone-docs"
@@ -804,90 +888,59 @@ fi
 
 cd "$CWD"
 
-######################
-# Postinstall steps
-######################
+########################
+# Instance install steps
+########################
 
 
 cd "$CWD"
 
-
-if [ "x$PASSWORD" = "x" ]; then
-    ##########################
-    # Generate random password
-    echo "Generating random password ..."
-    PASSWORD_SCRIPT=helper_scripts/generateRandomPassword.py
-    PASSWORD=`"$PY" $PASSWORD_SCRIPT`
+if [ $ROOT_INSTALL -eq 1 ]; then
+    echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER"
+    chown -R "$BUILDOUT_USER" "$PLONE_HOME"
 fi
-
 
 ################################################
 # Install the zeocluster or stand-alone instance
 if [ $INSTALL_ZEO -eq 1 ]; then
-    if [ -x "$ZEOCLUSTER_HOME" ]; then
-        echo "Instance target $ZEOCLUSTER_HOME already exists; aborting install."
-        exit 1
-    fi
-    "$PY" helper_scripts/create_instance.py \
-        "$CWD" \
-        "$PLONE_HOME" \
-        "$ZEOCLUSTER_HOME" \
-        "$EFFECTIVE_USER" \
-        "$EFFECTIVE_USER" \
-        "$PASSWORD" \
-        "$ROOT_INSTALL" \
-        "$RUN_BUILDOUT" \
-        "$INSTALL_LXML" \
-        "$OFFLINE" \
-        "cluster" \
-        "$INSTALL_LOG" \
-        "$CLIENT_COUNT"
-    if [ $? -gt 0 ]; then
-        echo "Buildout failed. Unable to continue"
-        seelog
-        exit 1
-    fi
-    INSTANCE=$ZEOCLUSTER_HOME
+    INSTALL_METHOD="cluster"
 elif [ $INSTALL_STANDALONE -eq 1 ]; then
-    if [ -x "$RINSTANCE_HOME"  ]; then
-        echo "Instance target $RINSTANCE_HOME already exists; aborting install."
-        exit 1
-    fi
-    "$PY" helper_scripts/create_instance.py \
-        "$CWD" \
-        "$PLONE_HOME" \
-        "$RINSTANCE_HOME" \
-        "$EFFECTIVE_USER" \
-        "0" \
-        "$PASSWORD" \
-        "$ROOT_INSTALL" \
-        "$RUN_BUILDOUT" \
-        "$INSTALL_LXML" \
-        "$OFFLINE" \
-        "standalone" \
-        "$INSTALL_LOG" \
-        "0"
-    if [ $? -gt 0 ]; then
-        echo "Buildout failed. Unable to continue"
-        seelog
-        exit 1
-    fi
-    INSTANCE=$RINSTANCE_HOME
+    INSTALL_METHOD="standalone"
+    CLIENT_COUNT=0
 fi
-
-PWFILE=$INSTANCE/adminPassword.txt
-RMFILE=$INSTANCE/README.html
-
-if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Setting instance ownership to $EFFECTIVE_USER"
-    chown -R "$EFFECTIVE_USER" "$INSTANCE"
-    echo "Setting buildout cache ownership to $EFFECTIVE_USER"
-    chown -R "$EFFECTIVE_USER" "$BUILDOUT_CACHE"
-    # And the config files
-    chown root "$INSTANCE"/*.cfg
-    chmod 644 "$INSTANCE"/*.cfg
+$SUDO "$PY" "$CWD/helper_scripts/create_instance.py" \
+    "--uidir=$CWD" \
+    "--plone_home=$PLONE_HOME" \
+    "--instance_home=$INSTANCE_HOME" \
+    "--daemon_user=$DAEMON_USER" \
+    "--buildout_user=$BUILDOUT_USER" \
+    "--root_install=$ROOT_INSTALL" \
+    "--run_buildout=$RUN_BUILDOUT" \
+    "--install_lxml=$INSTALL_LXML" \
+    "--itype=$INSTALL_METHOD" \
+    "--password=$PASSWORD" \
+    "--instance_var=$INSTANCE_VAR" \
+    "--backup_dir=$BACKUP_DIR" \
+    "--instance_home=$INSTANCE_HOME" \
+    "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
+if [ $? -gt 0 ]; then
+    echo "Buildout failed. Unable to continue"
+    seelog
+    exit 1
 fi
+echo "Buildout completed"
 
+PWFILE=$INSTANCE_HOME/adminPassword.txt
+RMFILE=$INSTANCE_HOME/README.html
+
+# if [ $ROOT_INSTALL -eq 1 ]; then
+#     chmod 600 "$INSTANCE_HOME"/*.cfg
+#     chmod 654 "$INSTANCE_HOME"/bin/*
+#     chmod 744 "$INSTANCE_HOME"/bin/buildout
+#     chmod 755 "$INSTANCE_HOME"/bin/zopeskel
+#     chown -R "$DAEMON_USER":"$PLONE_GROUP" "$INSTANCE_HOME"/var
+#     chmod -R 770 "$INSTANCE_HOME"/var
+# fi
 
 #######################
 # Conclude installation

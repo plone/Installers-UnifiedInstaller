@@ -1,3 +1,15 @@
+NG - Unreleased Dev Branch
+
+    - On server mode installs, isolate the daemon a bit more by having
+      it run as a user distinct from the one owning the rest of the
+      buildout.
+
+    - On server mode installs, run buildout as the buildout user rather
+      than root.
+
+    - Loosen the coupling between install.sh and create_instance.py by
+      using getopts style command-line arguments.
+
 4.2.2 - update 2012-11-09
 
     - Incorporate Products.PloneHotfix20121106 == 1.2
