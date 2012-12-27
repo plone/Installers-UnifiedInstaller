@@ -139,13 +139,6 @@ buildout = buildout.replace('__PASSWORD__', PASSWORD)
 # set effective user
 buildout = buildout.replace('__CLIENT_USER__', CLIENT_USER)
 
-# if this python doesn't have PIL, add PIL to the eggs
-try:
-    from _imaging import jpeg_decoder
-except:
-    buildout = buildout.replace('    Plone\n', '    Plone\n    Pillow\n')
-
-
 fn = os.path.join(INSTANCE_HOME, 'buildout.cfg')
 fd = file(fn, 'w')
 fd.write(buildout)
