@@ -176,8 +176,9 @@ Options:
   Optional. Installs a local readline library. Only necessary
   on platforms with odd libraries (like OS X Leopard).
 
---without-ssl
-  Optional. Allows the build to proceed without ssl dependency tests.
+--static-lxml
+  Optional. Forces a static build of libxml2 and libxslt. Requires an
+  Internet connection.
 
 Note that you may run install.sh repeatedly for the same target so long
 as you either use a different installation method or specify different
@@ -210,28 +211,25 @@ Required
 --------
 * Build Essentials (gcc, make)
      build-essential
+* zlib (GZ compression), dev version
+     zlibg-dev
 * libssl (SSL support)
      Unless you use --with-python
      libssl-dev
+* libxml2, libxslt,  dev versions
+    Unless you specify --static-lxml
+    libxml2-dev
+    libxslt1-dev
 
 Recommended
 -----------
-* zlib (GZ compression)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
-     zlibg-dev
 * libjpeg (jpeg support)
      The Unified Installer will install this for you if necessary,
      but system libraries are usually preferable.
      libjpeg-dev
-* libxml2, libxslt
-    If these are up-to-date, the installer will use them rather than building
-    static libraries of its own.
-    libxml2-dev
-    libxslt1-dev
 * readline (Python command-line history)
      The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
+     but system libraries are preferable.
      libreadline5-dev readline-common
 * wv (used to index Word documents)
      wv

@@ -53,6 +53,10 @@
 # Library build control options:
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
+#
+# --static-lxml
+#   Forces a static built of libxml2 and libxslt dependencies. Requires
+#   Internet access to download components.
 
 
 # Path for Root install
@@ -73,7 +77,7 @@ ZEOCLUSTER_HOME=zeocluster
 # a stand-alone (non-zeo) instance will go here (inside $PLONE_HOME):
 RINSTANCE_HOME=zinstance
 
-INSTALL_LXML=auto
+INSTALL_LXML=no
 INSTALL_ZLIB=auto
 INSTALL_JPEG=auto
 if [ `uname` = "Darwin" ]; then
@@ -106,6 +110,9 @@ READLINE_TB=readline-6.2.tar.bz2
 READLINE_DIR=readline-6.2
 VIRTUALENV_TB=virtualenv-1.8.2.tar.gz
 VIRTUALENV_DIR=virtualenv-1.8.2
+
+NEED_XML2="2.7.8"
+NEED_XSLT="1.1.26"
 
 # check for PIL and jpeg support
 PIL_TEST="from _imaging import jpeg_decoder"
@@ -172,6 +179,10 @@ usage () {
     echo "  Zope / Plone, you may specify it here."
     echo "  virtualenv will be used to isolate the copy used for the install."
     echo
+    echo "--static-lxml"
+    echo "  Forces a static built of libxml2 and libxslt dependencies. Requires"
+    echo "  Internet access to download components."
+    echo
     echo "Read the top of install.sh for more install options."
     exit 1
 }
@@ -197,11 +208,15 @@ do
     optarg=`expr "x$option" : 'x[^=]*=\(.*\)'`
 
     case $option in
-        --with-python=* | -with-python=* | --withpython=* | -withpython=* )
+        --with-python | --with-python=* | -with-python=* | --withpython=* | -withpython=* )
             if [ "$optarg" ]; then
                 WITH_PYTHON="$optarg"
             else
-                usage
+                WITH_PYTHON=`which python2.7`
+                if [ $? -gt 0 ]; then
+                    echo "Unable to find python2.7"
+                    usage
+                fi
             fi
             ;;
 
@@ -249,8 +264,12 @@ do
             fi
             ;;
 
-        --without-ssl | --without-openssl )
-            WITHOUT_SSL=1
+        --static-lxml | --static-lxml=* )
+            if [ "$optarg" ]; then
+                INSTALL_LXML="$optarg"
+            else
+                INSTALL_LXML="yes"
+            fi
             ;;
 
         --password=* | -password=* )
@@ -460,7 +479,6 @@ if [ "$WITH_PYTHON" ]; then
             # if the supplied Python is adequate, we don't need to build libraries
             INSTALL_ZLIB=no
             INSTALL_READLINE=no
-            WITHOUT_SSL=1
         else
             echo
             echo "***Aborting***"
@@ -553,16 +571,56 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         echo
         echo "Unable to find libssl or openssl/ssl.h."
         echo "libssl and its development headers are required for Plone."
-        echo "If you're sure you have these installed, and are still getting"
-        echo "this warning, you may disable the libssl check by adding the"
-        echo "--without-ssl flag to the install command line."
-        echo "Otherwise, install your platform's openssl-dev libraries and headers"
+        echo "Install your platform's openssl-dev libraries and headers"
         echo "and try again."
         echo
         exit 1
     fi
-fi # not skip tool tests
 
+    if [ "$INSTALL_LXML" = "no" ]; then
+        # check for libxml2 / libxslt
+
+        # source a helper script for xml2/xslt config checks
+        . helper_scripts/config_check.sh
+
+        XSLT_XML_MSG () {
+            echo
+            echo "Plone installation requires the development versions of libxml2 and libxslt."
+            echo "libxml2 must be version $NEED_XML2 or greater; libxslt must be $NEED_XSLT or greater."
+            echo "Ideally, you should install these as dev package libraries before running install.sh."
+            echo "If -- and only if -- these packages are not available for your platform, you may"
+            echo "try adding --static-lxml=yes to your install.sh command line to force a"
+            echo "local, static build of these libraries. This will require Internet access for the"
+            echo "installer to download the extra source"
+            echo "Installation aborted."
+        }
+
+        if [ "x$XSLT_CONFIG" = "x" ]; then
+            echo
+            echo "Unable to find libxml2 development libraries."
+            XSLT_XML_MSG
+            exit 1
+        fi
+        if [ "x$XML2_CONFIG" = "x" ]; then
+            echo
+            echo "Unable to find libxslt development libraries."
+            XSLT_XML_MSG
+            exit 1
+        fi
+        if config_version xml2 $NEED_XML2; then
+            echo "We need development version $NEED_XML2 of libxml. Not found."
+            XSLT_XML_MSG
+            exit 1
+        fi
+        if config_version xslt $NEED_XSLT; then
+            echo "We need development version $NEED_XSLT of libxslt. Not found."
+            XSLT_XML_MSG
+            exit 1
+        fi
+
+    fi
+
+fi # not skip tool tests
 
 if [ $INSTALL_JPEG = "auto" ] ; then
     if [ "$HAVE_LIBJPEG" = "yes" ] ; then

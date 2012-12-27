@@ -96,6 +96,11 @@ if os.path.exists(workDir):
 print "Copying to work directory"
 shutil.copytree(os.path.join(target, 'buildout-cache'), workDir)
 
+print "Removing cmmi"
+cmmi = os.path.join(workDir, 'downloads', 'cmmi')
+if os.path.exists(cmmi):
+    shutil.rmtree(cmmi)
+
 eggs = os.path.join(workDir, 'eggs')
 downloads = os.path.join(workDir, 'downloads')
 dist = os.path.join(downloads, 'dist')

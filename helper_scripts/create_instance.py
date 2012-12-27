@@ -31,22 +31,11 @@ ZEO_USER,
 PASSWORD,
 ROOT_INSTALL,
 RUN_BUILDOUT,
-INSTALL_LXML,
+INSTALL_STATIC_LXML,
 OFFLINE,
 ITYPE,
 LOG_FILE,
 CLIENTS) = sys.argv[1:]
-
-if INSTALL_LXML == 'auto':
-    if getVersion('xml2') >= 20708 and getVersion('xslt') >= 10126:
-        print "Your platform's xml2/xslt are up-to-date. No need to build them."
-        INSTALL_STATIC_LXML = 'no'
-    else:
-        print "Your platform's xml2/xslt are missing or out-of-date. We'll need to build them."
-        INSTALL_STATIC_LXML = 'yes'
-else:
-    INSTALL_STATIC_LXML = INSTALL_LXML
-
 
 client_template = """
 
@@ -156,10 +145,6 @@ try:
 except:
     buildout = buildout.replace('    Plone\n', '    Plone\n    Pillow\n')
 
-if INSTALL_LXML == 'no':
-    # remove the egg requirement
-    buildout = buildout.replace('    lxml\n', '')
-
 
 fn = os.path.join(INSTANCE_HOME, 'buildout.cfg')
 fd = file(fn, 'w')
@@ -236,7 +221,7 @@ if RUN_BUILDOUT == '1':
         print "Building lxml with static libxml2/libxslt; this takes a while..."
         returncode = doCommand(
             os.path.join(INSTANCE_HOME, 'bin', 'buildout') + \
-            " -c lxml_static.cfg -NU buildout:install-from-cache=true")
+            " -c lxml_static.cfg -NU")
         if returncode:
             print "\nlxml build failed. You may wish to clean up and try again"
             print "without the lxml build by adding --without-lxml to the"
@@ -249,7 +234,6 @@ if RUN_BUILDOUT == '1':
             # we also don't need the part remnants
             shutil.rmtree('parts/lxml')
     else:
-        print "Skipping static libxml2/libxslt build."
         returncode = 0
 
     if not returncode:
