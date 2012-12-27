@@ -1,4 +1,6 @@
-4.2.3 - unreleased
+4.2.3 - 2012-12-26
+
+    - Adapt to 4.2.3.
 
     - Stop including libxml2 and libxslt. Encourage use of package
       versions. --static-lxml will download libxml2 and libxslt source
