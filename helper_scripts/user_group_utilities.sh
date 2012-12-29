@@ -117,10 +117,10 @@ elif [ -x /usr/bin/dscl ]; then
         TARGET_GROUP="$1"
 
         dscl . search /Groups RecordName "$TARGET_GROUP" | grep "($TARGET_GROUP)" > /dev/null
-        if [ "$?" != "0" ]; then
+        if [ $? -gt 0 ]; then
             gid="50"
             dscl . search /Groups PrimaryGroupID $gid | grep -E "^[( ]+${gid}\)?$" > /dev/null
-            while [ "$?" = "0" ]; do
+            while [ $? -eq 0 ]; do
                 if [ "$gid" = "500" ]; then
                     echo "Amongst local groups, a gid below 500 is not available. Unable to continue. "
                     exit 1
@@ -145,7 +145,7 @@ elif [ -x /usr/bin/dscl ]; then
 
         # find or create a $UNAME user
         dscl . search /Users RecordName "$UNAME" | grep "($UNAME)" > /dev/null
-        if [ "$?" != "0" ]; then
+        if [ $? -gt 0 ]; then
             # Add $TARGET_USER user via dscl, with a uid below 500
             echo Creating $TARGET_USER user ...
 
@@ -153,7 +153,7 @@ elif [ -x /usr/bin/dscl ]; then
             # in Python.
             uiddef=50
             dscl . search /Users UniqueID $uiddef | grep -E "^[( ]+${uiddef}\)?$" > /dev/null
-            while [ "$?" = "0" ]; do
+            while [ $? -eq 0 ]; do
                 if [ "$uiddef" = "500" ]; then
                     echo "Amongst local users, a uid below 500 is not available. Installation of Plone is "
                     echo "not complete, this script is stopping. "
@@ -167,7 +167,7 @@ elif [ -x /usr/bin/dscl ]; then
             echo "Using dscl (Directory Service command line utility) to create user "
             echo $UNAME with uid $uiddef in directory /Local/Default ...
             dscl . -create "/Users/$UNAME"
-            if [ "$?" = "0" ]; then
+            if [ $? -eq 0 ]; then
                 dscl . -create "/Users/$UNAME" UniqueID $uiddef
                 dscl . -create "/Users/$UNAME" RealName "Plone administration"
                 dscl . -create "/Users/$UNAME" PrimaryGroupID $gid
@@ -180,7 +180,7 @@ elif [ -x /usr/bin/dscl ]; then
             fi
         else
             oldgid=$(dscl . read "/Users/$UNAME" PrimaryGroupID | cut -f2 -d" " -)
-            if [ $oldgid != $gid ]; then
+            if [ "$oldgid" != "$gid" ]; then
                 dscl . -create "/Users/$UNAME" PrimaryGroupID $gid
             fi
         fi

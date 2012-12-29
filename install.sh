@@ -113,27 +113,26 @@ PLONE_GROUP=plone_group
 
 
 # This script should be run from the directory containing packages/
-PACKAGES_DIR=packages
-ONLINE_PACKAGES_DIR=opackages
+readonly PACKAGES_DIR=packages
+readonly ONLINE_PACKAGES_DIR=opackages
+readonly HSCRIPTS_DIR=helper_scripts
 
-HSCRIPTS_DIR=helper_scripts
-
-PYTHON_TB=Python-2.7.3.tar.bz2
-PYTHON_DIR=Python-2.7.3
-DISTRIBUTE_TB=distribute-0.6.28.tar.gz
-DISTRIBUTE_DIR=distribute-0.6.28
-JPEG_TB=jpegsrc.v8d.tar.bz2
-JPEG_DIR=jpeg-8d
-READLINE_TB=readline-6.2.tar.bz2
-READLINE_DIR=readline-6.2
-VIRTUALENV_TB=virtualenv-1.8.2.tar.gz
-VIRTUALENV_DIR=virtualenv-1.8.2
+readonly PYTHON_TB=Python-2.7.3.tar.bz2
+readonly PYTHON_DIR=Python-2.7.3
+readonly DISTRIBUTE_TB=distribute-0.6.28.tar.gz
+readonly DISTRIBUTE_DIR=distribute-0.6.28
+readonly JPEG_TB=jpegsrc.v8d.tar.bz2
+readonly JPEG_DIR=jpeg-8d
+readonly READLINE_TB=readline-6.2.tar.bz2
+readonly READLINE_DIR=readline-6.2
+readonly VIRTUALENV_TB=virtualenv-1.8.2.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-1.8.2
 
 # check for PIL and jpeg support
-PIL_TEST="from _imaging import jpeg_decoder"
+readonly PIL_TEST="from _imaging import jpeg_decoder"
 
 # check for distribute
-DISTRIBUTE_TEST="from setuptools import _distribute"
+readonly DISTRIBUTE_TEST="from setuptools import _distribute"
 
 if [ `whoami` = "root" ]; then
     ROOT_INSTALL=1
@@ -388,8 +387,7 @@ echo
 
 
 if [ $ROOT_INSTALL -eq 1 ]; then
-    which sudo > /dev/null
-    if [ $? -gt 0 ]; then
+    if which sudo > /dev/null; then
         echo "sudo utility is required to do a server-mode install."
         echo
         exit 1
@@ -486,8 +484,7 @@ untar () {
             echo "Unable to unpack $1; extension not recognized."
             exit 1
     esac
-    if [ $? -gt 0 ]
-    then
+    if [ $? -gt 0 ]; then
         seelog
     fi
 }
@@ -521,11 +518,10 @@ fi
 
 
 # If --with-python has been used, check the argument for our requirements.
-if [ "$WITH_PYTHON" ]; then
+if [ "X$WITH_PYTHON" != "X" ]; then
     if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
         echo "Testing $WITH_PYTHON for Zope/Plone requirements...."
-        if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py
-        then
+        if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
             echo "$WITH_PYTHON looks OK. We'll try to use it."
             echo
             # if the supplied Python is adequate, we don't need to build libraries
@@ -547,10 +543,10 @@ if [ "$WITH_PYTHON" ]; then
     fi
 elif [ `uname` = "OpenBSD" ]; then
     echo "\n***Aborting***"
-    echo "Sorry, but the Unified Installer can't build a Python 2.6 for OpenBSD."
+    echo "Sorry, but the Unified Installer can't build a Python 2.7 for OpenBSD."
     echo "There are way too many platform-specific patches required."
-    echo "Please consider adding the Python 2.6 packages and re-run using"
-    echo "--with-python to use the system Python 2.6.x."
+    echo "Please consider adding the Python 2.7 packages and re-run using"
+    echo "--with-python to use the system Python 2.7.x."
     exit 1
 fi
 
@@ -577,42 +573,42 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     fi
 
     # Abort install if no make
-    if [ "$have_make" != "yes" ] ; then
+    if [ "X$have_make" != "Xyes" ] ; then
         echo
         echo "Note: make is required for the install. Exiting now."
         exit 1
     fi
 
     # Abort install if no tar
-    if [ "$have_tar" != "yes" ] ; then
+    if [ "X$have_tar" != "Xyes" ] ; then
         echo
         echo "Note: gnu tar is required for the install. Exiting now."
         exit 1
     fi
 
     # Abort install if no patch
-    if [ "$have_patch" != "yes" ] ; then
+    if [ "X$have_patch" != "Xyes" ] ; then
         echo
         echo "Note: gnu patch program is required for the install. Exiting now."
         exit 1
     fi
 
     # Abort install if no gunzip
-    if [ "$have_gunzip" != "yes" ] ; then
+    if [ "X$have_gunzip" != "Xyes" ] ; then
         echo
         echo "Note: gunzip is required for the install. Exiting now."
         exit 1
     fi
 
     # Abort install if no bunzip2
-    if [ "$have_bunzip2" != "yes" ] ; then
+    if [ "X$have_bunzip2" != "Xyes" ] ; then
         echo
         echo "Note: bunzip2 is required for the install. Exiting now."
         exit 1
     fi
 
     # Abort install if no libz
-    if [ "$HAVE_LIBZ" != "yes" ] ; then
+    if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
         echo
         echo "Note: libz library and headers are required for the install."
         echo "The package name for this may be zlib-dev."
@@ -620,7 +616,7 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         exit 1
     fi
 
-    if [ "$HAVE_LIBSSL" != "yes" ] && [ "x$WITH_PYTHON" = "x" ]; then
+    if [ "X$HAVE_LIBSSL" != "Xyes" ] && [ "X$WITH_PYTHON" = "X" ]; then
         echo
         echo "Unable to find libssl or openssl/ssl.h."
         echo "libssl and its development headers are required for Plone."
@@ -635,16 +631,16 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
 fi # not skip tool tests
 
 
-if [ $INSTALL_JPEG = "auto" ] ; then
-    if [ "$HAVE_LIBJPEG" = "yes" ] ; then
+if [ "X$INSTALL_JPEG" = "Xauto" ] ; then
+    if [ "X$HAVE_LIBJPEG" = "Xyes" ] ; then
         INSTALL_JPEG=no
     else
         INSTALL_JPEG=yes
     fi
 fi
 
-if [ $INSTALL_READLINE = "auto" ] ; then
-    if [ "$HAVE_LIBREADLINE" = "yes" ] ; then
+if [ "X$INSTALL_READLINE" = "Xauto" ] ; then
+    if [ "X$HAVE_LIBREADLINE" = "Xyes" ] ; then
         INSTALL_READLINE=no
     else
         INSTALL_READLINE=yes
@@ -708,8 +704,7 @@ PLONE_HOME=`pwd`
 # More paths
 if [ ! "x$INSTANCE_NAME" = "x" ]; then
     # override instance home
-    if echo "$INSTANCE_NAME" | grep "/"
-    then
+    if echo "$INSTANCE_NAME" | grep "/"; then
         # we have a full destination, not just a name.
         # normalize
         ZEOCLUSTER_HOME=$INSTANCE_NAME
@@ -736,7 +731,10 @@ fi
 
 cd "$CWD"
 
-if  [ "X$INSTALL_ZLIB" = "Xyes" ] || [ "X$INSTALL_JPEG" = "Xyes" ]; then
+if  [ "X$INSTALL_ZLIB" = "Xyes" ] || \
+    [ "X$INSTALL_JPEG" = "Xyes" ] || \
+    [ "X$INSTALL_READLINE" = "Xyes" ]
+then
     NEED_LOCAL=1
 else
     NEED_LOCAL=0
@@ -807,7 +805,7 @@ if [ ! -x "$LOCAL_HOME" ]; then
 fi
 
 if [ -x "$PY" ]; then
-    echo "Python found at $PY; Skipping Python install."
+    echo "Python found at $PY; No need for Python install."
     # also skipping library builds for libraries that have
     # to be built before python.
 else
@@ -826,6 +824,7 @@ else
     fi
 
     . helper_scripts/build_python.sh
+
     echo "Installing distribute..."
     cd "$PKG"
     untar $DISTRIBUTE_TB
@@ -857,16 +856,16 @@ unset CFLAGS
 unset LDFLAGS
 
 
-if [ -f "$PKG"/buildout-cache.tar.bz2 ]; then
+if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     if [ -x "$BUILDOUT_CACHE" ]; then
         echo "Found existing buildout cache at $BUILDOUT_CACHE; skipping step."
     else
         echo "Unpacking buildout cache to $BUILDOUT_CACHE"
         cd $PLONE_HOME
-        untar "$PKG"/buildout-cache.tar.bz2
-        # compile .pyc files in cache
-        echo "Compiling .py files in egg cache"
-        "$PY" "$PLONE_HOME"/Python*/lib/python*/compileall.py "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
+        untar "${PKG}/buildout-cache.tar.bz2"
+        # # compile .pyc files in cache
+        # echo "Compiling .py files in egg cache"
+        # "$PY" "$PLONE_HOME"/Python*/lib/python*/compileall.py "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
     fi
     if [ ! -x "$BUILDOUT_CACHE"/eggs ]; then
         echo "Buildout cache unpack failed. Unable to continue."
