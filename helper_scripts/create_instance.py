@@ -93,19 +93,6 @@ if not opt.password:
 opt.root_install = bool(int(opt.root_install))
 opt.run_buildout = bool(int(opt.run_buildout))
 
-##########################################################
-# Determine if we need a static lxml build
-#
-if opt.install_lxml == 'auto':
-    if getVersion('xml2') >= 20708 and getVersion('xslt') >= 10126:
-        print "Your platform's xml2/xslt are up-to-date. No need to build them."
-        INSTALL_STATIC_LXML = 'no'
-    else:
-        print "Your platform's xml2/xslt are missing or out-of-date. We'll need to build them."
-        INSTALL_STATIC_LXML = 'yes'
-else:
-    INSTALL_STATIC_LXML = opt.install_lxml
-
 substitutions = {
     "PLONE_HOME": opt.plone_home,
     "INSTANCE_HOME": opt.instance_home,
@@ -210,7 +197,7 @@ inPlaceSub(os.path.join(opt.instance_home, 'bin', 'buildout'), substitutions)
 if opt.run_buildout:
     os.chdir(opt.instance_home)
 
-    if INSTALL_STATIC_LXML == 'yes':
+    if opt.install_lxml == 'yes':
         print "Building lxml with static libxml2/libxslt; this requires Internet access,"
         print "and takes a while..."
         returncode = doCommand(
@@ -229,7 +216,6 @@ if opt.run_buildout:
             # we also don't need the part remnants
             shutil.rmtree('parts/lxml')
     else:
-        print "Skipping static libxml2/libxslt build."
         returncode = 0
 
     if not returncode:

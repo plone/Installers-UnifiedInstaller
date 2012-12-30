@@ -10,12 +10,12 @@ then
 	mkdir "$LOCAL_HOME/include" >> "$INSTALL_LOG" 2>&1
 	mkdir "$LOCAL_HOME/man" >> "$INSTALL_LOG" 2>&1
 	mkdir "$LOCAL_HOME/man/man1" >> "$INSTALL_LOG" 2>&1
-	
+
 	cd "$PKG"
 	untar $READLINE_TB
 	chmod -R 755 "$READLINE_DIR"
 	cd "$READLINE_DIR"
-	READLINE_DIR=`pwd`
+	NREADLINE_DIR=`pwd`
   	./configure \
   	  --prefix="$LOCAL_HOME" >> "$INSTALL_LOG" 2>&1
 	make >> "$INSTALL_LOG" 2>&1
@@ -29,9 +29,9 @@ then
 	fi
 
 	cd "$PKG"
-	if [ -d "$READLINE_DIR" ]
+	if [ -d "$NREADLINE_DIR" ]
 	then
-	        rm -rf "$READLINE_DIR"
+	        rm -rf "$NREADLINE_DIR"
 	fi
 else
 	echo "Skipping readline build"

@@ -57,3 +57,13 @@ except ImportError:
 
 if not passed:
     sys.exit(1)
+
+sys.exit(0)
+
+# prevent 'imported but not used' warnings
+zlib
+_imaging
+jpeg_decoder
+_ssl
+readline
+xml.parsers.expat

@@ -1,9 +1,7 @@
 #!/bin/sh
 #
 # Unified Plone installer build script
-# Created by Kamal Gill (kamalgill at mac.com)
-# Adapted for Plone 3+ and buildout by Steve McMahon (steve at dcn.org)
-#
+# Copyright (c) 2008-2012 Plone Foundation. Licensed under GPL v 2.
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
@@ -53,13 +51,14 @@
 #   Zope / Plone, you may specify it here.
 #   virtualenv will be used to isolate the copy used for the install.
 #
+# --build-python
+#   If you do not have a suitable Python available, the installer will
+#   build one for you if you set this option.
+#
 # --with-site-packages
 #   When --with-python is used to specify a python, that python is isolated
 #   via virtualenv without site packages. Set the --with-site-
 #   packages flag if you want to include system packages.
-#
-# --nobuildout
-#   Skip running bin/buildout. You should know what you're doing.
 #
 # --var=pathname
 #   Full pathname to the directory where you'd like to put the "var"
@@ -69,7 +68,11 @@
 #   Full pathname to the directory where you'd like to put the backup
 #   directories for the install. By default target/instance/var.
 #
+# --nobuildout
+#   Skip running bin/buildout. You should know what you're doing.
+#
 # Library build control options:
+#
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
 
@@ -92,7 +95,7 @@ ZEOCLUSTER_HOME=zeocluster
 # a stand-alone (non-zeo) instance will go here (inside $PLONE_HOME):
 RINSTANCE_HOME=zinstance
 
-INSTALL_LXML=auto
+INSTALL_LXML=no
 INSTALL_ZLIB=auto
 INSTALL_JPEG=auto
 if [ `uname` = "Darwin" ]; then
@@ -111,8 +114,9 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
+readonly FOR_PLONE=4.3b1
+readonly WANT_PYTHON=2.7
 
-# This script should be run from the directory containing packages/
 readonly PACKAGES_DIR=packages
 readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
@@ -128,11 +132,13 @@ readonly READLINE_DIR=readline-6.2
 readonly VIRTUALENV_TB=virtualenv-1.8.2.tar.gz
 readonly VIRTUALENV_DIR=virtualenv-1.8.2
 
+readonly NEED_XML2="2.7.8"
+readonly NEED_XSLT="1.1.26"
+
+
 # check for PIL and jpeg support
 readonly PIL_TEST="from _imaging import jpeg_decoder"
 
-# check for distribute
-readonly DISTRIBUTE_TEST="from setuptools import _distribute"
 
 if [ `whoami` = "root" ]; then
     ROOT_INSTALL=1
@@ -155,6 +161,7 @@ PWD=`pwd`
 CWD="$PWD"
 PKG=$CWD/$PACKAGES_DIR
 
+. helper_scripts/shell_utils.sh
 
 usage () {
     echo
@@ -167,6 +174,15 @@ usage () {
     echo "Use sudo (or run as root) for server-mode install."
     echo
     echo "Options (see top of install.sh for complete list):"
+    echo
+    echo "--with-python=/full/path/to/python-${WANT_PYTHON}"
+    echo "  Path to the Python-${WANT_PYTHON} that you wish to use with Plone."
+    echo "  virtualenv will be used to isolate the install."
+    echo
+    echo "--build-python"
+    echo "  If you do not have a suitable Python available, the installer will"
+    echo "  build one for you if you set this option."
+    echo
     echo "--password=InstancePassword"
     echo "  If not specified, a random password will be generated."
     echo
@@ -199,10 +215,9 @@ usage () {
     echo "  buildout users. Default is 'plone_group'."
     echo "  Ignored for non-server-mode installs."
     echo
-    echo "--with-python=/fullpathtopython2.7"
-    echo "  If you have an already built Python that's adequate to run"
-    echo "  Zope / Plone, you may specify it here."
-    echo "  virtualenv will be used to isolate the copy used for the install."
+    echo "--static-lxml"
+    echo "  Forces a static built of libxml2 and libxslt dependencies. Requires"
+    echo "  Internet access to download components."
     echo
     echo "Read the top of install.sh for more install options."
     exit 1
@@ -315,6 +330,14 @@ do
 
         --without-ssl | --without-openssl )
             WITHOUT_SSL=1
+            ;;
+
+        --static-lxml | --static-lxml=* )
+            if [ "$optarg" ]; then
+                INSTALL_LXML="$optarg"
+            else
+                INSTALL_LXML="yes"
+            fi
             ;;
 
         --password=* | -password=* )
@@ -466,30 +489,6 @@ seelog () {
     exit 1
 }
 
-untar () {
-    # unpack a tar archive, decompressing as necessary.
-    # this function is meant to isolate us from problems
-    # with versions of tar that don't support .gz or .bz2.
-    case "$1" in
-        *.tar)
-            tar -xf "$1" >> "$INSTALL_LOG"
-            ;;
-        *.tgz | *.tar.gz)
-            gunzip -c "$1" | tar -xf - >> "$INSTALL_LOG"
-            ;;
-        *.tar.bz2)
-            bunzip2 -c "$1" | tar -xf -  >> "$INSTALL_LOG"
-            ;;
-        *)
-            echo "Unable to unpack $1; extension not recognized."
-            exit 1
-    esac
-    if [ $? -gt 0 ]; then
-        seelog
-    fi
-}
-
-
 echo
 
 
@@ -627,6 +626,45 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         echo "and try again."
         echo
         exit 1
+    fi
+
+    if [ "$INSTALL_LXML" = "no" ]; then
+        # check for libxml2 / libxslt
+
+        XSLT_XML_MSG () {
+            echo
+            echo "Plone installation requires the development versions of libxml2 and libxslt."
+            echo "libxml2 must be version $NEED_XML2 or greater; libxslt must be $NEED_XSLT or greater."
+            echo "Ideally, you should install these as dev package libraries before running install.sh."
+            echo "If -- and only if -- these packages are not available for your platform, you may"
+            echo "try adding --static-lxml=yes to your install.sh command line to force a"
+            echo "local, static build of these libraries. This will require Internet access for the"
+            echo "installer to download the extra source"
+            echo "Installation aborted."
+        }
+
+        if [ "x$XSLT_CONFIG" = "x" ]; then
+            echo
+            echo "Unable to find libxml2 development libraries."
+            XSLT_XML_MSG
+            exit 1
+        fi
+        if [ "x$XML2_CONFIG" = "x" ]; then
+            echo
+            echo "Unable to find libxslt development libraries."
+            XSLT_XML_MSG
+            exit 1
+        fi
+        if config_version xml2 $NEED_XML2; then
+            echo "We need development version $NEED_XML2 of libxml2. Not found."
+            XSLT_XML_MSG
+            exit 1
+        fi
+        if config_version xslt $NEED_XSLT; then
+            echo "We need development version $NEED_XSLT of libxslt. Not found."
+            XSLT_XML_MSG
+            exit 1
+        fi
     fi
 fi # not skip tool tests
 
