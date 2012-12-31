@@ -1,5 +1,7 @@
 NG - Unreleased Dev Branch
 
+    - Add sanity check for lxml and PIL via zopepy.
+
     - Prefer system python and packages whenever they exist and
       are acceptable. Only build python or xml2/xslt when explicitly
       requested.

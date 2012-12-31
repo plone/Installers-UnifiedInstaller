@@ -17,7 +17,6 @@ import stat
 import sys
 
 import iniparse
-from config_check import getVersion
 
 BASE_ADDRESS = 8080
 ADD_CLIENTS_MARKER = "# __ZEO_CLIENTS_HERE__\n"
@@ -241,6 +240,15 @@ if opt.run_buildout:
                  os.path.exists(os.path.join(opt.instance_home, 'var'))):
             print "Parts of the install are missing. Buildout must have failed. Aborting."
             sys.exit(1)
+
+    # sanity check PIL and lxml
+    my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
+    if doCommand(my_python + " -c 'from _imaging import jpeg_decoder'"):
+        print "Failed: JPEG support is not available."
+        sys.exit(1)
+    if doCommand(my_python + " -c 'from lxml import etree'"):
+        print "Failed: lxml is not available."
+        sys.exit(1)
 
 else:
     print "Skipping bin/buildout at your request."

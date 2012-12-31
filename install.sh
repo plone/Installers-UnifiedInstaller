@@ -134,10 +134,7 @@ readonly VIRTUALENV_DIR=virtualenv-1.8.2
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
 
-# check for PIL and jpeg support
-readonly PIL_TEST="from _imaging import jpeg_decoder"
-
-DEBUG_OPTIONS=yes
+DEBUG_OPTIONS=no
 
 if [ `whoami` = "root" ]; then
     ROOT_INSTALL=1
@@ -447,6 +444,19 @@ umask 022
 unset CDPATH
 
 
+# set up the common build environment unless already existing
+if [ "x$CFLAGS" = 'x' ]; then
+    export CFLAGS='-fPIC'
+    if [ `uname` = "Darwin" ] && [ -d /opt/local ]; then
+        # include MacPorts directories, which typically have additional
+        # and later libraries
+        export CFLAGS='-fPIC -I/opt/local/include'
+        export CPPFLAGS=$CFLAGS
+        export LDFLAGS='-L/opt/local/lib'
+    fi
+fi
+
+
 if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if this script is not run from within it's parent folder
     if [ ! -x "$PACKAGES_DIR" ] || [ ! -x "$HSCRIPTS_DIR" ]; then
@@ -493,7 +503,7 @@ if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
         echo "We already have a Python environment for this target; ignoring --with-python."
         WITH_PYTHON=''
     fi
-    if [ "X$BUILD_PYTHON" != "Xyes" ]; then
+    if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         echo "We already have a Python environment for this target; ignoring --build-python."
         BUILD_PYTHON=no
     fi
@@ -668,6 +678,8 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
             XSLT_XML_MSG
             exit 1
         fi
+        FOUND_XML2=`xml2-config --version`
+        FOUND_XSLT=`xslt-config --version`
     fi
 fi # not skip tool tests
 
@@ -747,6 +759,9 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "HAVE_LIBSSL=$HAVE_LIBSSL"
     echo "HAVE_SSL2=$HAVE_SSL2"
     echo "HAVE_LIBREADLINE=$HAVE_LIBREADLINE"
+    echo "FOUND_XML2=$FOUND_XML2"
+    echo "FOUND_XSLT=$FOUND_XSLT"
+    echo ""
     exit 0
 fi
 
@@ -921,11 +936,6 @@ if [ ! -x "$LOCAL_HOME" ]; then
 fi
 
 if [ ! -x "$PY" ]; then
-    # set up the common build environment unless already existing
-    if [ "x$CFLAGS" = 'x' ]; then
-        export CFLAGS='-fPIC'
-    fi
-
     . helper_scripts/build_libjpeg.sh
     . helper_scripts/build_readline.sh
 
