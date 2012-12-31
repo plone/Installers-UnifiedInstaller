@@ -34,7 +34,7 @@ AC_SUBST(have_libjpeg, no)
 AC_CHECK_LIB(jpeg, jpeg_read_header, AC_CHECK_HEADER([jpeglib.h], AC_SUBST(have_libjpeg, yes)))
 
 AC_SUBST(have_ssl, no)
-AC_CHECK_LIB(ssl, SSL_accept, 
+AC_CHECK_LIB(ssl, SSL_accept,
     AC_CHECK_HEADER([ssl.h], AC_SUBST(have_ssl, yes))
     AC_CHECK_HEADER([openssl/ssl.h], AC_SUBST(have_ssl, yes))
 )

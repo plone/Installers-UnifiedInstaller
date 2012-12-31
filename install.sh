@@ -110,7 +110,6 @@ DAEMON_USER=plone_daemon
 BUILDOUT_USER=plone_buildout
 PLONE_GROUP=plone_group
 
-
 # End of commonly configured options.
 #################################################
 
@@ -135,10 +134,10 @@ readonly VIRTUALENV_DIR=virtualenv-1.8.2
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
 
-
 # check for PIL and jpeg support
 readonly PIL_TEST="from _imaging import jpeg_decoder"
 
+DEBUG_OPTIONS=yes
 
 if [ `whoami` = "root" ]; then
     ROOT_INSTALL=1
@@ -232,6 +231,7 @@ INSTALL_ZEO=0
 INSTALL_STANDALONE=0
 INSTANCE_NAME=""
 WITH_PYTHON=""
+BUILD_PYTHON="no"
 WITH_ZOPE=""
 RUN_BUILDOUT=1
 SKIP_TOOL_TESTS=0
@@ -249,6 +249,18 @@ do
                 WITH_PYTHON="$optarg"
             else
                 usage
+            fi
+            ;;
+
+        --build-python | --build-python=* )
+            if [ "$optarg" ]; then
+                BUILD_PYTHON="$optarg"
+                if [ $BUILD_PYTHON != 'yes'] && [ $BUILD_PYTHON != 'no']; then
+                    echo "Bad option for --build-python"
+                    usage
+                fi
+            else
+                BUILD_PYTHON="yes"
             fi
             ;;
 
@@ -375,6 +387,10 @@ do
             fi
             ;;
 
+        --debug-options )
+            DEBUG_OPTIONS=yes
+            ;;
+
         --help | -h )
             usage
             ;;
@@ -382,11 +398,9 @@ do
         *)
             case $option in
                 zeo* | cluster )
-                    echo ZEO Cluster Install selected
                     INSTALL_ZEO=1
                     ;;
                 standalone* | nozeo | stand-alone | sa )
-                    echo Stand-Alone Zope Instance selected
                     INSTALL_STANDALONE=1
                     ;;
                 none )
@@ -402,6 +416,10 @@ do
         ;;
     esac
 done
+
+if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
+    echo "--with-python and --build-python may not be employed at the same time."
+fi
 
 if [ $INSTALL_STANDALONE -eq 0 ] && [ $INSTALL_ZEO -eq 0 ]; then
     usage
@@ -452,7 +470,9 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # use configure (renamed preflight) to create a build environment file
     # that will allow us to check for headers and tools the same way
     # that the cmmi process will.
-    test -f ./buildenv.sh && rm -f ./buildenv.sh
+    if [ -f ./buildenv.sh ]; then
+        rm -f ./buildenv.sh
+    fi
     sh ./preflight -q
     if [ $? -gt 0 ] || [ ! -f "buildenv.sh" ]; then
         echo ""
@@ -467,88 +487,93 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     . ./buildenv.sh
 fi
 
-
-# set up log
-if [ -f "$INSTALL_LOG" ]; then
-    rm "$INSTALL_LOG"
-fi
-touch "$INSTALL_LOG" 2> /dev/null
-if [ $? -gt 0 ]; then
-    echo "Unable to write to ${INSTALL_LOG}; detailed log will go to stdout."
-    INSTALL_LOG="/dev/stdout"
-else
-    echo "Detailed installation log being written to $INSTALL_LOG"
-    echo "Detailed installation log" > "$INSTALL_LOG"
-    echo "Starting at `date`" >> "$INSTALL_LOG"
-fi
-seelog () {
-    echo
-    echo "Installation has failed."
-    echo "See the detailed installation log at $INSTALL_LOG"
-    echo "to determine the cause."
-    exit 1
-}
-
-echo
-
-
-OFFLINE=1
-if [ ! -d "$PACKAGES_DIR" ]; then
-    if [ -d "$ONLINE_PACKAGES_DIR" ]; then
-        # we don't have the full packages directory,
-        # but do have the less-complete version meant for online install.
-        echo "Running in online mode."
-        OFFLINE=0
-        PACKAGES_DIR="$ONLINE_PACKAGES_DIR"
-        PKG="$CWD/$PACKAGES_DIR"
-        INSTALL_ZLIB=no
-        INSTALL_JPEG=no
-    fi
-fi
-
-
-if [ -x "$PLONE_HOME/Python-2.7/bin/python" ] ; then
+if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
     HAVE_PYTHON=yes
-    if [ "x$WITH_PYTHON" != "x" ]; then
+    if [ "X$WITH_PYTHON" != "X" ]; then
         echo "We already have a Python environment for this target; ignoring --with-python."
         WITH_PYTHON=''
     fi
-fi
+    if [ "X$BUILD_PYTHON" != "Xyes" ]; then
+        echo "We already have a Python environment for this target; ignoring --build-python."
+        BUILD_PYTHON=no
+    fi
+else
+    HAVE_PYTHON=no
 
+    # shared message for need python
+    python_usage () {
+        echo
+        echo "Please do one of the following:"
+        echo "1) Install python${WANT_PYTHON} as a system 'dev' package;"
+        echo "2) Use --with-python=... option to point the installer to a useable python; or"
+        echo "3) Use the --build-python option to tell the installer to build Python."
+        exit 1
+    }
 
-# If --with-python has been used, check the argument for our requirements.
-if [ "X$WITH_PYTHON" != "X" ]; then
-    if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
-        echo "Testing $WITH_PYTHON for Zope/Plone requirements...."
-        if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
-            echo "$WITH_PYTHON looks OK. We'll try to use it."
+    if [ "X$BUILD_PYTHON" = "Xyes" ]; then
+        # if OpenBSD, apologize and surrender
+        if [ `uname` = "OpenBSD" ]; then
+            echo "\n***Aborting***"
+            echo "Sorry, but the Unified Installer can't build a Python ${WANT_PYTHON} for OpenBSD."
+            echo "There are way too many platform-specific patches required."
+            echo "Please consider installing the Python ${WANT_PYTHON} port and re-run installer."
+            exit 1
+        fi
+
+        # check to see if we've what we need to build a suitable python
+        # Abort install if no libz
+        if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
             echo
-            # if the supplied Python is adequate, we don't need to build libraries
-            INSTALL_ZLIB=no
-            INSTALL_READLINE=no
-            WITHOUT_SSL=1
-        else
+            echo "Unable to find libz library and headers. These are required to build Python."
+            echo "Please use your system package or port manager to install libz dev."
+            echo "(Debian/Ubuntu zlibg-dev)"
+            echo "Exiting now."
+            exit 1
+        fi
+
+        if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
             echo
-            echo "***Aborting***"
-            echo "$WITH_PYTHON does not meet the requirements for Zope/Plone."
-            echo "Specify a more suitable Python, or upgrade your Python and try again."
-            echo "You may also omit --with-python and let the Unified Installer"
-            echo "build its own Python. "
+            echo "Unable to find libssl or openssl/ssl.h."
+            echo "libssl and its development headers are required for Plone."
+            echo "Please install your platform's openssl-dev package"
+            echo "and try again."
+            echo "(If your system is using an SSL other than openssl or is"
+            echo "putting the libraries/headers in an unconventional place,"
+            echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
+            echo "to specify the locations.)"
+            echo
             exit 1
         fi
     else
-        echo "Error: '$WITH_PYTHON' is not an executable. It should be the filename of a Python binary."
-        usage
+        if [ "X$WITH_PYTHON" = "X" ]; then
+            # try to find a Python
+            WITH_PYTHON=`which python${WANT_PYTHON}`
+            if [ $? -gt 0 ] || [ "X$WITH_PYTHON" = "X" ]; then
+                echo "Unable to find python${WANT_PYTHON} on system exec path."
+                python_usage
+            fi
+        fi
+        # check our python
+        if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
+            echo "Testing $WITH_PYTHON for Zope/Plone requirements...."
+            if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
+                echo "$WITH_PYTHON looks OK. We'll try to use it."
+                echo
+                # if the supplied Python is adequate, we don't need to build libraries
+                INSTALL_ZLIB=no
+                INSTALL_READLINE=no
+                WITHOUT_SSL=1
+            else
+                echo
+                echo "$WITH_PYTHON does not meet the requirements for Zope/Plone."
+                python_usage
+            fi
+        else
+            echo "Error: '$WITH_PYTHON' is not an executable. It should be the filename of a Python binary."
+            python_usage
+        fi
     fi
-elif [ `uname` = "OpenBSD" ]; then
-    echo "\n***Aborting***"
-    echo "Sorry, but the Unified Installer can't build a Python 2.7 for OpenBSD."
-    echo "There are way too many platform-specific patches required."
-    echo "Please consider adding the Python 2.7 packages and re-run using"
-    echo "--with-python to use the system Python 2.7.x."
-    exit 1
 fi
-
 
 #############################
 # Preflight dependency checks
@@ -603,28 +628,6 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     if [ "X$have_bunzip2" != "Xyes" ] ; then
         echo
         echo "Note: bunzip2 is required for the install. Exiting now."
-        exit 1
-    fi
-
-    # Abort install if no libz
-    if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
-        echo
-        echo "Note: libz library and headers are required for the install."
-        echo "The package name for this may be zlib-dev."
-        echo "Exiting now."
-        exit 1
-    fi
-
-    if [ "X$HAVE_LIBSSL" != "Xyes" ] && [ "X$WITH_PYTHON" = "X" ]; then
-        echo
-        echo "Unable to find libssl or openssl/ssl.h."
-        echo "libssl and its development headers are required for Plone."
-        echo "If you're sure you have these installed, and are still getting"
-        echo "this warning, you may disable the libssl check by adding the"
-        echo "--without-ssl flag to the install command line."
-        echo "Otherwise, install your platform's openssl-dev libraries and headers"
-        echo "and try again."
-        echo
         exit 1
     fi
 
@@ -695,8 +698,82 @@ if [ $ROOT_INSTALL -eq 1 ]; then
 else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
-echo ""
-echo "Installing Plone 4.2.2 at $PLONE_HOME"
+echo
+
+######################################
+# DEBUG OPTIONS
+if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
+    echo "Installer Variables:"
+    echo "PLONE_HOME=$PLONE_HOME"
+    echo "LOCAL_HOME=$LOCAL_HOME"
+    echo "ZEOCLUSTER_HOME=$ZEOCLUSTER_HOME"
+    echo "RINSTANCE_HOME=$RINSTANCE_HOME"
+    echo "INSTALL_LXML=$INSTALL_LXML"
+    echo "INSTALL_ZLIB=$INSTALL_ZLIB"
+    echo "INSTALL_JPEG=$INSTALL_JPEG"
+    echo "INSTALL_READLINE=$INSTALL_READLINE"
+    echo "DAEMON_USER=$DAEMON_USER"
+    echo "BUILDOUT_USER=$BUILDOUT_USER"
+    echo "PLONE_GROUP=$PLONE_GROUP"
+    echo "FOR_PLONE=$FOR_PLONE"
+    echo "WANT_PYTHON=$WANT_PYTHON"
+    echo "PACKAGES_DIR=$PACKAGES_DIR"
+    echo "ONLINE_PACKAGES_DIR=$ONLINE_PACKAGES_DIR"
+    echo "HSCRIPTS_DIR=$HSCRIPTS_DIR"
+    echo "ROOT_INSTALL=$ROOT_INSTALL"
+    echo "PLONE_HOME=$PLONE_HOME"
+    echo "DAEMON_USER=$DAEMON_USER"
+    echo "BUILDOUT_USER=$BUILDOUT_USER"
+    echo "ORIGIN_PATH=$ORIGIN_PATH"
+    echo "PWD=$PWD"
+    echo "CWD=$CWD"
+    echo "PKG=$PKG"
+    echo "WITH_PYTHON=$WITH_PYTHON"
+    echo "BUILD_PYTHON=$BUILD_PYTHON"
+    echo "HAVE_PYTHON=$HAVE_PYTHON"
+    echo "CC=$CC"
+    echo "CPP=$CPP"
+    echo "CXX=$CXX"
+    echo "GREP=$GREP"
+    echo "have_bunzip2=$have_bunzip2"
+    echo "have_gunzip=$have_gunzip"
+    echo "have_tar=$have_tar"
+    echo "have_make=$have_make"
+    echo "have_patch=$have_patch"
+    echo "XML2_CONFIG=$XML2_CONFIG"
+    echo "XSLT_CONFIG=$XSLT_CONFIG"
+    echo "HAVE_LIBZ=$HAVE_LIBZ"
+    echo "HAVE_LIBJPEG=$HAVE_LIBJPEG"
+    echo "HAVE_LIBSSL=$HAVE_LIBSSL"
+    echo "HAVE_SSL2=$HAVE_SSL2"
+    echo "HAVE_LIBREADLINE=$HAVE_LIBREADLINE"
+    exit 0
+fi
+
+
+# set up log
+if [ -f "$INSTALL_LOG" ]; then
+    rm "$INSTALL_LOG"
+fi
+touch "$INSTALL_LOG" 2> /dev/null
+if [ $? -gt 0 ]; then
+    echo "Unable to write to ${INSTALL_LOG}; detailed log will go to stdout."
+    INSTALL_LOG="/dev/stdout"
+else
+    echo "Detailed installation log being written to $INSTALL_LOG"
+    echo "Detailed installation log" > "$INSTALL_LOG"
+    echo "Starting at `date`" >> "$INSTALL_LOG"
+fi
+seelog () {
+    echo
+    echo "Installation has failed."
+    echo "See the detailed installation log at $INSTALL_LOG"
+    echo "to determine the cause."
+    exit 1
+}
+
+
+echo "Installing Plone ${FOR_PLONE} at $PLONE_HOME"
 echo ""
 
 
@@ -778,8 +855,9 @@ else
     NEED_LOCAL=0
 fi
 
-if [ "x$WITH_PYTHON" != "x" ] # try to use specified python
-then
+
+
+if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     PYBNAME=`basename "$WITH_PYTHON"`
     PY_HOME=$PLONE_HOME/Python-2.7
     cd "$PKG"
@@ -842,11 +920,7 @@ if [ ! -x "$LOCAL_HOME" ]; then
     exit 1
 fi
 
-if [ -x "$PY" ]; then
-    echo "Python found at $PY; No need for Python install."
-    # also skipping library builds for libraries that have
-    # to be built before python.
-else
+if [ ! -x "$PY" ]; then
     # set up the common build environment unless already existing
     if [ "x$CFLAGS" = 'x' ]; then
         export CFLAGS='-fPIC'
