@@ -1,5 +1,9 @@
 NG - Unreleased Dev Branch
 
+    - Prefer system python and packages whenever they exist and
+      are acceptable. Only build python or xml2/xslt when explicitly
+      requested.
+
     - On server mode installs, isolate the daemon a bit more by having
       it run as a user distinct from the one owning the rest of the
       buildout.
