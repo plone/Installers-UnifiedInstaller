@@ -68,6 +68,10 @@
 #   Full pathname to the directory where you'd like to put the backup
 #   directories for the install. By default target/instance/var.
 #
+# --template=filename
+#   Filename of a .cfg file in buildout_templates that you wish to use
+#   to create the destination buildout.cfg file. Defaults to buildout.cfg.
+#
 # --nobuildout
 #   Skip running bin/buildout. You should know what you're doing.
 #
@@ -75,6 +79,9 @@
 #
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
+# --static-lxml
+#   Forces a static built of libxml2 and libxslt dependencies. Requires
+#   Internet access to download components.
 
 
 # Path for Root install
@@ -119,6 +126,7 @@ readonly WANT_PYTHON=2.7
 readonly PACKAGES_DIR=packages
 readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
+readonly TEMPLATE_DIR=buildout_templates
 
 readonly PYTHON_TB=Python-2.7.3.tar.bz2
 readonly PYTHON_DIR=Python-2.7.3
@@ -211,6 +219,10 @@ usage () {
     echo "  buildout users. Default is 'plone_group'."
     echo "  Ignored for non-server-mode installs."
     echo
+    echo "--template=template-name"
+    echo "  Specifies the buildout.cfg template filename. The template file must"
+    echo "  be in the ${TEMPLATE_DIR} subdirectory. Defaults to buildout.cfg."
+    echo
     echo "--static-lxml"
     echo "  Forces a static built of libxml2 and libxslt dependencies. Requires"
     echo "  Internet access to download components."
@@ -234,6 +246,7 @@ RUN_BUILDOUT=1
 SKIP_TOOL_TESTS=0
 INSTALL_LOG="$ORIGIN_PATH/install.log"
 CLIENT_COUNT=2
+TEMPLATE=buildout
 
 
 for option
@@ -337,8 +350,17 @@ do
             fi
             ;;
 
-        --without-ssl | --without-openssl )
-            WITHOUT_SSL=1
+        --template=* )
+            if [ "$optarg" ]; then
+                TEMPLATE="$optarg"
+                if [ ! -f "${TEMPLATE_DIR}/$TEMPLATE" ] && \
+                   [ ! -f "${TEMPLATE_DIR}/${TEMPLATE}.cfg" ]; then
+                   echo "Unable to find $TEMPLATE or ${TEMPLATE}.cfg in $TEMPLATE_DIR"
+                   usage
+                fi
+            else
+                usage
+            fi
             ;;
 
         --static-lxml | --static-lxml=* )
@@ -1043,6 +1065,7 @@ $SUDO "$PY" "$CWD/helper_scripts/create_instance.py" \
     "--instance_var=$INSTANCE_VAR" \
     "--backup_dir=$BACKUP_DIR" \
     "--instance_home=$INSTANCE_HOME" \
+    "--template=$TEMPLATE" \
     "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
 if [ $? -gt 0 ]; then
     echo "Buildout failed. Unable to continue"

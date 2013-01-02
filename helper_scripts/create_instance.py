@@ -80,6 +80,7 @@ argparser.add_argument('--instance_var', default=None)
 argparser.add_argument('--backup_dir', default=None)
 argparser.add_argument('--daemon_user', default='plone_daemon')
 argparser.add_argument('--buildout_user', default='plone_buildout')
+argparser.add_argument('--template', default='buildout')
 argparser.add_argument('--password', required=False)
 argparser.add_argument('--root_install', required=False, default='0', choices='01')
 argparser.add_argument('--run_buildout', required=False, default='1', choices='01')
@@ -118,9 +119,12 @@ doCommand('find %s -name ".svn" | xargs rm -rf' % opt.instance_home)
 # buildout.cfg customizations
 #
 CLIENTS = int(opt.clients)
+template = opt.template
+if not '.cfg' in template:
+    template += ".cfg"
 
 buildout = iniparse.RawConfigParser()
-buildout.read(os.path.join(opt.uidir, 'buildout_templates', 'buildout.cfg'))
+buildout.read(os.path.join(opt.uidir, 'buildout_templates', template))
 
 # set the parts list
 parts = buildout.get('buildout', 'parts').split('\n')
@@ -241,7 +245,7 @@ if opt.run_buildout:
             print "Parts of the install are missing. Buildout must have failed. Aborting."
             sys.exit(1)
 
-    # sanity check PIL and lxml
+    # sanity check PIL and lxml with our zopepy
     my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
     if doCommand(my_python + " -c 'from _imaging import jpeg_decoder'"):
         print "Failed: JPEG support is not available."
