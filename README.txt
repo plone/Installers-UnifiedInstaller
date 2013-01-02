@@ -1,5 +1,5 @@
 ==============================
-Plone 4.2.2: Unified Installer
+Plone 4.3b1: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,7 +7,7 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.2.2, Zope 2.13.x, and Python 2.7.x.
+This version includes Plone 4.3b1, Zope 2.13.x, and Python 2.7.x.
 
 Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
 
@@ -99,12 +99,12 @@ Two Plone users will be created: plone_daemon and plone_buildout.
 You will need to start Plone as plone_daemon and run buildout
 as plone_buildout..
 
-To install Plone 4.2 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.3 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
 
-To install Plone 4.2 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
@@ -118,12 +118,12 @@ directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
 
-To install Plone 4.2 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.3 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh standalone
 
-To install Plone 4.2 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 	>> ./install.sh zeo
@@ -507,7 +507,7 @@ you can re-run install.sh.
 Solaris (need further check)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to compile Python 2.6 and so on with Sun cc other than GNU cc,
+If you want to compile Python 2.7 and so on with Sun cc other than GNU cc,
 you have to set an environmental variable CC=/your/Sun/cc.
 
 

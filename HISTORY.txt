@@ -1,4 +1,6 @@
-NG - Unreleased Dev Branch
+4.3b1 (unreleased)
+
+    - Adapt to 4.3b1-pending.
 
     - Add sanity check for lxml and PIL via zopepy.
 
