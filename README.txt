@@ -48,6 +48,7 @@ Outline of this document
     Backup Instructions
     Coexistence with System Python
     Developer Options
+    Custom buildout.cfg Template
     Installer Bug reports
     Credits
 
@@ -559,6 +560,18 @@ Developer Options
 After installation, read the instructions at the top of the develop.cfg
 file at the top of the instance directory. This provides support for building
 a development environment.
+
+
+Custom buildout.cfg Template
+============================
+
+You may specify --template= to pick a file to use as a template for the
+buildout.cfg file. The file must be located in buildout_templates, and should
+be generally modified on the buildout.cfg included with the installer. The
+safest customizations will be to add eggs, parts or version pinnings.
+
+The purpose of this option is to allow for feature packaging for particular
+use cases with common add-on needs.
 
 
 Installer Bug reports
