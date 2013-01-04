@@ -34,11 +34,11 @@ if [ -x /usr/sbin/useradd ]; then
         TARGET_GROUP="$1"
         egrep "^$TARGET_GROUP\:" /etc/group > /dev/null 2>&1
         if [ $? -eq 0 ]; then
-            echo "$TARGET_GROUP already exists; no need to create it."
+            echo "'$TARGET_GROUP' already exists; no need to create it."
         else
             groupadd "$TARGET_GROUP" > /dev/null 2>&1
             if [ $? -gt 0 ]; then
-                echo "Creation of $TARGET_GROUP failed. Unable to continue."
+                echo "Creation of '$TARGET_GROUP' failed. Unable to continue."
                 exit 1
             fi
         fi
