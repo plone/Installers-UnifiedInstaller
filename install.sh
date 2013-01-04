@@ -447,7 +447,7 @@ echo
 
 
 if [ $ROOT_INSTALL -eq 1 ]; then
-    if which sudo > /dev/null; then
+    if ! which sudo > /dev/null; then
         echo "sudo utility is required to do a server-mode install."
         echo
         exit 1
