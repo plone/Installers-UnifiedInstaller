@@ -1,4 +1,6 @@
-4.3b1 (unreleased)
+4.3b1 2013-01-04
+
+    - Adapt to 4.3b1.
 
     - Adapt to 4.3b1-pending.
 
