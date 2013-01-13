@@ -1,3 +1,8 @@
+4.3? - unreleased
+
+    - Fix Ticket #13406, Installer fails after building python, by
+      removing bad zlib test.
+
 4.3b1 2013-01-04
 
     - Adapt to 4.3b1.

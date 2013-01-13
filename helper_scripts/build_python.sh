@@ -58,10 +58,4 @@ if [ ! -x "$PY_HOME/bin/python" ]; then
     exit 1
 fi
 
-if "$PY_HOME/bin/python" -c "'test'.encode('zip')"; then
-	echo "Python zlib support is missing; something went wrong in the zlib or python build."
-	seelog
-	exit 1
-fi
-
 cd "$CWD"

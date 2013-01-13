@@ -28,9 +28,15 @@ except ImportError:
 
 try:
     import zlib
+    try:
+        'test'.encode('zip')
+    except LookupError:
+        print "Failed: Python zlib is not working.\n"
+        passed = False
 except ImportError:
     print "Failed: Python must include zlib module.\n"
     passed = False
+
 
 try:
     import _imaging
