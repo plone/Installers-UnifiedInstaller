@@ -220,12 +220,24 @@ if RUN_BUILDOUT == '1':
             print "without the lxml build by adding --without-lxml to the"
             print "command line."
         else:
-            # cleanup; if we leave around .installed.cfg, it will give
-            # us a cascade of misleading messages and under some circumstances
-            # fail during the next buildout.
-            os.remove('.installed.cfg')
-            # we also don't need the part remnants
-            shutil.rmtree('parts/lxml')
+            # test generated lxml via lxmlpy interpreter installed during build
+            returncode = doCommand(
+                os.path.join(INSTANCE_HOME, 'bin', 'lxmlpy') + \
+                  ' -c "from lxml import etree"')
+            if returncode:
+                print "Failed to build working lxml."
+                print "lxml built with no errors, but does not have a working etree component."
+                print "See log file for details."
+                print
+                print "Try preinstalling up-to-date libxml2/libxslt system libraries, then run"
+                print "the installer again."
+            else:
+                # cleanup; if we leave around .installed.cfg, it will give
+                # us a cascade of misleading messages and under some circumstances
+                # fail during the next buildout.
+                os.remove('.installed.cfg')
+                # we also don't need the part remnants
+                shutil.rmtree('parts/lxml')
     else:
         returncode = 0
 
