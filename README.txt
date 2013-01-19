@@ -37,6 +37,9 @@ Outline of this document
     Ports
     Post-installation Instructions
     Root Install Notes
+    Installation Errors
+        Errors building dependencies
+        Built Python does not meet requirements
     Updating After Installation
         Customizing the installation
     Third-party products installed
@@ -422,6 +425,47 @@ If you try to start Zope as root, it will automatically switch effective ID to
 the configured user. However, you'll need to be sure to run buildout
 (for configuration updates) via sudo. Running buildout as root is a security
 risk.
+
+
+Installation Errors
+===================
+
+The installer may fail for a variety of reasons. If the error message is not
+helpful, check the detailed installation log, install.log, to look for
+problems. You may be able to get help on the #plone IRC channel on
+freenode.net, or from the plone-users or plone-setup mailing lists. See
+http://plone.org/support. If you suspect the error is due to a bug in the
+installer, see the "Installer Bug Reports" section below.
+
+Errors building dependencies
+----------------------------
+
+If the install fails while trying to build a library like libjpeg or readline,
+the best thing to do is nearly always to install an up-to-date system library
+to meet the dependency. Then clean up the aborted install and try again.
+
+Built Python does not meet requirements
+---------------------------------------
+
+This error is usually caused by a failure of the Python build to find system
+libraries. This should only happen, though, if the Unified Installer itself
+*did* find the libraries. Otherwise, the installation would have failed much
+earlier.
+
+On Debian, Ubuntu systems, the likely cause is that your system is not
+accurately reporting its "multiarch" architecture. This seems to mainly happen
+on systems that have been upgraded from development versions.
+
+Other systems may just be using unexpected locations for libraries. This is
+common on systems that have uncomfortable relationships with the GNU toolset
+and install GNU tools in separate locations.
+
+Whatever the cause, the general solution is to tell the Python setup routines
+about the unexpected library location using the LDPATH environment variable.
+For example, if your readline library was in /usr/lib/oddspot, you could try
+running the installer with a command like:
+
+LDPATH="-L/usr/lib/oddspot" ./install.sh zeo ...
 
 
 Updating After Installation
