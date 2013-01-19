@@ -63,6 +63,7 @@ rm -r Plone-${NEWVER}
 
 find . -name "._*" -exec rm {} \;
 find . -name ".DS_Store" -exec rm {} \;
+find . -name "*.py[co]" -exec rm -f {} \;
 find . -type f -exec chmod 644 {} \;
 chmod 755 install.sh base_skeleton/bin/*
 find . -type d -exec chmod 755 {} \;
