@@ -819,6 +819,9 @@ else
         echo "***Aborting***"
         echo "The built Python does not meet the requirements for Zope/Plone."
         echo "Check messages and the install.log to find out what went wrong."
+        echo
+        echo "See the 'Built Python does not meet requirements' section of"
+        echo "README.txt for more information about this error."
         exit 1
     fi
 fi

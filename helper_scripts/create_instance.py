@@ -216,9 +216,11 @@ if RUN_BUILDOUT == '1':
             os.path.join(INSTANCE_HOME, 'bin', 'buildout') + \
             " -c lxml_static.cfg -NU")
         if returncode:
-            print "\nlxml build failed. You may wish to clean up and try again"
-            print "without the lxml build by adding --without-lxml to the"
-            print "command line."
+            print "\nlxml build failed."
+            print "See log file for details."
+            print
+            print "Try preinstalling up-to-date libxml2/libxslt system libraries, then run"
+            print "the installer again."
         else:
             # test generated lxml via lxmlpy interpreter installed during build
             returncode = doCommand(
