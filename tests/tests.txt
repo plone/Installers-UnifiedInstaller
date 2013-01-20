@@ -320,7 +320,7 @@ Test building Python and dependencies
     Installing Python-2.7-etc-
     Python build looks OK-etc-
     Building lxml with static libxml2/libxslt-etc-
-    Phone successfully installed at -etc-
+    Plone successfully installed at -etc-
       Username: admin
       Password: admin-etc-
 
