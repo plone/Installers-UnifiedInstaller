@@ -45,8 +45,9 @@ Outline of this document
     Third-party products installed
     Platform Notes
         Mac OS X Server
-        Solaris
+        MacPorts
         OpenBSD/NetBSD
+        Unix/Solaris/etc.
     Uninstall Instructions
     Backup Instructions
     Coexistence with System Python
@@ -513,9 +514,16 @@ needs, you may force a particular choice by editing the script.
 Note that readline installation is forced on OS X, where the default
 readline library is incomplete.
 
+MacPorts
+~~~~~~~~
+
+If you're using MacPorts, it's probably best to follow an all-or-nothing
+strategy: either use ports to pre-install all the dependencies (Python-2.7,
+libxml2, libxslt, readline and libjpg), or don't use it at all.
 
 Mac OS X Server
 ~~~~~~~~~~~~~~~
+
 If you are using LDAP for directory services, the install.sh script may be
 unable to reliably create users and groups.
 
@@ -547,23 +555,16 @@ For root installation of a ZEO cluster on Mac OS X, custom paths might be:
 After you configure users and groups to suit your planned use of Plone,
 you can re-run install.sh.
 
-
-Solaris (need further check)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you want to compile Python 2.7 and so on with Sun cc other than GNU cc,
-you have to set an environmental variable CC=/your/Sun/cc.
-
-
 OpenBSD/NetBSD
 ~~~~~~~~~~~~~~
-The Unified Installer is not smart enough to install Python 2.6.x on
-OpenBSD/NetBSD; it just requires too many platform-specific patches.
 
-Alternatively, you may install for OpenBSD by preinstalling Python 2.6 packages,
-then telling the Unified Installer to use the preinstalled Python.
+The Unified Installer is not smart enough to install Python 2.7.x on
+OpenBSD/NetBSD; it just requires too many platform- specific patches. Instead
+of having the installer build Python, just make sure Python 2.7 is
+preinstalled with system packages or ports.
 
-Test builds on OpenBSD 4.2 succeeded with the following packages pre-installed:
+Test builds on OpenBSD 4.2 succeeded with the following packages pre-
+installed:
 
 bzip2-1.0.4          block-sorting file compressor, unencumbered
 python-2.7.3         interpreted object-oriented programming language
@@ -572,9 +573,17 @@ python-expat-2.6.7   expat module for Python
 If you are unable to install python-expat-2.6.7, you may need to install the
 xbase file set, which includes expat in some versions of OpenBSD (4.2).
 
-Then, when you run the Unified Installer, add the command-line argument:
+Unix/Solaris/etc.
+~~~~~~~~~~~~~~~~~
 
-    --with-python=/usr/local/bin/python2.7
+If you're using an *nix system that does not use GNU build tools, you probably
+already know that installing open-source software based on GNU tools requires
+some extra work. Ideally, you'll have already installed the full GNU build
+tool kit and become proficient with specifying compile and link paths to them
+via CFLAGS and LDFLAGS. Expect to use those skills when installing Plone. If
+CFLAGS/LDFLAGS/CPPFLAGS are in the environment when the installer is run, it will
+use them rather than set its own. As with other environments, preinstall as many
+dependencies as possible.
 
 
 Uninstall instructions
