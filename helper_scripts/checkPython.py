@@ -21,6 +21,7 @@ if not os.path.isfile(os.path.join(sys.prefix, 'include', 'python2.7', 'Python.h
 
 try:
     import xml.parsers.expat
+    xml.parsers.expat
 except ImportError:
     print "Failed: Python must include xml.parsers.expat module."
     print "This is a separate package on some platforms.\n"
@@ -28,6 +29,7 @@ except ImportError:
 
 try:
     import zlib
+    zlib
     try:
         'test'.encode('zip')
     except LookupError:
@@ -37,20 +39,9 @@ except ImportError:
     print "Failed: Python must include zlib module.\n"
     passed = False
 
-
-try:
-    import _imaging
-    try:
-        from _imaging import jpeg_decoder
-    except ImportError:
-            print "Failed: The Python Imaging Library is installed, but the JPEG"
-            print "support is not working."
-            passed = False
-except ImportError:
-    pass
-
 try:
     import _ssl
+    _ssl
 except ImportError:
     print "Failed: This Python does not have ssl support."
     passed = False
@@ -65,11 +56,3 @@ if not passed:
     sys.exit(1)
 
 sys.exit(0)
-
-# prevent 'imported but not used' warnings
-zlib
-_imaging
-jpeg_decoder
-_ssl
-readline
-xml.parsers.expat

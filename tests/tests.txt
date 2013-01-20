@@ -14,7 +14,7 @@ Setup stuff
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/home/steve/plonetest'
+    >>> testTarget = '/Users/steve/nobackup/plonetest'
     >>> withPython = '/usr/bin/python2.7'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)

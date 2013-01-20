@@ -264,6 +264,8 @@ if opt.run_buildout:
     my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
     if doCommand(my_python + " -c 'from _imaging import jpeg_decoder'"):
         print "Failed: JPEG support is not available."
+        print "If the installer did not built a static libjpeg, using"
+        print "--libjpeg=yes option may cure this problem."
         sys.exit(1)
     if doCommand(my_python + " -c 'from lxml import etree'"):
         print "Failed: lxml does not have a working etree component."

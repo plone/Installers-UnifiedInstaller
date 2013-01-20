@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Unified Plone installer build script
-# Copyright (c) 2008-2012 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2013 Plone Foundation. Licensed under GPL v 2.
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
@@ -934,11 +934,6 @@ else # use already-placed python or build one
     if [ -x "$PY" ]; then
         # no point in installing zlib -- too late!
         INSTALL_ZLIB=no
-        # let's see if we've already got PIL
-        if "$PY" -c "$PIL_TEST" 2> /dev/null
-        then
-            INSTALL_JPEG=no
-        fi
     fi
 fi
 
@@ -957,8 +952,9 @@ if [ ! -x "$LOCAL_HOME" ]; then
     exit 1
 fi
 
+. helper_scripts/build_libjpeg.sh
+
 if [ ! -x "$PY" ]; then
-    . helper_scripts/build_libjpeg.sh
     . helper_scripts/build_readline.sh
 
     if [ `uname` = "Darwin" ]; then
