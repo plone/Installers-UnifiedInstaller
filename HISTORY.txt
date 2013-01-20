@@ -1,5 +1,11 @@
 4.3? - unreleased
 
+    - Include a dev copy of z3c.recipe.staticlxml that cures clock_gettime
+      underlink on some gcc 4.[56] systems.
+
+    - if libjpeg is needed, make sure it's built even when using a virtualenv
+      python. Cures a problem on OS X.
+
     - Fix Ticket #13406, Installer fails after building python, by
       removing bad zlib test.
 
