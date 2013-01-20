@@ -58,7 +58,7 @@ Running install.sh with no options should result in a usage message:
 Test a ZEO install
 ------------------
 
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --libjpeg=yes --libreadline=yes' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
     >>> returncode and (stdout + stderr)
     0
 
@@ -301,23 +301,59 @@ Test an --instance=... install
       ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'bootstrap.py', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg', 'zope-versions.cfg', 'zopeapp-versions.cfg', 'ztk-versions.cfg']
 
 
-# ---------------------------
-# Test a --withpython install
-# ---------------------------
+-------------------------------------
+Test building Python and dependencies
+-------------------------------------
 
-#     >>> ntestTarget = "%s/wptest" % testTarget
-#     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --with-python=%s' % (ntestTarget, withPython))
+    First, clean out prior work
+    >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
 
-#     >>> returncode and (stdout + stderr)
-#     0
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --build-python --static-lxml --libjpeg=yes --readline=yes' % testTarget)
+    >>> returncode and (stdout + stderr)
+    0
 
-#     target should have basic kit
-#     >>> sorted(os.listdir(ntestTarget))
-#     [-etc-'Python-2.7', 'buildout-cache', 'zeocluster']
+    >>> print stdout
+    -etc-
+    Installing Plone 4.3b1 at -etc-
+    Compiling and installing jpeg local libraries-etc-
+    Compiling and installing readline local libraries-etc-
+    Installing Python-2.7-etc-
+    Python build looks OK-etc-
+    Building lxml with static libxml2/libxslt-etc-
+    Phone successfully installed at -etc-
+      Username: admin
+      Password: admin-etc-
 
-#     and, the python directory should look like we have a successful virtualenv install
-#     >>> sd = sorted(os.listdir('%s/Python-2.7/bin' % ntestTarget))
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import readline"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
 
-#     >>> 'python' in sd
-#     True
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import zlib"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
 
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import jpeg_decoder"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import zip_decoder"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from lxml import etree"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    This Python should not be a virtualenv.
+    >>> os.path.exists(os.path.join(testTarget, 'Python-2.7', 'bin', 'activate'))
+    False
