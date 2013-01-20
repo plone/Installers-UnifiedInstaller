@@ -37,6 +37,9 @@ Outline of this document
     Ports
     Post-installation Instructions
     Root Install Notes
+    Installation Errors
+        Errors building dependencies
+        Built Python does not meet requirements
     Updating After Installation
         Customizing the installation
     Third-party products installed

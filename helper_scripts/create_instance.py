@@ -238,6 +238,8 @@ if RUN_BUILDOUT == '1':
                 # us a cascade of misleading messages and under some circumstances
                 # fail during the next buildout.
                 os.remove('.installed.cfg')
+                # and we no longer need lxmlpy
+                os.remove(os.path.join('bin', 'lxmlpy'))
                 # we also don't need the part remnants
                 shutil.rmtree('parts/lxml')
     else:
