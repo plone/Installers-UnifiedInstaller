@@ -647,7 +647,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.2.3 at $PLONE_HOME"
+echo "Installing Plone 4.2.4 at $PLONE_HOME"
 echo ""
 
 
