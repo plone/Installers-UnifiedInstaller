@@ -1,4 +1,6 @@
-4.3? - unreleased
+4.3b2 - 2012-01-23
+
+    - Adapt to 4.3b2
 
     - Include a dev copy of z3c.recipe.staticlxml that cures clock_gettime
       underlink on some gcc 4.[56] systems.
