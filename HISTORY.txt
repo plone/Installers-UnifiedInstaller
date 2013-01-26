@@ -1,3 +1,8 @@
+4.2.4r2 (installer release 2, forthcoming)
+
+    - The version check logic for libxml2/libxslt did not work on
+      shells that limit return values to a byte. Fixed.
+
 4.2.4 - 2012-01-23
 
     - Adapt to 4.2.4.

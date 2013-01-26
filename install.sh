@@ -607,12 +607,12 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
             XSLT_XML_MSG
             exit 1
         fi
-        if config_version xml2 $NEED_XML2; then
+        if ! config_version xml2 $NEED_XML2; then
             echo "We need development version $NEED_XML2 of libxml. Not found."
             XSLT_XML_MSG
             exit 1
         fi
-        if config_version xslt $NEED_XSLT; then
+        if ! config_version xslt $NEED_XSLT; then
             echo "We need development version $NEED_XSLT of libxslt. Not found."
             XSLT_XML_MSG
             exit 1
