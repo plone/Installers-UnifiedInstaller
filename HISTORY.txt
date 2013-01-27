@@ -1,4 +1,4 @@
-4.2.4r2 (installer release 2, forthcoming)
+4.2.4r2 (installer release 2, 2013-01-27)
 
     - The version check logic for libxml2/libxslt did not work on
       shells that limit return values to a byte. Fixed.
