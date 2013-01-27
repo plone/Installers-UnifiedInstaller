@@ -1,3 +1,8 @@
+4.3b2 (installer release 2, 2013-01-27)
+
+    - The version check logic for libxml2/libxslt did not work on
+      shells that limit return values to a byte. Fixed.
+
 4.3b2 - 2012-01-23
 
     - Adapt to 4.3b2
