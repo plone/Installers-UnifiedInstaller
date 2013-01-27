@@ -1,5 +1,8 @@
 4.3b2 (installer release 2, 2013-01-27)
 
+    - Use plone.recipe.unifiedinstaller 4.3.1 to incorporate fix for
+      plonectl.
+
     - The version check logic for libxml2/libxslt did not work on
       shells that limit return values to a byte. Fixed.
 
