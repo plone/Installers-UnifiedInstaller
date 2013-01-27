@@ -40,28 +40,18 @@ config_version () {
     return 1
 }
 
-# if config_version xml2 2.7.7; then
-#     echo "Yes, xml2-config exists, and version is >= 2.7.7"
-# else
-#     echo "No, xml2-config doesn't exist, or version is < 2.7.8"
-# fi
-# if config_version xml2 2.7.8; then
-#     echo "Yes, xml2-config exists, and version is >= 2.7.8"
-# else
-#     echo "No, xml2-config doesn't exist, or version is < 2.7.11"
-# fi
-# if config_version xml2 2.7.11; then
-#     echo "Yes, xml2-config exists, and version is >= 2.7.11"
-# else
-#     echo "No, xml2-config doesn't exist, or version is < 2.7.11"
-# fi
-# if config_version xml20 2.7.8; then
-#     echo "Yes, xml2-config exists, and version is >= 2.7.8"
-# else
-#     echo "No, xml20-config doesn't exist, or version is < 2.7.8"
-# fi
+# for NEED_XML2 in 1.9.0 2.7.7 2.7.8 2.7.9 2.7.11 2.8.0; do
+#     if config_version xml2 $NEED_XML2; then
+#         echo "Yes, xml2-config exists, and version is >= $NEED_XML2"
+#     else
+#         echo "No, xml2-config doesn't exist, or version is < $NEED_XML2"
+#     fi
+# done
 
-# NEED_XML2="2.7.8"
-# if ! config_version xml2 $NEED_XML2; then
-#     echo "We need development version $NEED_XML2 of libxml. Not found."
-# fi
+# for NEED_XSLT in 1.0.25 1.1.25 1.1.26 1.1.27 1.2.0 3.0.0; do
+#     if config_version xslt $NEED_XSLT; then
+#         echo "Yes, xslt-config exists, and version is >= $NEED_XSLT"
+#     else
+#         echo "No, xslt-config doesn't exist, or version is < $NEED_XSLT"
+#     fi
+# done
