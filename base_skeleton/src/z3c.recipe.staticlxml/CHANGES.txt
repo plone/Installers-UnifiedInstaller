@@ -1,6 +1,12 @@
 0.9 (unreleased)
 ================
 
+- Change the strategy for detecting when the --no-as-needed link flag is needed
+  since the problem is showing up as early as gcc 4.1.x. Also, some non-standard
+  ld's (OS X), while claiming to be gcc-compatible, don't accept the flag.
+  New strategy: see if ld will accept the flag without an "unknown option"
+  error. If it will, use the flag. [smcmahon]
+
 - Look for gcc >= 4.5. If found, add LDFLAGS for force no-as-needed link
   of librt. This should cure the missing clock_gettime problem for
   recent gcc. [smcmahon]

@@ -3,10 +3,11 @@
 
 import sys
 import os
+import logging
 import pkg_resources
 import platform
 import re
-import logging
+import subprocess
 from fnmatch import fnmatch
 
 from distutils import sysconfig
@@ -177,7 +178,7 @@ class Recipe(object):
             self.logger.warn("Using configured libxslt at %s" % self.xslt_location)
 
         # get the config executables
-        self.get_configs( os.path.join(self.xml2_location, "bin"), os.path.join(self.xslt_location, "bin"))
+        self.get_configs(os.path.join(self.xml2_location, "bin"), os.path.join(self.xslt_location, "bin"))
 
         if self.static_build:
             self.remove_dynamic_libs(self.xslt_location)
@@ -272,16 +273,15 @@ class Recipe(object):
                 XML_CONFIG=self.xml2_config,
                 LDSHARED=self.get_ldshared(),
                 )
-        pc = platform.python_compiler()
-        mo = re.match(r"GCC (\d+).(\d+).(\d+)$", pc)
-        if mo:
-            try:
-                version_tuple = [int(s) for s in mo.groups()]
-            except ValueError:
-                version_tuple = (0, 0, 0)
-            if version_tuple[0] > 4 or version_tuple[0] == 4 and version_tuple[1] >= 5:
-                env['LDFLAGS'] = "-Wl,--no-as-needed,-lrt"
-                self.logger.info("Found %s, adding LDFLAGS to prevent underlinking of librt" % pc)
+        # see if ld accepts --no-as-needed flag
+        po = subprocess.Popen("ld --no-as-needed",
+                              shell=True,
+                              universal_newlines=True,
+                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        stdout, stderr = po.communicate()
+        if "unknown option" not in stdout.lower():
+            self.logger.info("Adding LDFLAGS to prevent underlinking of librt")
+            env['LDFLAGS'] = "-Wl,--no-as-needed,-lrt"
         return env
 
 # vim: set ft=python ts=4 sw=4 expandtab :

@@ -1,3 +1,7 @@
+4.3b3 (installer release 3, unreleased)
+
+    - Apply lxml underlink fix to all systems where ld accepts --no-as-needed.
+
 4.3b2 (installer release 2, 2013-01-27)
 
     - Use plone.recipe.unifiedinstaller 4.3.1 to incorporate fix for
