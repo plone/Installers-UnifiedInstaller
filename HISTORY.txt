@@ -1,4 +1,4 @@
-4.3b3 (installer release 3, unreleased)
+4.3b3 (installer release 3, 2012-01-30)
 
     - Apply lxml underlink fix to all systems where ld accepts --no-as-needed.
 
