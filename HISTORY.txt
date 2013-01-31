@@ -1,3 +1,7 @@
+4.2.4r3 (installer release 3, 2013-01-30)
+
+    - Apply lxml underlink fix to all systems where ld accepts --no-as-needed.
+
 4.2.4r2 (installer release 2, 2013-01-27)
 
     - The version check logic for libxml2/libxslt did not work on
