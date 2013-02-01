@@ -12,10 +12,10 @@ This version includes Plone 4.3b2, Zope 2.13.x, and Python 2.7.x.
 Feedback/bugs to: `Plone Development Workspace <http://dev.plone.org/plone>`_ component: Installer (Unified)
 
 For a guide to installing and maintaining Plone, see
-`Installing and maintaining Plone sites <http://collective-docs.readthedocs.org/en/latest/index.html#installing-and-maintaining-plone-sites>`_
+`Installing and maintaining Plone sites <http://developer.plone.org/index.html#installing-and-maintaining-plone-sites>`_
 
 If you are a deploying Plone for production, read
-`Basics of Plone Production Deployment <http://collective-docs.readthedocs.org/en/latest/hosting/basics/index.html>`_
+`Basics of Plone Production Deployment <http://developer.plone.org/hosting/basics/index.html>`_
 before continuing.
 
 :Important: Back up your existing Plone site prior to running the installer
