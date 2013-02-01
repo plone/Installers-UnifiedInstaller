@@ -9,52 +9,69 @@ will not change or interfere with your system Python.
 
 This version includes Plone 4.3b2, Zope 2.13.x, and Python 2.7.x.
 
-Feedback/bugs to: http://dev.plone.org/plone; component: Installer (Unified)
+Feedback/bugs to: `Plone Development Workspace <http://dev.plone.org/plone>`_ component: Installer (Unified)
 
 For a guide to installing and maintaining Plone, see
-http://collective-docs.readthedocs.org/en/latest/index.html#installing-and-maintaining-plone-sites
+`Installing and maintaining Plone sites <http://collective-docs.readthedocs.org/en/latest/index.html#installing-and-maintaining-plone-sites>`_
 
 If you are a deploying Plone for production, read
-``Basics of Plone Production Deployment <http://collective-docs.readthedocs.org/en/latest/hosting/basics/index.html>`_
+`Basics of Plone Production Deployment <http://collective-docs.readthedocs.org/en/latest/hosting/basics/index.html>`_
 before continuing.
 
-*Important:* Back up your existing Plone site prior to running the installer
-or running buildout to update.
+:Important: Back up your existing Plone site prior to running the installer
+  or running buildout to update.
 
 Outline of this document
 ------------------------
-    Installation Instructions
-        For a super-user (root) installation
-        For a non-super-user (rootless) installation
-    Installation Options
-    Dependencies
-    Recommended Libraries and Utilities
-    Install Location, Root Install
-    Install Location, Root-less Install
-    Startup/Shutdown/Restart/Status instructions
-        Root Install
-        Root-less Install
-    Ports
-    Post-installation Instructions
-    Root Install Notes
-    Installation Errors
-        Errors building dependencies
-        Built Python does not meet requirements
-    Updating After Installation
-        Customizing the installation
-    Third-party products installed
-    Platform Notes
-        Mac OS X Server
-        MacPorts
-        OpenBSD/NetBSD
-        Unix/Solaris/etc.
-    Uninstall Instructions
-    Backup Instructions
-    Coexistence with System Python
-    Developer Options
-    Custom buildout.cfg Template
-    Installer Bug reports
-    Credits
+
+- `Installation Instructions`_
+
+  - `For a super-user (root) installation`_
+  - `For a non-super-user (rootless) installation`_
+
+- `Installation Options`_
+- `Upgrade From Plone 2.5 or Non-Buildout 3.x`_
+- `Dependencies`_
+- `Libraries and Utilities`_
+
+  - `Required`_
+  - `Recommended`_
+  - `Optional`_
+
+- `Install Location, Root Install`_
+- `Install Location, Root-less Install`_
+- `Startup/Shutdown/Restart/Status instructions`_
+
+  - `Root Install`_
+  - `Root-less Install`_
+
+- `Ports`_
+- `Post-installation Instructions`_
+- `Root Install Notes`_
+- `Installation Errors`_
+
+  - `Errors building dependencies`_
+  - `Built Python does not meet requirements`_
+
+- `Updating After Installation`_
+
+  - `Customizing the installation`_
+
+- `Third-party products installed`_
+- `Platform Notes`_
+
+  - `Mac OS X Server`_
+  - `MacPorts`_
+  - `OpenBSD/NetBSD`_
+  - `Unix/Solaris/etc.`_
+
+- `Uninstall Instructions`_
+- `Backup Instructions`_
+- `Coexistence with System Python`_
+- `Developer Options`_
+- `Custom buildout.cfg Template`_
+- `Installer Bug reports`_
+- `Credits`_
 
 
 Installation Instructions
@@ -64,8 +81,8 @@ The installer will compile Python, Zope, and key required libraries from
 source. (Basic build tools and common libraries are required. See
 "Dependencies" and "Recommended Libraries" below.)
 
-PLEASE NOTE: You have the option to run the installation as root or a
-normal user. There are serious security implications to this choice.
+:PLEASE NOTE: You have the option to run the installation as root or a
+  normal user. There are serious security implications to this choice.
 
 The non-root method produces an install that will run the Zope server
 with the same privileges as the installing user. This is probably not an
@@ -78,15 +95,15 @@ distinct user identity with minimal privileges (unless you add them).
 Providing adequate security for a production server requires many more
 steps, but this is a better starting point.
 
-PLEASE NOTE: You have the option to install Plone as a standalone
-(single-instance) setup or as a clustered (ZEO) setup.
+:PLEASE NOTE: You have the option to install Plone as a standalone
+  (single-instance) setup or as a clustered (ZEO) setup.
 
 The clustered (ZEO) setup will take advantage of multi-core CPUs and is
 recommended for a production deployment, while the standalone method is
 easier for a desktop-based development setup.
 
 For more detail on both root/non-root and ZEO/standalone choices, see
-"Installing on Linux / Unix / BSD":http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd
+`Installing on Linux / Unix / BSD <http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd>`_
 in the Plone.Org documentation section.
 
 For a super-user (root) installation
@@ -105,13 +122,15 @@ as plone_buildout..
 
 To install Plone 4.3 in a stand-alone (single Zope instance) configuration:
 
-* cd to the installer directory and issue the following command:
-	>> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
+* cd to the installer directory and issue the following command::
+
+    >> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
 
 To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
-* cd to the installer directory and issue the following command:
-	>> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
+* cd to the installer directory and issue the following command::
+
+    >> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
 
 The "sudo" utility is required for a root install. This security utility is included with
 most recent Unix workalikes and is easily installed on other systems. On BSD-heritage
@@ -127,26 +146,30 @@ privileges of that user.
 
 To install Plone 4.3 in a stand-alone (single Zope instance) configuration:
 
-* cd to the installer directory and issue the following command:
-	>> ./install.sh standalone
+* cd to the installer directory and issue the following command::
+
+    >> ./install.sh standalone
 
 To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
-* cd to the installer directory and issue the following command:
-	>> ./install.sh zeo
+* cd to the installer directory and issue the following command::
+
+    >> ./install.sh zeo
 
 
 Installation Options
 ====================
-Usage: [sudo] install.sh [options] standalone|zeo
+Usage: ``[sudo] install.sh [options] standalone|zeo``
 
 Install methods available:
-   standalone - install standalone zope instance
-   zeo        - install zeo cluster
+
+--standalone  install standalone zope instance
+--zeo         install zeo cluster
 
 Use sudo (or run as root) for root install.
 
 Options:
+
 --target=pathname
   Use to specify top-level path for installs. Plone instances
   and Python will be built inside this directory.
@@ -164,11 +187,12 @@ Options:
   Use with the "zeo" install method to specify the number of Zope
   clients you wish to create. Default is 2.
 
---user=user-name In a root install, sets the effective user for running the
+--user=user-name
+  In a root install, sets the effective user for running the
   instance. Default is 'plone'. Ignored for non-root installs. You should always
   use the same user within a given target.
 
---with-python=/full/path/to/python2.7
+--with-python=</full/path/to/python2.7>
   If you have an already built Python that's adequate to run
   Zope / Plone, you may specify it here.
   virtualenv will be used to isolate the copy used for the install.
@@ -178,11 +202,11 @@ Options:
 --password=InstancePassword
   If not specified, a random password will be generated.
 
---libjpeg=(auto|yes|no)
+--libjpeg=<auto|yes|no>
   Overrides the automatic determination of whether and where to
   install the libjpeg JPEG library.
 
---readline=(auto|yes|no)
+--readline=<auto|yes|no>
   Optional. Installs a local readline library. Only necessary
   on platforms with odd libraries (like OS X Leopard).
 
@@ -271,20 +295,20 @@ Install Location, Root Install
 - Python installed at /usr/local/Plone/Python-2.7
 
 - For ZEO Cluster
-	- ZEO cluster (server and 2 clients) installed and configured at /usr/local/Plone/zeocluster
-	  Both --target and --name options may change this.
-	- Add-on Products folder at /usr/local/Plone/zeocluster/products.
-	  (You may also install products via buildout.)
-	- Data.fs (ZODB) at /usr/local/Plone/zeocluster/var/filestorage
-	- adminPassword.txt at /usr/local/Plone/zeocluster/adminPassword.txt
+    - ZEO cluster (server and 2 clients) installed and configured at /usr/local/Plone/zeocluster
+      Both --target and --name options may change this.
+    - Add-on Products folder at /usr/local/Plone/zeocluster/products.
+      (You may also install products via buildout.)
+    - Data.fs (ZODB) at /usr/local/Plone/zeocluster/var/filestorage
+    - adminPassword.txt at /usr/local/Plone/zeocluster/adminPassword.txt
 
 - For Stand-Alone:
-	- Zope Instance installed and configured at /usr/local/Plone/zinstance
-	  Both --target and --name options may change this.
-	- Add-on Products folder at /usr/local/Plone/zinstance/products
-	  (You may also install products via buildout.)
-	- Data.fs (ZODB) at /usr/local/Plone/zinstance/var/filestorage
-	- adminPassword.txt at /usr/local/Plone/zinstance/adminPassword.txt
+    - Zope Instance installed and configured at /usr/local/Plone/zinstance
+      Both --target and --name options may change this.
+    - Add-on Products folder at /usr/local/Plone/zinstance/products
+      (You may also install products via buildout.)
+    - Data.fs (ZODB) at /usr/local/Plone/zinstance/var/filestorage
+    - adminPassword.txt at /usr/local/Plone/zinstance/adminPassword.txt
 
 
 Install Location, Root-less Install
@@ -295,34 +319,34 @@ Install Location, Root-less Install
   option. If you change it, you'll also need to change the paths below.
 - Python installed at $HOME/Plone/Python-2.7
 - For ZEO Cluster
-	- ZEO cluster (server and 2 clients) installed and configured at $HOME/Plone/zeocluster
-	  Both --target and --name options may change this.
-	- Add-on Products folder at $HOME/Plone/zeocluster/products
-	  (You may also install products via buildout.)
-	- Data.fs (ZODB) at $HOME/Plone/zeocluster/var/filestorage
-	- adminPassword.txt at $HOME/Plone/zeocluster/adminPassword.txt
+    - ZEO cluster (server and 2 clients) installed and configured at $HOME/Plone/zeocluster
+      Both --target and --name options may change this.
+    - Add-on Products folder at $HOME/Plone/zeocluster/products
+      (You may also install products via buildout.)
+    - Data.fs (ZODB) at $HOME/Plone/zeocluster/var/filestorage
+    - adminPassword.txt at $HOME/Plone/zeocluster/adminPassword.txt
 - For Stand-Alone:
-	- Zope Instance installed and configured at $HOME/Plone/zinstance
-	  Both --target and --name options may change this.
-	- Add-on Products folder at $HOME/Plone/zinstance/products
-	  (You may also install products via buildout.)
-	- Data.fs (ZODB) at $HOME/Plone/zinstance/var/filestorage
-	- adminPassword.txt at $HOME/zinstance/adminPassword.txt
+    - Zope Instance installed and configured at $HOME/Plone/zinstance
+      Both --target and --name options may change this.
+    - Add-on Products folder at $HOME/Plone/zinstance/products
+      (You may also install products via buildout.)
+    - Data.fs (ZODB) at $HOME/Plone/zinstance/var/filestorage
+    - adminPassword.txt at $HOME/zinstance/adminPassword.txt
 
 
 Startup/Shutdown/Restart/Status instructions
-=====================================
+============================================
 
 Root Install
 ------------
 
 To start Plone::
 
-		>> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl start
+        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl start
 
 To stop Plone::
 
-		>> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl stop
+        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl stop
 
 To restart Plone::
 
@@ -330,43 +354,43 @@ To restart Plone::
 
 To check status::
 
-		>> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl status
+        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl status
 
 Root-less Install
 -----------------
 
 To start Plone::
 
-		>> $HOME/Plone/zeocluster/bin/plonectl start
+        >> $HOME/Plone/zeocluster/bin/plonectl start
 
 To stop Plone::
 
-		>> $HOME/Plone/zeocluster/bin/plonectl stop
+        >> $HOME/Plone/zeocluster/bin/plonectl stop
 
 To restart Plone::
 
-		>> $HOME/Plone/zeocluster/bin/plonectl restart
+        >> $HOME/Plone/zeocluster/bin/plonectl restart
 
 To check status::
 
-		>> $HOME/Plone/zeocluster/bin/plonectl status
+        >> $HOME/Plone/zeocluster/bin/plonectl status
 
 
 Ports
 =====
 
 Stand-Alone:
-	- Zope server runs on port 8080
+    - Zope server runs on port 8080
 
-	Edit buildout.cfg and run bin/buildout to change port.
+    Edit buildout.cfg and run bin/buildout to change port.
 
 ZEO Cluster:
-	- ZEO server runs on port 8100
-	- ZEO client1 runs on port 8080
-	- ZEO client2 runs on port 8081
-    ...
+    - ZEO server runs on port 8100
+    - ZEO client1 runs on port 8080
+    - ZEO client2 runs on port 8081
+    - ...
 
-	Edit buildout.cfg and run bin/buildout to change ports.
+    Edit buildout.cfg and run bin/buildout to change ports.
 
 
 Post-installation instructions
@@ -413,15 +437,15 @@ user: plone_buildout
 
 group: plone_group
 
- The id, "plone" unless you specify otherwise, will be
+The id, "plone" unless you specify otherwise, will be
 created if it doesn't exist.
 
 The Zope daemon will be set up run under this user id, and the user will be the
 owner of the files in the instance and buildout cache subdirectories.
 
-This means that you will need to prefix your start/stop/buildout commands with:
+This means that you will need to prefix your start/stop/buildout commands with::
 
-sudo -u plone
+    sudo -u plone
 
 to make sure they run under the correct user id.
 
@@ -467,9 +491,9 @@ and install GNU tools in separate locations.
 Whatever the cause, the general solution is to tell the Python setup routines
 about the unexpected library location using the LDPATH environment variable.
 For example, if your readline library was in /usr/lib/oddspot, you could try
-running the installer with a command like:
+running the installer with a command like::
 
-LDPATH="-L/usr/lib/oddspot" ./install.sh zeo ...
+    LDPATH="-L/usr/lib/oddspot" ./install.sh zeo ...
 
 
 Updating After Installation
@@ -535,12 +559,12 @@ for a root installation of Plone may be inappropriate.
 
 You can use Workgroup Manager (Apple Server Admin Tools) to create
 groups that are typical to a production installation of Plone:
-   plone
-   zeo
+- plone
+-zeo
 
 then create users with UIDs below 500:
-   plone
-   zeo
+- plone
+- zeo
 
 For each user:
  * match the Primary Group ID to the corresponding group
@@ -579,7 +603,7 @@ xbase file set, which includes expat in some versions of OpenBSD (4.2).
 Unix/Solaris/etc.
 ~~~~~~~~~~~~~~~~~
 
-If you're using an *nix system that does not use GNU build tools, you probably
+If you're using an \*nix system that does not use GNU build tools, you probably
 already know that installing open-source software based on GNU tools requires
 some extra work. Ideally, you'll have already installed the full GNU build
 tool kit and become proficient with specifying compile and link paths to them
