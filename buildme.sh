@@ -28,7 +28,7 @@ else
   TAR='tar'
 fi
 
-NEWVER=4.2.4
+NEWVER=4.2.5
 
 SDIR=`pwd`
 

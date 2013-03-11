@@ -108,8 +108,8 @@ JPEG_TB=jpegsrc.v8d.tar.bz2
 JPEG_DIR=jpeg-8d
 READLINE_TB=readline-6.2.tar.bz2
 READLINE_DIR=readline-6.2
-VIRTUALENV_TB=virtualenv-1.8.2.tar.gz
-VIRTUALENV_DIR=virtualenv-1.8.2
+VIRTUALENV_TB=virtualenv-1.9.1.tar.gz
+VIRTUALENV_DIR=virtualenv-1.9.1
 
 NEED_XML2="2.7.8"
 NEED_XSLT="1.1.26"
@@ -647,7 +647,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.2.4 at $PLONE_HOME"
+echo "Installing Plone 4.2.5 at $PLONE_HOME"
 echo ""
 
 

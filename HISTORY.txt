@@ -1,3 +1,7 @@
+4.2.5 - 2013-03-10
+
+    - Adapt to 4.2.5
+
 4.2.4r3 (installer release 3, 2013-01-30)
 
     - Apply lxml underlink fix to all systems where ld accepts --no-as-needed.
