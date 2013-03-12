@@ -1,3 +1,8 @@
+4.3rc1 - (installer release 2, unreleased)
+
+    - zeoserver address reference was missing from zeo client buildout
+      sections created by the installer. Fixes #13482.
+
 4.3rc1 - 2013-03-11
 
     - Adapt to 4.3rc1.
