@@ -132,6 +132,8 @@ if binaries:
 
 print "zap *.py[c|o] files from installed eggs"
 doCommand("find %s -name '*.py[co]' -exec rm {} \\;" % eggs)
+print "zap *.mo files from installed eggs"
+doCommand("find %s -name '*.mo' -exec rm {} \\;" % eggs)
 
 print "Removing .registration.cache files"
 doCommand("find %s -name '.registration.cache' -exec rm {} \\;" % eggs)
