@@ -1,4 +1,12 @@
-4.3rc1 - (installer release 2, unreleased)
+4.3.something - (unreleased)
+
+    - Suppress meaningless warnings on chmod in set permissions.
+      Fixes http://dev.plone.org/ticket/13488.
+
+    - On BSD systems, group will not be set automatically to plone_group
+      unless directory is set that way. Affects sudo installs. Fixed.
+
+4.3rc1 - (installer release 2, 2013-03-13)
 
     - zeoserver address reference was missing from zeo client buildout
       sections created by the installer. Fixes #13482.

@@ -1038,8 +1038,8 @@ cd "$CWD"
 cd "$CWD"
 
 if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER"
-    chown -R "$BUILDOUT_USER" "$PLONE_HOME"
+    echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER:$PLONE_GROUP"
+    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME"
 fi
 
 ################################################
