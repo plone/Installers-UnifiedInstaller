@@ -1,5 +1,7 @@
 4.3.something - (unreleased)
 
+    - Add Diazo command-line tools to develop.cfg.
+
     - Suppress meaningless warnings on chmod in set permissions.
       Fixes http://dev.plone.org/ticket/13488.
 
