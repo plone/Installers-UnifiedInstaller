@@ -128,8 +128,8 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_TB=Python-2.7.3.tar.bz2
-readonly PYTHON_DIR=Python-2.7.3
+readonly PYTHON_TB=Python-2.7.4.tar.bz2
+readonly PYTHON_DIR=Python-2.7.4
 readonly DISTRIBUTE_TB=distribute-0.6.35.tar.gz
 readonly DISTRIBUTE_DIR=distribute-0.6.35
 readonly JPEG_TB=jpegsrc.v8d.tar.bz2
