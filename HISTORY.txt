@@ -1,4 +1,18 @@
-4.3.something - (unreleased)
+4.3 - 2013-04-14
+
+    - Adapt to 4.3.
+
+    - Add note on installer directory permissions in sudo installs.
+      Fixes http://dev.plone.org/ticket/13523.
+
+    - Move zopeskel to develop.cfg.
+
+    - Add zest.releaser to develop.cfg.
+
+    - Remove omelette. Since all the eggs for an installer build are in
+      the buildout cache, it's not as useful as when they may be spread
+      over the file system. It also doesn't work in environments that
+      don't support symbolic links.
 
     - Add Diazo command-line tools to develop.cfg.
 

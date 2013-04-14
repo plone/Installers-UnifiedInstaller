@@ -11,3 +11,4 @@ Plone-docs
 *.gz
 *.bz2
 testout.txt
+tests.out

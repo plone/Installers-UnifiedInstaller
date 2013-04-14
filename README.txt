@@ -1,5 +1,5 @@
 ==============================
-Plone 4.3rc1: Unified Installer
+Plone 4.3: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs
@@ -7,7 +7,7 @@ Plone and its dependencies from source on most Unix-like platforms. The
 kit includes Plone, Zope and Python. Python is installed in a way that
 will not change or interfere with your system Python.
 
-This version includes Plone 4.3rc1, Zope 2.13.x, and Python 2.7.x.
+This version includes Plone 4.3, Zope 2.13.x, and Python 2.7.x.
 
 Feedback/bugs to: `Plone Development Workspace <http://dev.plone.org/plone>`_ component: Installer (Unified)
 
@@ -135,6 +135,9 @@ To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 The "sudo" utility is required for a root install. This security utility is included with
 most recent Unix workalikes and is easily installed on other systems. On BSD-heritage
 systems, this in the security directory of the ports collection.
+
+Note that the installation package must be unpacked in a directory that is world-accessible. This is because the installer drops permissions part way through the
+install. All installer components need to be accessible to the plone_buildout user.
 
 For a non-super-user (rootless) installation
 --------------------------------------------
