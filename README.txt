@@ -1,6 +1,6 @@
-==============================
+============================
 Plone 4.3: Unified Installer
-==============================
+============================
 
 The Plone Unified Installer is a source-installation kit that installs
 Plone and its dependencies from source on most Unix-like platforms. The
