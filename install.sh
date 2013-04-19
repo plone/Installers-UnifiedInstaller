@@ -452,7 +452,7 @@ if [ $ROOT_INSTALL -eq 1 ]; then
         echo
         exit 1
     fi
-    SUDO="sudo -u $BUILDOUT_USER"
+    SUDO="sudo -u $BUILDOUT_USER -E"
 else
     SUDO=""
 fi
@@ -1033,7 +1033,6 @@ cd "$CWD"
 ########################
 # Instance install steps
 ########################
-
 
 cd "$CWD"
 

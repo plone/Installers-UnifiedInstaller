@@ -615,6 +615,35 @@ CFLAGS/LDFLAGS/CPPFLAGS are in the environment when the installer is run, it wil
 use them rather than set its own. As with other environments, preinstall as many
 dependencies as possible.
 
+Installing behind HTTP proxies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The installer should not need to access network resources for most installs,
+as it includes the needed components. However, if you need to use the static
+xml build, network access will be required. Network access will also be
+required when you run buildout later.
+
+If you're behind an HTTP proxy, you're going to need to take special measures
+to access the larger network.
+
+As with Python setuptools in general, indicate an HTTP proxy by setting the
+http_proxy environment variable::
+
+    export http_proxy=http://192.168.1.25:80
+
+before running the installer or buildout.
+
+If you are using `sudo`, an extra step is needed to make sure the environment
+variable passes to the invoked command. Use::
+
+    sudo -E ./install.sh ...
+
+or::
+
+    sudo -E -u plone_buildout bin/buildout
+
+to pass the execution environment via sudo.
+
 
 Uninstall instructions
 ======================
