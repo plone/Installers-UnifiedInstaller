@@ -136,9 +136,6 @@ The "sudo" utility is required for a root install. This security utility is incl
 most recent Unix workalikes and is easily installed on other systems. On BSD-heritage
 systems, this in the security directory of the ports collection.
 
-Note that the installation package must be unpacked in a directory that is world-accessible. This is because the installer drops permissions part way through the
-install. All installer components need to be accessible to the plone_buildout user.
-
 For a non-super-user (rootless) installation
 --------------------------------------------
 If you run the installation while logged in as a normal (non-root) user,
