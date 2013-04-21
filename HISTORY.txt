@@ -1,5 +1,10 @@
 4.3.? (unreleased)
 
+    - Attempting sudo install from a path that is not world-readable would
+      prevent the drop-permission part of the install from reaching
+      needed resources. Fixed by copying needed resources to a temp
+      directory inside the install target. Resolves #13523.
+
     - Add provision for passing environment via sudo. Add docs. Should resolve
       #13537.
 

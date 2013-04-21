@@ -91,7 +91,7 @@ Test a ZEO install
 
     Check bin contents
     >>> sorted(os.listdir('%s/zeocluster/bin' % testTarget))
-    ['backup', 'buildout', 'client1', 'client2', 'fullbackup', 'paster', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
+    ['backup', 'buildout', 'client1', 'client2', 'fullbackup', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
 
     Installing again to the same target should fail
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
@@ -241,7 +241,7 @@ Test a standalone install
 
     Check bin contents
     >>> sorted(os.listdir('%s/zinstance/bin' % testTarget))
-    ['backup', 'buildout', 'fullbackup', 'instance', 'paster', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zopepy']
+    ['backup', 'buildout', 'fullbackup', 'instance', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zopepy']
 
 
     Run it

@@ -95,7 +95,7 @@ fi
 # Path options for Non-Root install
 #
 # Path for install of Python/Zope/Plone
-LOCAL_HOME=$HOME/Plone
+LOCAL_HOME="$HOME/Plone"
 
 # if we create a ZEO cluster, it will go here (inside $PLONE_HOME):
 ZEOCLUSTER_HOME=zeocluster
@@ -149,9 +149,9 @@ if [ `whoami` = "root" ]; then
 else
     ROOT_INSTALL=0
     # set paths to local versions
-    PLONE_HOME=$LOCAL_HOME
-    DAEMON_USER=$USER
-    BUILDOUT_USER=$USER
+    PLONE_HOME="$LOCAL_HOME"
+    DAEMON_USER="$USER"
+    BUILDOUT_USER="$USER"
 fi
 
 
@@ -163,7 +163,7 @@ cd $PWD
 # normalize
 PWD=`pwd`
 CWD="$PWD"
-PKG=$CWD/$PACKAGES_DIR
+PKG="$CWD/$PACKAGES_DIR"
 
 . helper_scripts/shell_utils.sh
 
@@ -790,7 +790,7 @@ fi
 
 # set up log
 if [ -f "$INSTALL_LOG" ]; then
-    rm "$INSTALL_LOG"
+    rm -f "$INSTALL_LOG"
 fi
 touch "$INSTALL_LOG" 2> /dev/null
 if [ $? -gt 0 ]; then
@@ -1030,11 +1030,20 @@ fi
 
 cd "$CWD"
 
+# The main install may be done via sudo (if a root install). If it is,
+# our current directory may become unreachable. So, copy the resources
+# we'll need into a tmp directory inside the install destination.
+WORKDIR="${PLONE_HOME}/tmp"
+mkdir "$WORKDIR" > /dev/null 2>&1
+cp -R ./buildout_templates "$WORKDIR"
+cp -R ./base_skeleton "$WORKDIR"
+cp -R ./helper_scripts "$WORKDIR"
+
 ########################
 # Instance install steps
 ########################
 
-cd "$CWD"
+cd "$WORKDIR"
 
 if [ $ROOT_INSTALL -eq 1 ]; then
     echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER:$PLONE_GROUP"
@@ -1049,8 +1058,8 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     INSTALL_METHOD="standalone"
     CLIENT_COUNT=0
 fi
-$SUDO "$PY" "$CWD/helper_scripts/create_instance.py" \
-    "--uidir=$CWD" \
+$SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
+    "--uidir=$WORKDIR" \
     "--plone_home=$PLONE_HOME" \
     "--instance_home=$INSTANCE_HOME" \
     "--daemon_user=$DAEMON_USER" \
@@ -1072,17 +1081,18 @@ if [ $? -gt 0 ]; then
 fi
 echo "Buildout completed"
 
-PWFILE=$INSTANCE_HOME/adminPassword.txt
-RMFILE=$INSTANCE_HOME/README.html
+if [ $ROOT_INSTALL -eq 0 ]; then
+    # for non-root installs, restrict var access.
+    # root installs take care of this during buildout.
+    chmod 700 "$INSTANCE_HOME/var"
+fi
 
-# if [ $ROOT_INSTALL -eq 1 ]; then
-#     chmod 600 "$INSTANCE_HOME"/*.cfg
-#     chmod 654 "$INSTANCE_HOME"/bin/*
-#     chmod 744 "$INSTANCE_HOME"/bin/buildout
-#     chmod 755 "$INSTANCE_HOME"/bin/zopeskel
-#     chown -R "$DAEMON_USER":"$PLONE_GROUP" "$INSTANCE_HOME"/var
-#     chmod -R 770 "$INSTANCE_HOME"/var
-# fi
+cd "$CWD"
+# clear our temporary directory
+rm -r "$WORKDIR"
+
+PWFILE="$INSTANCE_HOME/adminPassword.txt"
+RMFILE="$INSTANCE_HOME/README.html"
 
 #######################
 # Conclude installation
