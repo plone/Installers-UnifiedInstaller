@@ -1,5 +1,12 @@
 4.3.? (unreleased)
 
+    - In a sudo install, if one of the plone_* users (or specified on command
+      line) already existed and had something other than plone_group for its
+      default group, install would abort. Modified permissions strategy to
+      tolerate users with plone_group in extra groups by using setgroup bit.
+      Modified user creation strategy to add plone_group if user already
+      exists.
+
     - Attempting sudo install from a path that is not world-readable would
       prevent the drop-permission part of the install from reaching
       needed resources. Fixed by copying needed resources to a temp

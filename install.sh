@@ -1048,6 +1048,10 @@ cd "$WORKDIR"
 if [ $ROOT_INSTALL -eq 1 ]; then
     echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER:$PLONE_GROUP"
     chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME"
+    # let's have whatever we create from now on sticky group'd
+    chmod g+s "$PLONE_HOME"
+    # including things copied from the work directory
+    find "$WORKDIR" -type d -exec chmod g+s {} \;
 fi
 
 ################################################
@@ -1071,7 +1075,6 @@ $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--password=$PASSWORD" \
     "--instance_var=$INSTANCE_VAR" \
     "--backup_dir=$BACKUP_DIR" \
-    "--instance_home=$INSTANCE_HOME" \
     "--template=$TEMPLATE" \
     "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
 if [ $? -gt 0 ]; then

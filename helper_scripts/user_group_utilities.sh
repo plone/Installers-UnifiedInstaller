@@ -55,6 +55,8 @@ if [ -x /usr/sbin/useradd ]; then
         id "$TARGET_USER" > /dev/null 2>&1
         if [ $? -eq 0 ]; then
             echo "User '$TARGET_USER' already exists. No need to create it."
+            echo "Adding user $TARGET_USER to group $TARGET_GROUP."
+            usermod $TARGET_USER -G $TARGET_GROUP
         else
             useradd $TARGET_USER $USER_SETTINGS
         fi
@@ -92,6 +94,8 @@ elif [ -x /usr/sbin/pw ]; then
         id "$TARGET_USER" > /dev/null 2>&1
         if [ $? -eq 0 ]; then
             echo "User '$TARGET_USER' already exists. No need to create it."
+            echo "Adding $TARGET_USERto $TARGET_GROUP."
+            pw usermod $TARGET_USER -G $TARGET_GROUP
         else
             pw useradd $TARGET_USER $USER_SETTINGS
         fi
@@ -203,7 +207,7 @@ check_user () {
     TARGET_USER="$1"
     TARGET_GROUP="$2"
 
-    id "$TARGET_USER" | egrep "uid=[0-9]+\($TARGET_USER\) gid=[0-9]+\($TARGET_GROUP\)" > /dev/null 2>&1
+    id "$TARGET_USER" | egrep "uid=[0-9]+\(${TARGET_USER}\) .+[0-9]+\(${TARGET_GROUP}\)" > /dev/null 2>&1
     if [ $? -gt 0 ]; then
         echo "id for $TARGET_USER returned"
         id "$TARGET_USER"
