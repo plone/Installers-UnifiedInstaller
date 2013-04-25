@@ -78,8 +78,8 @@ Installation Instructions
 =========================
 
 The installer will compile Python, Zope, and key required libraries from
-source. (Basic build tools and common libraries are required. See
-"Dependencies" and "Recommended Libraries" below.)
+source on an as-needed basis. (Basic build tools and common libraries are
+required. See "Dependencies" and "Recommended Libraries" below.)
 
 :PLEASE NOTE: You have the option to run the installation as root or a
   normal user. There are serious security implications to this choice.
@@ -342,11 +342,11 @@ Root Install
 
 To start Plone::
 
-        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl start
+        >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl start
 
 To stop Plone::
 
-        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl stop
+        >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl stop
 
 To restart Plone::
 
@@ -354,7 +354,10 @@ To restart Plone::
 
 To check status::
 
-        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl status
+        >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl status
+
+Replace "zeocluster" with "zinstance" or your instance name if this wasn't a
+standard zeo install.
 
 Root-less Install
 -----------------
@@ -374,6 +377,9 @@ To restart Plone::
 To check status::
 
         >> $HOME/Plone/zeocluster/bin/plonectl status
+
+Replace "zeocluster" with "zinstance" or your instance name if this wasn't a
+standard zeo install.
 
 
 Ports
