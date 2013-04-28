@@ -187,10 +187,21 @@ Options:
   Use with the "zeo" install method to specify the number of Zope
   clients you wish to create. Default is 2.
 
---user=user-name
-  In a root install, sets the effective user for running the
-  instance. Default is 'plone'. Ignored for non-root installs. You should always
-  use the same user within a given target.
+--daemon-user=user-name
+  In a root install, sets the effective system user for running the
+  instance. Default is 'plone_daemon'.
+  Ignored for non-root installs.
+
+--owner=owner-name
+  In a server-mode install, sets the overall system owner of the installation.
+  Default is 'plone_buildout'. This is the user id that should be employed
+  to run buildout or make src or product changes.
+  Ignored for non-root installs.
+
+--group=group-name
+  In a server-mode install, sets the effective system group for the daemon and
+  buildout users. Default is 'plone_group'.
+  Ignored for non-server-mode installs.
 
 --with-python=</full/path/to/python2.7>
   If you have an already built Python that's adequate to run

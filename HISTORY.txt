@@ -1,5 +1,9 @@
 4.3.? (unreleased)
 
+    - We have had multiple reports of users who have tried to use the --user
+      flag to set the Zope startup user. Changed to --daemon-user to clarify
+      its purpose. Clarified README.txt.
+
     - In a sudo install, if one of the plone_* users (or specified on command
       line) already existed and had something other than plone_group for its
       default group, install would abort. Modified permissions strategy to

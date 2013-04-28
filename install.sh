@@ -31,7 +31,7 @@
 #   no slash in the string..
 #   Default is 'zinstance' for standalone, 'zeocluster' for ZEO.
 #
-# --user=user-name
+# --daemon-user=user-name
 #   In a server-mode install, sets the effective user for running the
 #   instance. Default is 'plone_daemon'. Ignored for non-server-mode installs.
 #
@@ -204,7 +204,7 @@ usage () {
     echo "  This will be created inside the target directory."
     echo "  Default is 'zinstance' for standalone, 'zeocluster' for ZEO."
     echo
-    echo "--user=user-name"
+    echo "--daemon-user=user-name"
     echo "  In a server-mode install, sets the effective user for running the"
     echo "  instance. Default is 'plone_daemon'. Ignored for non-server-mode installs."
     echo
@@ -311,6 +311,11 @@ do
             ;;
 
         --user=* | -user=* )
+            echo "Did you want '--daemon-user' instead of '--user'?"
+            usage
+            ;;
+
+        --daemon-user=* | -daemon-user=* )
             if [ "$optarg" ]; then
                 DAEMON_USER="$optarg"
             else
