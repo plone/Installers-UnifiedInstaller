@@ -911,10 +911,10 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     cd $VIRTUALENV_DIR
     if [ "X$WITH_SITE_PACKAGES" = "Xyes" ]; then
         echo "Creating python virtual environment with site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py --distribute "$PY_HOME"
     else
         echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py --distribute "$PY_HOME"
     fi
     cd "$PKG"
     rm -r $VIRTUALENV_DIR

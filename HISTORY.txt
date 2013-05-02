@@ -1,5 +1,7 @@
 4.3.? (unreleased)
 
+- Use --distribute when building virtualenv.
+
 - Lots of documentation improvements.
 
 - Python 2.7.x is now downloaded if needed and requested. This reduces
