@@ -50,6 +50,7 @@ rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/buildenv.sh
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/tests/testout.txt
 rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/Plone-docs
 rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/autom4te.cache
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/packages/Python*
 
 mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
@@ -68,9 +69,10 @@ find . -type f -exec chmod 644 {} \;
 chmod 755 install.sh base_skeleton/bin/*
 find . -type d -exec chmod 755 {} \;
 
-
 cd $WORK_DIR
+echo Making tarball
 $TAR --owner 0 --group 0 -zcf Plone-${NEWVER}-UnifiedInstaller.tgz Plone-${NEWVER}-UnifiedInstaller
 rm -r Plone-${NEWVER}-UnifiedInstaller
+echo Test unpack of tarball
 $TAR zxf Plone-${NEWVER}-UnifiedInstaller.tgz
 cd Plone-${NEWVER}-UnifiedInstaller
