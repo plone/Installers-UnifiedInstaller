@@ -244,52 +244,60 @@ Upgrade From Plone 2.5 or Non-Buildout 3.x
 See UPGRADING.txt
 
 
-Dependencies
-============
-1) gcc
-2) g++ (gcc-c++)
-3) GNU make
-4) GNU tar
-5) gunzip and bunzip2
-6) posix-compliant /bin/sh
+Utility Dependencies
+====================
 
+Most of these are included with system "build" kits.
 
-Libraries and Utilities
-=======================
-Install libraries prior to running installer.
-Development versions of some packages are required for headers. Debian/Ubuntu
-package names are included below.
+ * gcc
+ * g++ (gcc-c++)
+ * GNU make
+ * GNU tar
+ * patch
+ * gunzip and bunzip2
+ * posix-compliant /bin/sh
+ * curl or wget
 
-Required
---------
-* Build Essentials (gcc, make)
-     build-essential
-* libssl (SSL support)
-     Unless you use --with-python
-     libssl-dev
-* zlib (GZ compression)
-     zlibg-dev
+Libraries Required
+==================
 
-Recommended
------------
+Install libraries prior to running installer. Development versions of some
+packages are required for headers. Debian/Ubuntu package names are included
+below. RPM equivalents follow in a separate subsection.
 
-The installer will try to build these for you if they are missing from
-your system. But, the more of these that you install as system libraries,
-the less likely you are to have install problems.
+Required if you use your system Python 2.7.x
+--------------------------------------------
 
-* libjpeg (jpeg support)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
-     libjpeg-dev
-* libxml2, libxslt
-    If these are up-to-date, the installer will use them rather than building
-    static libraries of its own.
-    libxml2-dev
-    libxslt1-dev
-* readline (Python command-line history)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
-     libreadline5-dev readline-common
+ * build-essential
+ * libjpeg-dev
+ * python-dev
+ * libxml2-dev
+ * libxslt1-dev
+
+Required if you need to build Python 2.7.x
+------------------------------------------ *
+
+ * build-essential
+ * libssl-dev
+ * libz-dev
+ * libjpeg-dev
+ * readline-dev
+ * libxml2-dev
+ * libxslt1-dev
+
+LibXML2/LibXSLT versions
+
+Many older systems have inadequate libxslt/libxml libraries. There is no point
+in installing old libraries. Plone requires libxml2 >= 2.7.8 and libxslt 1.1.26.
+In this case, use the --static-lxml option to get the installer to build and
+statically link these libraries.
+
+RPM Equivalents
+---------------
+
+These are the RPM equivalents for the Debian/Ubuntu packages listed above:
+
+gcc-c++ patch openssl-devel libjpeg-devel libxslt-devel readline-devel make which
 
 Optional
 --------
