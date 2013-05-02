@@ -1,11 +1,19 @@
-0.9 (unreleased)
+[This is a snapshop of z3c.recipe.staticlxml  master from 2013-05-02;
+plus the amd64 fix.]
+
+0.10 (unreleased)
+=================
+
+- Added possibility to patch both libxslt and libxml2 using cmmi's
+  patch / patch_options command internally (#7) [shanx]
+
+
+0.9 (2013-03-18)
 ================
 
-- Change the strategy for detecting when the --no-as-needed link flag is needed
-  since the problem is showing up as early as gcc 4.1.x. Also, some non-standard
-  ld's (OS X), while claiming to be gcc-compatible, don't accept the flag.
-  New strategy: see if ld will accept the flag without an "unknown option"
-  error. If it will, use the flag. [smcmahon]
+- Check if ld will accept the --no-as-needed link flag without an "unknown option"
+  error. If it will, use the flag. This should cure the missing clock_gettime
+  problem. [smcmahon]
 
 - Look for gcc >= 4.5. If found, add LDFLAGS for force no-as-needed link
   of librt. This should cure the missing clock_gettime problem for
