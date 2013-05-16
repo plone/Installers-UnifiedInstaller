@@ -136,10 +136,10 @@ readonly PYTHON_MD5=62704ea0f125923208d84ff0568f7d50
 >>>>>>> Installers-UnifiedInstaller/master
 readonly PYTHON_TB=Python-2.7.4.tar.bz2
 readonly PYTHON_DIR=Python-2.7.4
-readonly DISTRIBUTE_TB=distribute-0.6.35.tar.gz
-readonly DISTRIBUTE_DIR=distribute-0.6.35
-readonly JPEG_TB=jpegsrc.v8d.tar.bz2
-readonly JPEG_DIR=jpeg-8d
+readonly DISTRIBUTE_TB=distribute-0.6.36.tar.gz
+readonly DISTRIBUTE_DIR=distribute-0.6.36
+readonly JPEG_TB=jpegsrc.v9.tar.bz2
+readonly JPEG_DIR=jpeg-9
 readonly READLINE_TB=readline-6.2.tar.bz2
 readonly READLINE_DIR=readline-6.2
 readonly VIRTUALENV_TB=virtualenv-1.9.1.tar.gz
