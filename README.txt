@@ -157,9 +157,9 @@ To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 The "sudo" utility is required for a root install. This security utility is included with
 most recent Unix workalikes and is easily installed on other systems. Please make sure to
-configure "sudo" properly otherwise it could harm your system ! If you do not know "sudo"
-please read its documentation first !On BSD-heritage
-systems, this in the security directory of the ports collection.
+configure "sudo" properly otherwise it could harm your system !
+If you do not know "sudo" please read its documentation first !
+On BSD-heritage systems, this in the security directory of the ports collection.
 
 
 Installation Options
