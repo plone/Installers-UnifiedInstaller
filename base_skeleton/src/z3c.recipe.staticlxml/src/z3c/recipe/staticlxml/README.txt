@@ -18,6 +18,9 @@ The recipe supports the following options:
     Set to ``true`` (default) if these should be build, ``false`` otherwise.
     Needes to be ``true`` for a static build.
 
+**libxslt-patch, libxml2-patch**
+    The name of an optional patch file to apply to the libraries
+
 **static-build**
     ``true`` or ``false``.  On OS X this defaults to ``true``.
 

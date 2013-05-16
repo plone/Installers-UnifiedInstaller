@@ -31,7 +31,7 @@
 #   no slash in the string..
 #   Default is 'zinstance' for standalone, 'zeocluster' for ZEO.
 #
-# --user=user-name
+# --daemon-user=user-name
 #   In a server-mode install, sets the effective user for running the
 #   instance. Default is 'plone_daemon'. Ignored for non-server-mode installs.
 #
@@ -53,7 +53,8 @@
 #
 # --build-python
 #   If you do not have a suitable Python available, the installer will
-#   build one for you if you set this option.
+#   build one for you if you set this option. Requires Internet access
+#   to download Python source.
 #
 # --with-site-packages
 #   When --with-python is used to specify a python, that python is isolated
@@ -80,7 +81,7 @@
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
 # --static-lxml
-#   Forces a static built of libxml2 and libxslt dependencies. Requires
+#   Forces a static build of libxml2 and libxslt dependencies. Requires
 #   Internet access to download components.
 
 
@@ -128,6 +129,11 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
+<<<<<<< HEAD
+=======
+readonly PYTHON_URL=http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2
+readonly PYTHON_MD5=62704ea0f125923208d84ff0568f7d50
+>>>>>>> Installers-UnifiedInstaller/master
 readonly PYTHON_TB=Python-2.7.4.tar.bz2
 readonly PYTHON_DIR=Python-2.7.4
 readonly DISTRIBUTE_TB=distribute-0.6.35.tar.gz
@@ -185,7 +191,8 @@ usage () {
     echo
     echo "--build-python"
     echo "  If you do not have a suitable Python available, the installer will"
-    echo "  build one for you if you set this option."
+    echo "  build one for you if you set this option. Requires Internet access"
+    echo "  to download Python source."
     echo
     echo "--password=InstancePassword"
     echo "  If not specified, a random password will be generated."
@@ -204,7 +211,7 @@ usage () {
     echo "  This will be created inside the target directory."
     echo "  Default is 'zinstance' for standalone, 'zeocluster' for ZEO."
     echo
-    echo "--user=user-name"
+    echo "--daemon-user=user-name"
     echo "  In a server-mode install, sets the effective user for running the"
     echo "  instance. Default is 'plone_daemon'. Ignored for non-server-mode installs."
     echo
@@ -311,6 +318,11 @@ do
             ;;
 
         --user=* | -user=* )
+            echo "Did you want '--daemon-user' instead of '--user'?"
+            usage
+            ;;
+
+        --daemon-user=* | -daemon-user=* )
             if [ "$optarg" ]; then
                 DAEMON_USER="$optarg"
             else
@@ -576,6 +588,7 @@ else
             echo
             exit 1
         fi
+
     else
         if [ "X$WITH_PYTHON" = "X" ]; then
             # try to find a Python
@@ -893,7 +906,6 @@ else
 fi
 
 
-
 if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     PYBNAME=`basename "$WITH_PYTHON"`
     PY_HOME=$PLONE_HOME/Python-2.7
@@ -902,10 +914,10 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     cd $VIRTUALENV_DIR
     if [ "X$WITH_SITE_PACKAGES" = "Xyes" ]; then
         echo "Creating python virtual environment with site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py --distribute "$PY_HOME"
     else
         echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py --distribute "$PY_HOME"
     fi
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
@@ -962,6 +974,14 @@ if [ ! -x "$PY" ]; then
         # which we need for relocatability
         rm -f "$PY_HOME/lib/"*.dylib
     fi
+
+    # download python tarball if necessary
+    cd "$PKG"
+    if [ ! -f $PYTHON_TB ]; then
+        echo "Downloading Python source from $PYTHON_URL"
+        download $PYTHON_URL $PYTHON_TB $PYTHON_MD5
+    fi
+    cd "$CWD"
 
     . helper_scripts/build_python.sh
 

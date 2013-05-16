@@ -2,12 +2,12 @@
 Plone 4.3: Unified Installer
 ============================
 
-The Plone Unified Installer is a source-installation kit that installs
-Plone and its dependencies from source on most Unix-like platforms. The
-kit includes Plone, Zope and Python. Python is installed in a way that
-will not change or interfere with your system Python.
+The Plone Unified Installer is a source-installation kit that installs Plone
+and its dependencies from source on most Unix-like platforms. The kit includes
+Plone and Zope and will download components like Python if needed. Python is
+installed in a way that will not change or interfere with your system Python.
 
-This version includes Plone 4.3, Zope 2.13.x, and Python 2.7.x.
+This version includes Plone 4.3, Zope 2.13.x, and uses Python 2.7.x.
 
 Feedback/bugs to: `Plone Development Workspace <http://dev.plone.org/plone>`_ component: Installer (Unified)
 
@@ -26,8 +26,8 @@ Outline of this document
 
 - `Installation Instructions`_
 
-  - `For a super-user (root) installation`_
   - `For a non-super-user (rootless) installation`_
+  - `For a super-user (root) installation`_
 
 - `Installation Options`_
 - `Upgrade From Plone 2.5 or Non-Buildout 3.x`_
@@ -64,6 +64,7 @@ Outline of this document
   - `MacPorts`_
   - `OpenBSD/NetBSD`_
   - `Unix/Solaris/etc.`_
+  - `Installing behind HTTP proxies`
 
 - `Uninstall Instructions`_
 - `Backup Instructions`_
@@ -78,17 +79,17 @@ Installation Instructions
 =========================
 
 The installer will compile Python, Zope, and key required libraries from
-source. (Basic build tools and common libraries are required. See
-"Dependencies" and "Recommended Libraries" below.)
+source on an as-needed basis. (Basic build tools and common libraries are
+required. See "Dependencies" and "Recommended Libraries" below.)
 
 :PLEASE NOTE: You have the option to run the installation as root or a
   normal user. There are serious security implications to this choice.
 
-The non-root method produces an install that will run the Zope server
-with the same privileges as the installing user. This is probably not an
-acceptable security profile for a production server, but may be
-acceptable for testing and development purposes or if you create an
-unprivileged user exclusively for this purpose.
+The non-root method produces an install that will run the Zope server with the
+same privileges as the installing user. This is probably not an acceptable
+security profile for a production server, but is much easier for testing and
+development purposes or if you take care to set  users and privileges
+yourself.
 
 The 'root' method produces an install that runs the Zope server as a
 distinct user identity with minimal privileges (unless you add them).
@@ -100,41 +101,12 @@ steps, but this is a better starting point.
 
 The clustered (ZEO) setup will take advantage of multi-core CPUs and is
 recommended for a production deployment, while the standalone method is
-easier for a desktop-based development setup.
+easier for development or testing.
 
 For more detail on both root/non-root and ZEO/standalone choices, see
 `Installing on Linux / Unix / BSD <http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd>`_
 in the Plone.Org documentation section.
 
-For a super-user (root) installation
-------------------------------------
-
-If you run the installation with root privileges, it will install
-Python/Zope/Plone to /usr/local/Plone
-
-[Darwin (OS X) Note: Under Darwin, the default installation is to
-/Applications/Plone for the root install. Please replace /usr/local with
-/Applications in the instructions below.]
-
-Two Plone users will be created: plone_daemon and plone_buildout.
-You will need to start Plone as plone_daemon and run buildout
-as plone_buildout..
-
-To install Plone 4.3 in a stand-alone (single Zope instance) configuration:
-
-* cd to the installer directory and issue the following command::
-
-    >> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
-
-To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
-
-* cd to the installer directory and issue the following command::
-
-    >> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
-
-The "sudo" utility is required for a root install. This security utility is included with
-most recent Unix workalikes and is easily installed on other systems. On BSD-heritage
-systems, this in the security directory of the ports collection.
 
 For a non-super-user (rootless) installation
 --------------------------------------------
@@ -155,6 +127,37 @@ To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 * cd to the installer directory and issue the following command::
 
     >> ./install.sh zeo
+
+
+For a super-user (root) installation
+------------------------------------
+
+If you run the installation with root privileges, it will install
+Python/Zope/Plone to /usr/local/Plone
+
+[Darwin (OS X) Note: Under Darwin, the default installation is to
+/Applications/Plone for the root install. Please replace /usr/local with
+/Applications in the instructions below.]
+
+Two Plone users will be created: plone_daemon and plone_buildout. You will
+need to start Plone as plone_daemon and run buildout as plone_buildout. The
+install will also create a plone_group group that includes both plone users.
+
+To install Plone 4.3 in a stand-alone (single Zope instance) configuration:
+
+* cd to the installer directory and issue the following command::
+
+    >> sudo ./install.sh standalone (or `su; ./install.sh standalone` on a sudo-less system)
+
+To install Plone 4.3 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+
+* cd to the installer directory and issue the following command::
+
+    >> sudo ./install.sh zeo (or `su; ./install.sh zeo` on a sudo-less system)
+
+The "sudo" utility is required for a root install. This security utility is included with
+most recent Unix workalikes and is easily installed on other systems. On BSD-heritage
+systems, this in the security directory of the ports collection.
 
 
 Installation Options
@@ -187,10 +190,21 @@ Options:
   Use with the "zeo" install method to specify the number of Zope
   clients you wish to create. Default is 2.
 
---user=user-name
-  In a root install, sets the effective user for running the
-  instance. Default is 'plone'. Ignored for non-root installs. You should always
-  use the same user within a given target.
+--daemon-user=user-name
+  In a root install, sets the effective system user for running the
+  instance. Default is 'plone_daemon'.
+  Ignored for non-root installs.
+
+--owner=owner-name
+  In a server-mode install, sets the overall system owner of the installation.
+  Default is 'plone_buildout'. This is the user id that should be employed
+  to run buildout or make src or product changes.
+  Ignored for non-root installs.
+
+--group=group-name
+  In a server-mode install, sets the effective system group for the daemon and
+  buildout users. Default is 'plone_group'.
+  Ignored for non-server-mode installs.
 
 --with-python=</full/path/to/python2.7>
   If you have an already built Python that's adequate to run
@@ -198,6 +212,11 @@ Options:
   virtualenv will be used to isolate the copy used for the install.
   The specified Python will need to have been built with support
   for libz and libjpeg and include the Python Imaging Library.
+
+--build-python
+  If you do not have a suitable Python available, the installer will
+  build one for you if you set this option. Requires Internet access
+  to download Python source.
 
 --password=InstancePassword
   If not specified, a random password will be generated.
@@ -210,8 +229,9 @@ Options:
   Optional. Installs a local readline library. Only necessary
   on platforms with odd libraries (like OS X Leopard).
 
---without-ssl
-  Optional. Allows the build to proceed without ssl dependency tests.
+--static-lxml
+  Forces a static build of lxml's libxml2 and libxslt dependencies. Requires
+  Internet access to download components.
 
 Note that you may run install.sh repeatedly for the same target so long
 as you either use a different installation method or specify different
@@ -224,52 +244,60 @@ Upgrade From Plone 2.5 or Non-Buildout 3.x
 See UPGRADING.txt
 
 
-Dependencies
-============
-1) gcc
-2) g++ (gcc-c++)
-3) GNU make
-4) GNU tar
-5) gunzip and bunzip2
-6) posix-compliant /bin/sh
+Utility Dependencies
+====================
 
+Most of these are included with system "build" kits.
 
-Libraries and Utilities
-=======================
-Install libraries prior to running installer.
-Development versions of some packages are required for headers. Debian/Ubuntu
-package names are included below.
+ * gcc
+ * g++ (gcc-c++)
+ * GNU make
+ * GNU tar
+ * patch
+ * gunzip and bunzip2
+ * posix-compliant /bin/sh
+ * curl or wget
 
-Required
---------
-* Build Essentials (gcc, make)
-     build-essential
-* libssl (SSL support)
-     Unless you use --with-python
-     libssl-dev
-* zlib (GZ compression)
-     zlibg-dev
+Libraries Required
+==================
 
-Recommended
------------
+Install libraries prior to running installer. Development versions of some
+packages are required for headers. Debian/Ubuntu package names are included
+below. RPM equivalents follow in a separate subsection.
 
-The installer will try to build these for you if they are missing from
-your system. But, the more of these that you install as system libraries,
-the less likely you are to have install problems.
+Required if you use your system Python 2.7.x
+--------------------------------------------
 
-* libjpeg (jpeg support)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
-     libjpeg-dev
-* libxml2, libxslt
-    If these are up-to-date, the installer will use them rather than building
-    static libraries of its own.
-    libxml2-dev
-    libxslt1-dev
-* readline (Python command-line history)
-     The Unified Installer will install this for you if necessary,
-     but system libraries are usually preferable.
-     libreadline5-dev readline-common
+ * build-essential
+ * libjpeg-dev
+ * python-dev
+ * libxml2-dev
+ * libxslt1-dev
+
+Required if you need to build Python 2.7.x
+------------------------------------------ *
+
+ * build-essential
+ * libssl-dev
+ * libz-dev
+ * libjpeg-dev
+ * readline-dev
+ * libxml2-dev
+ * libxslt1-dev
+
+LibXML2/LibXSLT versions
+
+Many older systems have inadequate libxslt/libxml libraries. There is no point
+in installing old libraries. Plone requires libxml2 >= 2.7.8 and libxslt 1.1.26.
+In this case, use the --static-lxml option to get the installer to build and
+statically link these libraries.
+
+RPM Equivalents
+---------------
+
+These are the RPM equivalents for the Debian/Ubuntu packages listed above:
+
+gcc-c++ patch openssl-devel libjpeg-devel libxslt-devel readline-devel make which
 
 Optional
 --------
@@ -342,11 +370,11 @@ Root Install
 
 To start Plone::
 
-        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl start
+        >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl start
 
 To stop Plone::
 
-        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl stop
+        >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl stop
 
 To restart Plone::
 
@@ -354,7 +382,10 @@ To restart Plone::
 
 To check status::
 
-        >> sudo -u plone_daemon /usr/local/Plone/zinstance/bin/plonectl status
+        >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl status
+
+Replace "zeocluster" with "zinstance" or your instance name if this wasn't a
+standard zeo install.
 
 Root-less Install
 -----------------
@@ -374,6 +405,9 @@ To restart Plone::
 To check status::
 
         >> $HOME/Plone/zeocluster/bin/plonectl status
+
+Replace "zeocluster" with "zinstance" or your instance name if this wasn't a
+standard zeo install.
 
 
 Ports
