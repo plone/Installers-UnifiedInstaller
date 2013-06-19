@@ -43,8 +43,13 @@ try:
     import _ssl
     _ssl
 except ImportError:
-    print "Failed: This Python does not have ssl support."
-    passed = False
+    if '--without-ssl=yes' in sys.argv:
+        print "Warning: This Python does not have ssl support."
+    else:
+        print "Failed: This Python does not have ssl support."
+        print "If you want to disable this check, add --without-ssl=yes"
+        print "to the command line."
+        passed = False
 
 try:
     import readline

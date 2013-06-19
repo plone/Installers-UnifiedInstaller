@@ -1,5 +1,10 @@
 4.3.? (unreleased)
 
+- Restore --without-ssl option that may be used to bypass ssl tests.
+  Whatever hard ssl dependency arose in 4.2.x, it's gone now.
+
+- Patch z3c.recipe.staticlxml to work with SUSE lib64 build paths.
+
 - Update to jpeg-9
 
 - Update distribute to 0.6.36.

@@ -229,6 +229,9 @@ Options:
   Optional. Installs a local readline library. Only necessary
   on platforms with odd libraries (like OS X Leopard).
 
+--without-ssl
+  Optional. Allows the build to proceed without ssl dependency tests.
+
 --static-lxml
   Forces a static build of lxml's libxml2 and libxslt dependencies. Requires
   Internet access to download components.

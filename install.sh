@@ -56,6 +56,9 @@
 #   build one for you if you set this option. Requires Internet access
 #   to download Python source.
 #
+# --without-ssl
+#   Optional. Allows the build to proceed without ssl dependency tests.
+#
 # --with-site-packages
 #   When --with-python is used to specify a python, that python is isolated
 #   via virtualenv without site packages. Set the --with-site-
@@ -251,6 +254,7 @@ SKIP_TOOL_TESTS=0
 INSTALL_LOG="$ORIGIN_PATH/install.log"
 CLIENT_COUNT=2
 TEMPLATE=buildout
+WITHOUT_SSL="no"
 
 
 for option
@@ -377,6 +381,14 @@ do
                 INSTALL_LXML="$optarg"
             else
                 INSTALL_LXML="yes"
+            fi
+            ;;
+
+        --without-ssl | --without-ssl=* )
+            if [ "$optarg" ]; then
+                WITHOUT_SSL="$optarg"
+            else
+                WITHOUT_SSL="yes"
             fi
             ;;
 
@@ -572,18 +584,21 @@ else
             exit 1
         fi
 
-        if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
-            echo
-            echo "Unable to find libssl or openssl/ssl.h."
-            echo "libssl and its development headers are required for Plone."
-            echo "Please install your platform's openssl-dev package"
-            echo "and try again."
-            echo "(If your system is using an SSL other than openssl or is"
-            echo "putting the libraries/headers in an unconventional place,"
-            echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
-            echo "to specify the locations.)"
-            echo
-            exit 1
+        if [ "X$WITHOUT_SSL" != "Xyes" ]; then
+            if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
+                echo
+                echo "Unable to find libssl or openssl/ssl.h."
+                echo "libssl and its development headers are required for Plone."
+                echo "Please install your platform's openssl-dev package"
+                echo "and try again."
+                echo "(If your system is using an SSL other than openssl or is"
+                echo "putting the libraries/headers in an unconventional place,"
+                echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
+                echo "to specify the locations.)"
+                echo "If you want to install Plone without SSL support, specify"
+                echo "--without-ssl on the installer command line."
+                exit 1
+            fi
         fi
 
     else
@@ -598,13 +613,13 @@ else
         # check our python
         if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
             echo "Testing $WITH_PYTHON for Zope/Plone requirements...."
-            if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
+            if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
                 echo "$WITH_PYTHON looks OK. We'll try to use it."
                 echo
                 # if the supplied Python is adequate, we don't need to build libraries
                 INSTALL_ZLIB=no
                 INSTALL_READLINE=no
-                WITHOUT_SSL=1
+                WITHOUT_SSL="yes"
             else
                 echo
                 echo "$WITH_PYTHON does not meet the requirements for Zope/Plone."
@@ -929,7 +944,7 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
         ln -s "$PYBNAME" python
     fi
     cd "$CWD"
-    if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
+    if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo
         echo "Python created with virtualenv no longer passes baseline"
         echo "tests."
@@ -994,8 +1009,7 @@ if [ ! -x "$PY" ]; then
         seelog
         exit 1
     fi
-    if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py
-    then
+    if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo "Python build looks OK."
     else
         echo
