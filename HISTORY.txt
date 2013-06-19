@@ -1,4 +1,6 @@
-4.3.? (unreleased)
+4.3.1 - 2012-06-19
+
+- Adapt to 4.3.1, add hotfix.
 
 - Restore --without-ssl option that may be used to bypass ssl tests.
   Whatever hard ssl dependency arose in 4.2.x, it's gone now.

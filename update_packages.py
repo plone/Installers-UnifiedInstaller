@@ -35,7 +35,7 @@ import sys
 
 
 BINARY_SIG_RE = re.compile(r'-py2.[7]-.+(?=.egg)')
-PY_SIG = '-.py2.6'
+PY_SIG = '-.py2.7'
 
 if len(sys.argv) != 2:
     print 'usage: update_packages.py path/to/work/target'
