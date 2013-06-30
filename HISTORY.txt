@@ -1,3 +1,8 @@
+?????
+
+- Add tests/vb_tests, a kit to test the installer in multiple vagrant
+  boxes.
+
 4.3.1 - 2012-06-19
 
 - Adapt to 4.3.1, add hotfix.

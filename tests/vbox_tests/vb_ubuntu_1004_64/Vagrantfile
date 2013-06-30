@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+    config.vm.box = "lucid64"
+    config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-10044-x64-vbox4210.box"
+
+    config.vm.forward_port 8080, 8080
+
+    # Run apt-get update as a separate step in order to avoid
+    # package install errors
+    config.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "manifests"
+        puppet.manifest_file  = "aptgetupdate.pp"
+    end
+
+    # ensure we have the packages we need
+    config.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "manifests"
+        puppet.manifest_file  = "packages.pp"
+    end
+
+end
