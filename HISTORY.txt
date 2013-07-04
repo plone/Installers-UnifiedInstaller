@@ -1,4 +1,6 @@
-?????
+4.3.1 - r1 - 2012-06-19
+
+- Incorporate Hotfix R3.
 
 - Add tests/vb_tests, a kit to test the installer in multiple vagrant
   boxes.

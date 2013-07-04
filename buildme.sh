@@ -28,7 +28,8 @@ else
   TAR='tar'
 fi
 
-NEWVER=4.3.1
+BASE_VER=4.3.1
+NEWVER=${BASE_VER}r1
 
 SDIR=`pwd`
 
@@ -56,11 +57,11 @@ mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
-$WGET http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.zip
-unzip Plone-${NEWVER}.zip
-rm Plone-${NEWVER}.zip
-mv Plone-${NEWVER}/docs Plone-docs
-rm -r Plone-${NEWVER}
+$WGET --no-check-certificate http://pypi.python.org/packages/source/P/Plone/Plone-${BASE_VER}.zip
+unzip Plone-${BASE_VER}.zip
+rm Plone-${BASE_VER}.zip
+mv Plone-${BASE_VER}/docs Plone-docs
+rm -r Plone-${BASE_VER}
 
 find . -name "._*" -exec rm {} \;
 find . -name ".DS_Store" -exec rm {} \;
