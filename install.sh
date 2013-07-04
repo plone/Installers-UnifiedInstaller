@@ -132,8 +132,11 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
+<<<<<<< HEAD
+=======
 readonly PYTHON_URL=http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2
 readonly PYTHON_MD5=62704ea0f125923208d84ff0568f7d50
+>>>>>>> Installers-UnifiedInstaller/master
 readonly PYTHON_TB=Python-2.7.4.tar.bz2
 readonly PYTHON_DIR=Python-2.7.4
 readonly DISTRIBUTE_TB=distribute-0.6.36.tar.gz
@@ -469,7 +472,8 @@ echo
 
 if [ $ROOT_INSTALL -eq 1 ]; then
     if ! which sudo > /dev/null; then
-        echo "sudo utility is required to do a server-mode install."
+        echo "sudo utility is required to do a server-mode install,"
+        echo "please check the readme for more information on sudo."
         echo
         exit 1
     fi
