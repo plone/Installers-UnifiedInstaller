@@ -544,7 +544,7 @@ You may control most aspects of your installation, including
 changing ports and adding new packages and products by editing the
 buildout.cfg file in your instance home.
 
-See Martin Aspelli's excellent tutorial
+See Martin Aspeli's excellent tutorial
 "Managing projects with zc.buildout":http://plone.org/documentation/tutorial/buildout
 for information on buildout options.
 
