@@ -100,16 +100,14 @@ ONLINE_PACKAGES_DIR=opackages
 
 HSCRIPTS_DIR=helper_scripts
 
-PYTHON_TB=Python-2.7.3.tar.bz2
-PYTHON_DIR=Python-2.7.3
-DISTRIBUTE_TB=distribute-0.6.28.tar.gz
-DISTRIBUTE_DIR=distribute-0.6.28
+PYTHON_TB=Python-2.7.5.tar.bz2
+PYTHON_DIR=Python-2.7.5
 JPEG_TB=jpegsrc.v8d.tar.bz2
 JPEG_DIR=jpeg-8d
 READLINE_TB=readline-6.2.tar.bz2
 READLINE_DIR=readline-6.2
-VIRTUALENV_TB=virtualenv-1.9.1.tar.gz
-VIRTUALENV_DIR=virtualenv-1.9.1
+VIRTUALENV_TB=virtualenv-1.10.1.tar.gz
+VIRTUALENV_DIR=virtualenv-1.10.1
 
 NEED_XML2="2.7.8"
 NEED_XSLT="1.1.26"
@@ -117,8 +115,6 @@ NEED_XSLT="1.1.26"
 # check for PIL and jpeg support
 PIL_TEST="from _imaging import jpeg_decoder"
 
-# check for distribute
-DISTRIBUTE_TEST="from setuptools import _distribute"
 
 if [ `whoami` = "root" ]; then
     ROOT_INSTALL=1
@@ -647,7 +643,7 @@ else
     echo "Rootless install method chosen. Will install for use by system user $USER"
 fi
 echo ""
-echo "Installing Plone 4.2.5 at $PLONE_HOME"
+echo "Installing Plone 4.2.6 at $PLONE_HOME"
 echo ""
 
 
@@ -799,18 +795,25 @@ else
     fi
 
     . helper_scripts/build_python.sh
-    echo "Installing distribute..."
+    echo "Installing setuptools..."
     cd "$PKG"
-    untar $DISTRIBUTE_TB
-    cd "$DISTRIBUTE_DIR"
-    "$PY" ./setup.py install >> "$INSTALL_LOG" 2>&1
-    cd "$PKG"
-    rm -r "$DISTRIBUTE_DIR"
+    untar $VIRTUALENV_TB
+    cd $VIRTUALENV_DIR/virtualenv_support
+    untar setuptools*.tar.gz
+    cd setuptools*
+    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
     if [ ! -x "$EI" ]; then
         echo "$EI missing. Aborting."
         seelog
         exit 1
     fi
+    cd ..
+    untar pip*.tar.gz
+    cd pip*
+    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
+    cd "$PKG"
+    rm -r $VIRTUALENV_DIR
+    
     if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py
     then
         echo "Python build looks OK."

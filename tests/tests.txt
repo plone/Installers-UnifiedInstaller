@@ -62,7 +62,7 @@ Test a ZEO install
 
     >>> print stdout
     ZEO Cluster Install selected...
-    Installing Plone 4.2.5 at ...
+    Installing Plone 4.2.6 at ...
     Plone successfully installed at ...
       Username: admin
       Password: admin...
@@ -89,7 +89,7 @@ Test a ZEO install
 
     Check bin contents
     >>> sorted(os.listdir('%s/zeocluster/bin' % testTarget))
-    ['backup', 'buildout', 'client1', 'client2', 'clusterstatus.sh', 'paster', 'plonectl', 'repozo', 'restartclients.sh', 'restartcluster.sh', 'restore', 'shutdowncluster.sh', 'snapshotbackup', 'snapshotrestore', 'startcluster.sh', 'zeopack', 'zeoserver', 'zopepy', 'zopeskel']
+    ['backup', 'buildout', 'client1', 'client2', 'clusterstatus.sh', 'fullbackup', 'paster', 'plonectl', 'repozo', 'restartclients.sh', 'restartcluster.sh', 'restore', 'shutdowncluster.sh', 'snapshotbackup', 'snapshotrestore', 'startcluster.sh', 'zeopack', 'zeoserver', 'zopepy', 'zopeskel']
 
     Installing again to the same target should fail
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
@@ -259,7 +259,7 @@ Test a standalone install
 
     Check bin contents
     >>> sorted(os.listdir('%s/zinstance/bin' % testTarget))
-    ['backup', 'buildout', 'instance', 'paster', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zopepy', 'zopeskel']
+    ['backup', 'buildout', 'fullbackup', 'instance', 'paster', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zopepy', 'zopeskel']
 
 
     Run it
@@ -329,7 +329,7 @@ Test an --instance=... install
 
     >>> print stdout
     ZEO Cluster Install selected...
-    Installing Plone 4.2.5 at ...
+    Installing Plone 4.2.6 at ...
     Plone successfully installed at ...
       Username: admin
       Password: admin...
