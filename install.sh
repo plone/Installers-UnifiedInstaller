@@ -124,7 +124,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=4.3.1
+readonly FOR_PLONE=4.3.2
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -132,18 +132,16 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2
-readonly PYTHON_MD5=62704ea0f125923208d84ff0568f7d50
-readonly PYTHON_TB=Python-2.7.4.tar.bz2
-readonly PYTHON_DIR=Python-2.7.4
-readonly DISTRIBUTE_TB=distribute-0.6.36.tar.gz
-readonly DISTRIBUTE_DIR=distribute-0.6.36
+readonly PYTHON_URL=http://python.org/ftp/python/2.7.5/Python-2.7.5.tar.bz2
+readonly PYTHON_MD5=6334b666b7ff2038c761d7b27ba699c1
+readonly PYTHON_TB=Python-2.7.5.tar.bz2
+readonly PYTHON_DIR=Python-2.7.5
 readonly JPEG_TB=jpegsrc.v9.tar.bz2
 readonly JPEG_DIR=jpeg-9
 readonly READLINE_TB=readline-6.2.tar.bz2
 readonly READLINE_DIR=readline-6.2
-readonly VIRTUALENV_TB=virtualenv-1.9.1.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-1.9.1
+readonly VIRTUALENV_TB=virtualenv-1.10.1.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-1.10.1
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
@@ -926,10 +924,10 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     cd $VIRTUALENV_DIR
     if [ "X$WITH_SITE_PACKAGES" = "Xyes" ]; then
         echo "Creating python virtual environment with site packages."
-        "$WITH_PYTHON" virtualenv.py --distribute "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     else
         echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py --distribute "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     fi
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
@@ -997,13 +995,26 @@ if [ ! -x "$PY" ]; then
 
     . helper_scripts/build_python.sh
 
-    echo "Installing distribute..."
+    # The virtualenv kit has copies of setuptools and pip
+    echo "Installing setuptools..."
     cd "$PKG"
-    untar $DISTRIBUTE_TB
-    cd "$DISTRIBUTE_DIR"
-    "$PY" ./setup.py install >> "$INSTALL_LOG" 2>&1
+    untar $VIRTUALENV_TB
+    cd $VIRTUALENV_DIR/virtualenv_support
+    untar setuptools*.tar.gz
+    cd setuptools*
+    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
+    if [ ! -x "$EI" ]; then
+        echo "$EI missing. Aborting."
+        seelog
+        exit 1
+    fi
+    cd ..
+    untar pip*.tar.gz
+    cd pip*
+    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
     cd "$PKG"
-    rm -r "$DISTRIBUTE_DIR"
+    rm -r $VIRTUALENV_DIR
+
     if [ ! -x "$EI" ]; then
         echo "$EI missing. Aborting."
         seelog

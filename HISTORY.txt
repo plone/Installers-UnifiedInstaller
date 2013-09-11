@@ -1,3 +1,11 @@
+4.3.2 - 2012-09-11
+
+- Adapt to 4.3.2.
+
+- All hail setuptools >= 7! Adapt to the new era.
+
+- Update to Python 2.7.5.
+
 4.3.1 - r1 - 2012-06-19
 
 - Incorporate Hotfix R3.
