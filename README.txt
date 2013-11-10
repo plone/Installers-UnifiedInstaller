@@ -166,8 +166,8 @@ Usage: ``[sudo] install.sh [options] standalone|zeo``
 
 Install methods available:
 
---standalone  install standalone zope instance
---zeo         install zeo cluster
+standalone  install standalone zope instance
+zeo         install zeo cluster
 
 Use sudo (or run as root) for root install.
 
