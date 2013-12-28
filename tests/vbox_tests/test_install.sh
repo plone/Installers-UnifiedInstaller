@@ -1,9 +1,9 @@
 #!/bin/sh
 
 rm -rf Plone*
+date >> /vagrant/results.log
 tar xf /vagrant/*.tgz
 cd Plone*Unified*
-date >> /vagrant/results.log
 . /vagrant/install > install
 if [ $? -gt 0 ]; then
     echo "Install failed." >> /vagrant/results.log

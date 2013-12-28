@@ -6,9 +6,15 @@ VirtualBox (Vagrant) testing for Plone Unified Installer
 This is an experimental framework for running Plone Unified
 Installer tests in a set of Vagrant-provisioned VirtualBoxes.
 
+Before use, copy or hard-link a Unified Installer .tgz into this directory.
+
     ./runvbs.sh
 
 runs the suite.
+
+    ./runvbs.sh vb_c*
+
+runs tests on all the matching boxes.
 
 Each vb_* directory is a vagrant kit that provisions an environment
 adequate to run the installer.
