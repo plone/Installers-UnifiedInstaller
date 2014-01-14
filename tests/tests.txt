@@ -14,7 +14,7 @@ Setup stuff
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/Users/steve/nobackup/plonetest'
+    >>> testTarget = '/home/steve/plonetest'
     >>> withPython = '/usr/bin/python2.7'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
@@ -64,7 +64,7 @@ Test a ZEO install
 
     >>> print stdout
     -etc-
-    Installing Plone 4.3b2 at -etc-
+    Installing Plone 4.3.2 at -etc-
     Plone successfully installed at -etc-
       Username: admin
       Password: admin-etc-
@@ -91,7 +91,7 @@ Test a ZEO install
 
     Check bin contents
     >>> sorted(os.listdir('%s/zeocluster/bin' % testTarget))
-    ['backup', 'buildout', 'client1', 'client2', 'paster', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy', 'zopeskel']
+    ['backup', 'buildout', 'client1', 'client2', 'fullbackup', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
 
     Installing again to the same target should fail
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
@@ -241,7 +241,7 @@ Test a standalone install
 
     Check bin contents
     >>> sorted(os.listdir('%s/zinstance/bin' % testTarget))
-    ['backup', 'buildout', 'instance', 'paster', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zopepy', 'zopeskel']
+    ['backup', 'buildout', 'fullbackup', 'instance', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zopepy']
 
 
     Run it
@@ -314,7 +314,7 @@ Test building Python and dependencies
 
     >>> print stdout
     -etc-
-    Installing Plone 4.3b2 at -etc-
+    Installing Plone 4.3.2 at -etc-
     Compiling and installing jpeg local libraries-etc-
     Compiling and installing readline local libraries-etc-
     Installing Python-2.7-etc-

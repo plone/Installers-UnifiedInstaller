@@ -24,6 +24,7 @@ CLIENT_TEMPLATE = """
 [client%(client_num)d]
 <= client_base
 recipe = plone.recipe.zope2instance
+zeo-address = ${zeoserver:zeo-address}
 http-address = %(client_port)d
 """
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2012-2013 Plone Foundation. Licensed under GPL v 2.
 #
 # Utilities meant to be sourced into a shell script
 
@@ -24,6 +24,47 @@ untar () {
     esac
     if [ $? -gt 0 ]; then
         seelog
+    fi
+}
+
+
+# # download ()
+# # Download using curl or wget.
+# # Arguments should be URL, test filename, md5sum
+download () {
+    if (which curl > /dev/null); then
+        echo Downloading $2 with curl
+        curl $1 --output $2 --location
+    elif (which wget > /dev/null); then
+        echo Downloading $2 with wget
+        wget $1 -O $2
+    else
+        echo "We need either wget or curl in order to download $2."
+        echo "Please use your package manager to install one of them."
+        exit 1
+    fi
+    if [ $? -gt 0 ]; then
+        echo "Download of $2 from $1 failed. Check for error messages"
+        echo "on the console. Are you behind an HTTP proxy? If so, set"
+        echo "the http_proxy environment variable."
+        echo "(Download returned error.)"
+        exit 1
+    fi
+    if [ ! -f $2 ]; then
+        echo "Download of $2 from $1 failed. Check for error messages"
+        echo "on the console. Are you behind an HTTP proxy? If so, set"
+        echo "the http_proxy environment variable."
+        echo "(File not found.)"
+        exit 1
+    fi
+    if (which md5sum > /dev/null); then
+        # check hash
+        echo "$3  $2" | md5sum -c -
+        if [ $? -gt 0 ]; then
+            echo "MD5 checksum of downloaded file did not match expectations."
+            echo "Download unusable. Failed!"
+            exit 1
+        fi
     fi
 }
 
@@ -85,3 +126,5 @@ config_version () {
 #         echo "No, xslt-config doesn't exist, or version is < $NEED_XSLT"
 #     fi
 # done
+
+# download http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2 Python-2.7.4.tar.bz2 62704ea0f125923208d84ff0568f7d50

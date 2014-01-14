@@ -1,0 +1,4 @@
+*.tgz
+.vagrant
+*.log
+provisioned

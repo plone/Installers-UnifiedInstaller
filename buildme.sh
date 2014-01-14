@@ -28,7 +28,8 @@ else
   TAR='tar'
 fi
 
-NEWVER=4.3b2
+BASE_VER=4.3.2
+NEWVER=${BASE_VER}
 
 SDIR=`pwd`
 
@@ -50,16 +51,17 @@ rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/buildenv.sh
 rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/tests/testout.txt
 rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/Plone-docs
 rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/autom4te.cache
+rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/packages/Python*
 
 mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
-$WGET http://pypi.python.org/packages/source/P/Plone/Plone-${NEWVER}.zip
-unzip Plone-${NEWVER}.zip
-rm Plone-${NEWVER}.zip
-mv Plone-${NEWVER}/docs Plone-docs
-rm -r Plone-${NEWVER}
+$WGET --no-check-certificate http://pypi.python.org/packages/source/P/Plone/Plone-${BASE_VER}.zip
+unzip Plone-${BASE_VER}.zip
+rm Plone-${BASE_VER}.zip
+mv Plone-${BASE_VER}/docs Plone-docs
+rm -r Plone-${BASE_VER}
 
 find . -name "._*" -exec rm {} \;
 find . -name ".DS_Store" -exec rm {} \;
@@ -68,9 +70,10 @@ find . -type f -exec chmod 644 {} \;
 chmod 755 install.sh base_skeleton/bin/*
 find . -type d -exec chmod 755 {} \;
 
-
 cd $WORK_DIR
+echo Making tarball
 $TAR --owner 0 --group 0 -zcf Plone-${NEWVER}-UnifiedInstaller.tgz Plone-${NEWVER}-UnifiedInstaller
 rm -r Plone-${NEWVER}-UnifiedInstaller
+echo Test unpack of tarball
 $TAR zxf Plone-${NEWVER}-UnifiedInstaller.tgz
 cd Plone-${NEWVER}-UnifiedInstaller

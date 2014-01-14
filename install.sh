@@ -31,7 +31,7 @@
 #   no slash in the string..
 #   Default is 'zinstance' for standalone, 'zeocluster' for ZEO.
 #
-# --user=user-name
+# --daemon-user=user-name
 #   In a server-mode install, sets the effective user for running the
 #   instance. Default is 'plone_daemon'. Ignored for non-server-mode installs.
 #
@@ -53,7 +53,11 @@
 #
 # --build-python
 #   If you do not have a suitable Python available, the installer will
-#   build one for you if you set this option.
+#   build one for you if you set this option. Requires Internet access
+#   to download Python source.
+#
+# --without-ssl
+#   Optional. Allows the build to proceed without ssl dependency tests.
 #
 # --with-site-packages
 #   When --with-python is used to specify a python, that python is isolated
@@ -80,7 +84,7 @@
 # --libjpeg=auto|yes|no
 # --readline=auto|yes|no
 # --static-lxml
-#   Forces a static built of libxml2 and libxslt dependencies. Requires
+#   Forces a static build of libxml2 and libxslt dependencies. Requires
 #   Internet access to download components.
 
 
@@ -95,7 +99,7 @@ fi
 # Path options for Non-Root install
 #
 # Path for install of Python/Zope/Plone
-LOCAL_HOME=$HOME/Plone
+LOCAL_HOME="$HOME/Plone"
 
 # if we create a ZEO cluster, it will go here (inside $PLONE_HOME):
 ZEOCLUSTER_HOME=zeocluster
@@ -120,7 +124,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=4.3b2
+readonly FOR_PLONE=4.3.2
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -128,16 +132,16 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_TB=Python-2.7.3.tar.bz2
-readonly PYTHON_DIR=Python-2.7.3
-readonly DISTRIBUTE_TB=distribute-0.6.28.tar.gz
-readonly DISTRIBUTE_DIR=distribute-0.6.28
-readonly JPEG_TB=jpegsrc.v8d.tar.bz2
-readonly JPEG_DIR=jpeg-8d
+readonly PYTHON_URL=http://python.org/ftp/python/2.7.5/Python-2.7.5.tar.bz2
+readonly PYTHON_MD5=6334b666b7ff2038c761d7b27ba699c1
+readonly PYTHON_TB=Python-2.7.5.tar.bz2
+readonly PYTHON_DIR=Python-2.7.5
+readonly JPEG_TB=jpegsrc.v9.tar.bz2
+readonly JPEG_DIR=jpeg-9
 readonly READLINE_TB=readline-6.2.tar.bz2
 readonly READLINE_DIR=readline-6.2
-readonly VIRTUALENV_TB=virtualenv-1.8.2.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-1.8.2
+readonly VIRTUALENV_TB=virtualenv-1.10.1.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-1.10.1
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
@@ -149,9 +153,9 @@ if [ `whoami` = "root" ]; then
 else
     ROOT_INSTALL=0
     # set paths to local versions
-    PLONE_HOME=$LOCAL_HOME
-    DAEMON_USER=$USER
-    BUILDOUT_USER=$USER
+    PLONE_HOME="$LOCAL_HOME"
+    DAEMON_USER="$USER"
+    BUILDOUT_USER="$USER"
 fi
 
 
@@ -163,7 +167,7 @@ cd $PWD
 # normalize
 PWD=`pwd`
 CWD="$PWD"
-PKG=$CWD/$PACKAGES_DIR
+PKG="$CWD/$PACKAGES_DIR"
 
 . helper_scripts/shell_utils.sh
 
@@ -185,7 +189,8 @@ usage () {
     echo
     echo "--build-python"
     echo "  If you do not have a suitable Python available, the installer will"
-    echo "  build one for you if you set this option."
+    echo "  build one for you if you set this option. Requires Internet access"
+    echo "  to download Python source."
     echo
     echo "--password=InstancePassword"
     echo "  If not specified, a random password will be generated."
@@ -204,7 +209,7 @@ usage () {
     echo "  This will be created inside the target directory."
     echo "  Default is 'zinstance' for standalone, 'zeocluster' for ZEO."
     echo
-    echo "--user=user-name"
+    echo "--daemon-user=user-name"
     echo "  In a server-mode install, sets the effective user for running the"
     echo "  instance. Default is 'plone_daemon'. Ignored for non-server-mode installs."
     echo
@@ -247,6 +252,7 @@ SKIP_TOOL_TESTS=0
 INSTALL_LOG="$ORIGIN_PATH/install.log"
 CLIENT_COUNT=2
 TEMPLATE=buildout
+WITHOUT_SSL="no"
 
 
 for option
@@ -311,6 +317,11 @@ do
             ;;
 
         --user=* | -user=* )
+            echo "Did you want '--daemon-user' instead of '--user'?"
+            usage
+            ;;
+
+        --daemon-user=* | -daemon-user=* )
             if [ "$optarg" ]; then
                 DAEMON_USER="$optarg"
             else
@@ -368,6 +379,14 @@ do
                 INSTALL_LXML="$optarg"
             else
                 INSTALL_LXML="yes"
+            fi
+            ;;
+
+        --without-ssl | --without-ssl=* )
+            if [ "$optarg" ]; then
+                WITHOUT_SSL="$optarg"
+            else
+                WITHOUT_SSL="yes"
             fi
             ;;
 
@@ -452,7 +471,7 @@ if [ $ROOT_INSTALL -eq 1 ]; then
         echo
         exit 1
     fi
-    SUDO="sudo -u $BUILDOUT_USER"
+    SUDO="sudo -u $BUILDOUT_USER -E"
 else
     SUDO=""
 fi
@@ -563,19 +582,23 @@ else
             exit 1
         fi
 
-        if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
-            echo
-            echo "Unable to find libssl or openssl/ssl.h."
-            echo "libssl and its development headers are required for Plone."
-            echo "Please install your platform's openssl-dev package"
-            echo "and try again."
-            echo "(If your system is using an SSL other than openssl or is"
-            echo "putting the libraries/headers in an unconventional place,"
-            echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
-            echo "to specify the locations.)"
-            echo
-            exit 1
+        if [ "X$WITHOUT_SSL" != "Xyes" ]; then
+            if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
+                echo
+                echo "Unable to find libssl or openssl/ssl.h."
+                echo "libssl and its development headers are required for Plone."
+                echo "Please install your platform's openssl-dev package"
+                echo "and try again."
+                echo "(If your system is using an SSL other than openssl or is"
+                echo "putting the libraries/headers in an unconventional place,"
+                echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
+                echo "to specify the locations.)"
+                echo "If you want to install Plone without SSL support, specify"
+                echo "--without-ssl on the installer command line."
+                exit 1
+            fi
         fi
+
     else
         if [ "X$WITH_PYTHON" = "X" ]; then
             # try to find a Python
@@ -588,13 +611,13 @@ else
         # check our python
         if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
             echo "Testing $WITH_PYTHON for Zope/Plone requirements...."
-            if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
+            if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
                 echo "$WITH_PYTHON looks OK. We'll try to use it."
                 echo
                 # if the supplied Python is adequate, we don't need to build libraries
                 INSTALL_ZLIB=no
                 INSTALL_READLINE=no
-                WITHOUT_SSL=1
+                WITHOUT_SSL="yes"
             else
                 echo
                 echo "$WITH_PYTHON does not meet the requirements for Zope/Plone."
@@ -790,7 +813,7 @@ fi
 
 # set up log
 if [ -f "$INSTALL_LOG" ]; then
-    rm "$INSTALL_LOG"
+    rm -f "$INSTALL_LOG"
 fi
 touch "$INSTALL_LOG" 2> /dev/null
 if [ $? -gt 0 ]; then
@@ -893,7 +916,6 @@ else
 fi
 
 
-
 if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     PYBNAME=`basename "$WITH_PYTHON"`
     PY_HOME=$PLONE_HOME/Python-2.7
@@ -920,7 +942,7 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
         ln -s "$PYBNAME" python
     fi
     cd "$CWD"
-    if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py; then
+    if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo
         echo "Python created with virtualenv no longer passes baseline"
         echo "tests."
@@ -963,22 +985,42 @@ if [ ! -x "$PY" ]; then
         rm -f "$PY_HOME/lib/"*.dylib
     fi
 
+    # download python tarball if necessary
+    cd "$PKG"
+    if [ ! -f $PYTHON_TB ]; then
+        echo "Downloading Python source from $PYTHON_URL"
+        download $PYTHON_URL $PYTHON_TB $PYTHON_MD5
+    fi
+    cd "$CWD"
+
     . helper_scripts/build_python.sh
 
-    echo "Installing distribute..."
+    # The virtualenv kit has copies of setuptools and pip
+    echo "Installing setuptools..."
     cd "$PKG"
-    untar $DISTRIBUTE_TB
-    cd "$DISTRIBUTE_DIR"
-    "$PY" ./setup.py install >> "$INSTALL_LOG" 2>&1
-    cd "$PKG"
-    rm -r "$DISTRIBUTE_DIR"
+    untar $VIRTUALENV_TB
+    cd $VIRTUALENV_DIR/virtualenv_support
+    untar setuptools*.tar.gz
+    cd setuptools*
+    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
     if [ ! -x "$EI" ]; then
         echo "$EI missing. Aborting."
         seelog
         exit 1
     fi
-    if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py
-    then
+    cd ..
+    untar pip*.tar.gz
+    cd pip*
+    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
+    cd "$PKG"
+    rm -r $VIRTUALENV_DIR
+
+    if [ ! -x "$EI" ]; then
+        echo "$EI missing. Aborting."
+        seelog
+        exit 1
+    fi
+    if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo "Python build looks OK."
     else
         echo
@@ -1030,16 +1072,28 @@ fi
 
 cd "$CWD"
 
+# The main install may be done via sudo (if a root install). If it is,
+# our current directory may become unreachable. So, copy the resources
+# we'll need into a tmp directory inside the install destination.
+WORKDIR="${PLONE_HOME}/tmp"
+mkdir "$WORKDIR" > /dev/null 2>&1
+cp -R ./buildout_templates "$WORKDIR"
+cp -R ./base_skeleton "$WORKDIR"
+cp -R ./helper_scripts "$WORKDIR"
+
 ########################
 # Instance install steps
 ########################
 
-
-cd "$CWD"
+cd "$WORKDIR"
 
 if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER"
-    chown -R "$BUILDOUT_USER" "$PLONE_HOME"
+    echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER:$PLONE_GROUP"
+    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME"
+    # let's have whatever we create from now on sticky group'd
+    chmod g+s "$PLONE_HOME"
+    # including things copied from the work directory
+    find "$WORKDIR" -type d -exec chmod g+s {} \;
 fi
 
 ################################################
@@ -1050,8 +1104,8 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     INSTALL_METHOD="standalone"
     CLIENT_COUNT=0
 fi
-$SUDO "$PY" "$CWD/helper_scripts/create_instance.py" \
-    "--uidir=$CWD" \
+$SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
+    "--uidir=$WORKDIR" \
     "--plone_home=$PLONE_HOME" \
     "--instance_home=$INSTANCE_HOME" \
     "--daemon_user=$DAEMON_USER" \
@@ -1063,7 +1117,6 @@ $SUDO "$PY" "$CWD/helper_scripts/create_instance.py" \
     "--password=$PASSWORD" \
     "--instance_var=$INSTANCE_VAR" \
     "--backup_dir=$BACKUP_DIR" \
-    "--instance_home=$INSTANCE_HOME" \
     "--template=$TEMPLATE" \
     "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
 if [ $? -gt 0 ]; then
@@ -1073,17 +1126,18 @@ if [ $? -gt 0 ]; then
 fi
 echo "Buildout completed"
 
-PWFILE=$INSTANCE_HOME/adminPassword.txt
-RMFILE=$INSTANCE_HOME/README.html
+if [ $ROOT_INSTALL -eq 0 ]; then
+    # for non-root installs, restrict var access.
+    # root installs take care of this during buildout.
+    chmod 700 "$INSTANCE_HOME/var"
+fi
 
-# if [ $ROOT_INSTALL -eq 1 ]; then
-#     chmod 600 "$INSTANCE_HOME"/*.cfg
-#     chmod 654 "$INSTANCE_HOME"/bin/*
-#     chmod 744 "$INSTANCE_HOME"/bin/buildout
-#     chmod 755 "$INSTANCE_HOME"/bin/zopeskel
-#     chown -R "$DAEMON_USER":"$PLONE_GROUP" "$INSTANCE_HOME"/var
-#     chmod -R 770 "$INSTANCE_HOME"/var
-# fi
+cd "$CWD"
+# clear our temporary directory
+rm -r "$WORKDIR"
+
+PWFILE="$INSTANCE_HOME/adminPassword.txt"
+RMFILE="$INSTANCE_HOME/README.html"
 
 #######################
 # Conclude installation

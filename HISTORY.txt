@@ -1,195 +1,290 @@
-4.3b3 (installer release 3, unreleased)
+4.3.2 - 2012-09-11
 
-    - Apply lxml underlink fix to all systems where ld accepts --no-as-needed.
+- Adapt to 4.3.2.
+
+- All hail setuptools >= 7! Adapt to the new era.
+
+- Update to Python 2.7.5.
+
+4.3.1 - r1 - 2012-06-19
+
+- Incorporate Hotfix R3.
+
+- Add tests/vb_tests, a kit to test the installer in multiple vagrant
+  boxes.
+
+4.3.1 - 2012-06-19
+
+- Adapt to 4.3.1, add hotfix.
+
+- Restore --without-ssl option that may be used to bypass ssl tests.
+  Whatever hard ssl dependency arose in 4.2.x, it's gone now.
+
+- Patch z3c.recipe.staticlxml to work with SUSE lib64 build paths.
+
+- Update to jpeg-9
+
+- Update distribute to 0.6.36.
+
+- Incorporate 2013-05-02 snapshot of master branch of z3c.recipe.staticlxml
+  plus amd64 fix.
+
+- Use --distribute when building virtualenv.
+
+- Lots of documentation improvements.
+
+- Python 2.7.x is now downloaded if needed and requested. This reduces
+  the tarball 11M. If a user cannot download the Python tarball on the
+  destination machine, they can download elsewhere and copy into the
+  packages directory.
+
+- We have had multiple reports of users who have tried to use the --user
+  flag to set the Zope startup user. Changed to --daemon-user to clarify
+  its purpose. Clarified README.txt. Related to #13545.
+
+- In a sudo install, if one of the plone_* users (or specified on command
+  line) already existed and had something other than plone_group for its
+  default group, install would abort. Modified permissions strategy to
+  tolerate users with plone_group in extra groups by using setgroup bit.
+  Modified user creation strategy to add plone_group if user already
+  exists. Resolves #13545.
+
+- Attempting sudo install from a path that is not world-readable would
+  prevent the drop-permission part of the install from reaching
+  needed resources. Fixed by copying needed resources to a temp
+  directory inside the install target. Resolves #13523.
+
+- Add provision for passing environment via sudo. Add docs. Should resolve
+  #13537.
+
+4.3 - 2013-04-14
+
+- Adapt to 4.3.
+
+- Add note on installer directory permissions in sudo installs.
+  Fixes http://dev.plone.org/ticket/13523.
+
+- Move zopeskel to develop.cfg.
+
+- Add zest.releaser to develop.cfg.
+
+- Remove omelette. Since all the eggs for an installer build are in
+  the buildout cache, it's not as useful as when they may be spread
+  over the file system. It also doesn't work in environments that
+  don't support symbolic links.
+
+- Add Diazo command-line tools to develop.cfg.
+
+- Suppress meaningless warnings on chmod in set permissions.
+  Fixes http://dev.plone.org/ticket/13488.
+
+- On BSD systems, group will not be set automatically to plone_group
+  unless directory is set that way. Affects sudo installs. Fixed.
+
+4.3rc1 - (installer release 2, 2013-03-13)
+
+- zeoserver address reference was missing from zeo client buildout
+  sections created by the installer. Fixes #13482.
+
+4.3rc1 - 2013-03-11
+
+- Adapt to 4.3rc1.
+
+- Add version specs for plone.recipe.precompiler and
+  plone.recipe.command.
+
+4.3b3 (installer release 3, 2012-01-30)
+
+- Apply lxml underlink fix to all systems where ld accepts --no-as-needed.
 
 4.3b2 (installer release 2, 2013-01-27)
 
-    - Use plone.recipe.unifiedinstaller 4.3.1 to incorporate fix for
-      plonectl.
+- Use plone.recipe.unifiedinstaller 4.3.1 to incorporate fix for
+  plonectl.
 
-    - The version check logic for libxml2/libxslt did not work on
-      shells that limit return values to a byte. Fixed.
+- The version check logic for libxml2/libxslt did not work on
+  shells that limit return values to a byte. Fixed.
 
 4.3b2 - 2012-01-23
 
-    - Adapt to 4.3b2
+- Adapt to 4.3b2
 
-    - Include a dev copy of z3c.recipe.staticlxml that cures clock_gettime
-      underlink on some gcc 4.[56] systems.
+- Include a dev copy of z3c.recipe.staticlxml that cures clock_gettime
+  underlink on some gcc 4.[56] systems.
 
-    - if libjpeg is needed, make sure it's built even when using a virtualenv
-      python. Cures a problem on OS X.
+- if libjpeg is needed, make sure it's built even when using a virtualenv
+  python. Cures a problem on OS X.
 
-    - Fix Ticket #13406, Installer fails after building python, by
-      removing bad zlib test.
+- Fix Ticket #13406, Installer fails after building python, by
+  removing bad zlib test.
 
 4.3b1 2013-01-04
 
-    - Adapt to 4.3b1.
+- Adapt to 4.3b1.
 
-    - Adapt to 4.3b1-pending.
+- Adapt to 4.3b1-pending.
 
-    - Add sanity check for lxml and PIL via zopepy.
+- Add sanity check for lxml and PIL via zopepy.
 
-    - Prefer system python and packages whenever they exist and
-      are acceptable. Only build python or xml2/xslt when explicitly
-      requested.
+- Prefer system python and packages whenever they exist and
+  are acceptable. Only build python or xml2/xslt when explicitly
+  requested.
 
-    - On server mode installs, isolate the daemon a bit more by having
-      it run as a user distinct from the one owning the rest of the
-      buildout.
+- On server mode installs, isolate the daemon a bit more by having
+  it run as a user distinct from the one owning the rest of the
+  buildout.
 
-    - On server mode installs, run buildout as the buildout user rather
-      than root.
+- On server mode installs, run buildout as the buildout user rather
+  than root.
 
-    - Loosen the coupling between install.sh and create_instance.py by
-      using getopts style command-line arguments.
+- Loosen the coupling between install.sh and create_instance.py by
+  using getopts style command-line arguments.
 
 4.2.2 - update 2012-11-09
 
-    - Incorporate Products.PloneHotfix20121106 == 1.2
+- Incorporate Products.PloneHotfix20121106 == 1.2
 
 4.2.2 - update 2012-10-24
 
-    - Step back to libxml2 2.8.0. 2.9.0 won't build on OS X.
+- Step back to libxml2 2.8.0. 2.9.0 won't build on OS X.
 
 4.2.2 - 2012-10-23
 
-    - libxml2/libxslt has finally been updated to cover CVE-2011-3919.
-      Updated libxml2 & libxslt version specs and removed dev version
-      of z3c.recipe.staticlxml.
+- libxml2/libxslt has finally been updated to cover CVE-2011-3919.
+  Updated libxml2 & libxslt version specs and removed dev version
+  of z3c.recipe.staticlxml.
 
-    - Update readme to point to install and maintain section
-      of collective dev man.
+- Update readme to point to install and maintain section
+  of collective dev man.
 
-    - Allow Python 2.6.x or 2.7.x. Resolves #13265.
+- Allow Python 2.6.x or 2.7.x. Resolves #13265.
 
-    - Add automatic log rotation for clients. Resolves #13184.
+- Add automatic log rotation for clients. Resolves #13184.
 
-    - Adapt to Plone 4.2.2. Update libjpeg, distribute and virtualenv.
+- Adapt to Plone 4.2.2. Update libjpeg, distribute and virtualenv.
 
 4.2.1
 
-    - Update Plone to 4.2.1.
+- Update Plone to 4.2.1.
 
 4.2 installer update - 2012-07-08
 
-   - Remove osxcontroller support. This only worked on OS X 10.5 & 10.6, which
-     have been out-of-date for over a year.
+- Remove osxcontroller support. This only worked on OS X 10.5 & 10.6, which
+ have been out-of-date for over a year.
 
 4.2 - 2012-07-02
 
-   - Adapt to 4.2.
+- Adapt to 4.2.
 
-   - --without-lxml is no longer supported, as lxml is required. Option removed.
+- --without-lxml is no longer supported, as lxml is required. Option removed.
 
 4.2rc2 - 2012-06-06
 
-    - Adapt to 4.2rc2
+- Adapt to 4.2rc2
 
 4.2rc1 - 2012-05-15
 
-    - Adapt to 4.2rc1.
+- Adapt to 4.2rc1.
 
-    - Update Python to 2.7.3. Set PYTHONHASHSEED environment variable to "random".
+- Update Python to 2.7.3. Set PYTHONHASHSEED environment variable to "random".
 
-    - Include an unreleased version of z3c.recipe.staticlxml that applies a patch
-      for CVE-2011-3919. XXX: This should be replaced or removed when unnecessary.
+- Include an unreleased version of z3c.recipe.staticlxml that applies a patch
+  for CVE-2011-3919. XXX: This should be replaced or removed when unnecessary.
 
 4.2b2 - 2012-02-15
 
-    - Stop bundling zlib/libz. This is a required library on nearly every
-      platform.
+- Stop bundling zlib/libz. This is a required library on nearly every
+  platform.
 
-    - Adapt to use Python 2.7.x.
+- Adapt to use Python 2.7.x.
 
-    - if --with-python is used, there is no need to check for ssl libraries.
+- if --with-python is used, there is no need to check for ssl libraries.
 
 4.2b1 - unreleased
 
-    - Adapt to 4.2b1. 4.1 is now a maintenance branch, 4.2 the master.
+- Adapt to 4.2b1. 4.1 is now a maintenance branch, 4.2 the master.
 
 4.1.3 - 2011-12-06
 
-    - preflight tool tests were not being skipped when --skip-tool-tests flag
-      was set. This caused the OS X binary installer to fail if gcc was missing.
+- preflight tool tests were not being skipped when --skip-tool-tests flag
+  was set. This caused the OS X binary installer to fail if gcc was missing.
 
-    - Check for availability of patch program. Fixes #12408.
+- Check for availability of patch program. Fixes #12408.
 
 4.1.3 - 2011-12-01
 
-    - Update to 4.1.3.
+- Update to 4.1.3.
 
-    - Allow easy specification of environment variables.
+- Allow easy specification of environment variables.
 
-    - Move the version-specific dist specification to the editable section.
+- Move the version-specific dist specification to the editable section.
 
-    - Add packages/ patch files (but not binaries) to git repo to make sure
-      they're tracked.
+- Add packages/ patch files (but not binaries) to git repo to make sure
+  they're tracked.
 
-    - If sslv2 is not available, apply patch to remove the requirement from
-      the Python build. Fixes problems with python ssl support build on
-      platforms like Ubuntu 11.10 where sslv2 is disabled.
-      Thanks to oggers for researching this.
+- If sslv2 is not available, apply patch to remove the requirement from
+  the Python build. Fixes problems with python ssl support build on
+  platforms like Ubuntu 11.10 where sslv2 is disabled.
+  Thanks to oggers for researching this.
 
-    - Don't install OSX controller on Lion (no wx).
+- Don't install OSX controller on Lion (no wx).
 
 4.1.2
 
-    - Update to 4.1.2
+- Update to 4.1.2
 
-    - Try to detect libxml2/libxslt if installed; check versions. Only build
-      statically if missing or out-of-date.
+- Try to detect libxml2/libxslt if installed; check versions. Only build
+  statically if missing or out-of-date.
 
-    - 4.1 requires ssl (optional with earlier versions). Make it much clearer
-      that this is required. Fixes #12248.
+- 4.1 requires ssl (optional with earlier versions). Make it much clearer
+  that this is required. Fixes #12248.
 
-    - Refine some of the dependency tests.
+- Refine some of the dependency tests.
 
-    - Earlier debian multiarch detection code would fail if multiple multiarch
-      directories were present. Fixed, thanks to jgrigera for the solution.
-      issue #12188
+- Earlier debian multiarch detection code would fail if multiple multiarch
+  directories were present. Fixed, thanks to jgrigera for the solution.
+  issue #12188
 
 4.1 - 20110907
 
-    - Fixes for building on Fedora 15, issue #12103. Removed some configure
-      options that only worked with Python 2.4.x. I don't know why they
-      only caused problems with Fedora 15.
+- Fixes for building on Fedora 15, issue #12103. Removed some configure
+  options that only worked with Python 2.4.x. I don't know why they
+  only caused problems with Fedora 15.
 
 4.1 - 20110830
 
-    - Add --clients=# option to specify # of zeo clients created.
+- Add --clients=# option to specify # of zeo clients created.
 
-    - Add --with-site-packages option to use virtualenv without the
-      extra isolation.
+- Add --with-site-packages option to use virtualenv without the
+  extra isolation.
 
-    - Provide more options to control lxml install.
+- Provide more options to control lxml install.
 
 4.1 - 20110726
 
-    - Adapt to work with OS X 10.7. This mainly involved updating readline
-      and libjpeg to most-current versions.
+- Adapt to work with OS X 10.7. This mainly involved updating readline
+  and libjpeg to most-current versions.
 
 4.1
 
-    - Update to 4.1
+- Update to 4.1
 
 4.1rc3 + Zope-Hotfix-20110622
 
-    - Add Zope-Hotfix-20110622
+- Add Zope-Hotfix-20110622
 
-    - Update to Python 2.6.7, VirtualEnv 1.6.1
+- Update to Python 2.6.7, VirtualEnv 1.6.1
 
-    - Fixes to lxml build for root installs. Separate lxml build.
+- Fixes to lxml build for root installs. Separate lxml build.
 
 4.1rc3
 
-    - Add lxml with static xml2 and xslt.
+- Add lxml with static xml2 and xslt.
 
-    - Add patch for Natty's multiarch. Fixes problem with inability to build
-      Python zlib support when libraries are in /usr/lib/x86_64-linux-gnu.
+- Add patch for Natty's multiarch. Fixes problem with inability to build
+  Python zlib support when libraries are in /usr/lib/x86_64-linux-gnu.
 
-    - Switched from PIL to Pillow>=1.7.1, as it has support for the nutty
-      natty multiarch paths.
+- Switched from PIL to Pillow>=1.7.1, as it has support for the nutty
+  natty multiarch paths.
 
 4.1rc2
