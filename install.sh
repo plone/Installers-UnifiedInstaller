@@ -124,7 +124,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=4.3.2
+readonly FOR_PLONE=4.3.3
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -132,16 +132,16 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=http://python.org/ftp/python/2.7.5/Python-2.7.5.tar.bz2
-readonly PYTHON_MD5=6334b666b7ff2038c761d7b27ba699c1
-readonly PYTHON_TB=Python-2.7.5.tar.bz2
-readonly PYTHON_DIR=Python-2.7.5
-readonly JPEG_TB=jpegsrc.v9.tar.bz2
-readonly JPEG_DIR=jpeg-9
+readonly PYTHON_URL=http://www.python.org/ftp/python/2.7.6/Python-2.7.6.tgz
+readonly PYTHON_MD5=1d8728eb0dfcac72a0fd99c17ec7f386
+readonly PYTHON_TB=Python-2.7.6.tgz
+readonly PYTHON_DIR=Python-2.7.6
+readonly JPEG_TB=jpegsrc.v9a.tar.gz
+readonly JPEG_DIR=jpeg-9a
 readonly READLINE_TB=readline-6.2.tar.bz2
 readonly READLINE_DIR=readline-6.2
-readonly VIRTUALENV_TB=virtualenv-1.10.1.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-1.10.1
+readonly VIRTUALENV_TB=virtualenv-1.11.3.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-1.11.3
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
