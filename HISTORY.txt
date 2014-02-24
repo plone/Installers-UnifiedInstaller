@@ -1,7 +1,9 @@
-4.3.3 - 2014-02-21
-==================
+4.3.3-pending - 2014-02-24
+==========================
 
-- Adapt to 4.3.3.
+- Adapt to 4.3.3-pending.
+  [pauloxnet, merged by smcmahon with permission from esteele.
+   only changes were version #s and license file.]
 
 4.3.2 - 2013-09-11
 ==================
