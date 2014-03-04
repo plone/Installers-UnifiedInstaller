@@ -136,7 +136,7 @@ readonly PYTHON_URL=http://www.python.org/ftp/python/2.7.6/Python-2.7.6.tgz
 readonly PYTHON_MD5=1d8728eb0dfcac72a0fd99c17ec7f386
 readonly PYTHON_TB=Python-2.7.6.tgz
 readonly PYTHON_DIR=Python-2.7.6
-readonly JPEG_TB=jpegsrc.v9a.tar.gz
+readonly JPEG_TB=jpegsrc.v9a.tar.bz2
 readonly JPEG_DIR=jpeg-9a
 readonly READLINE_TB=readline-6.2.tar.bz2
 readonly READLINE_DIR=readline-6.2
@@ -927,7 +927,7 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
         "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     else
         echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
+        "$WITH_PYTHON" virtualenv.py --no-setuptools "$PY_HOME"
     fi
     cd "$PKG"
     rm -r $VIRTUALENV_DIR

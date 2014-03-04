@@ -101,7 +101,7 @@ substitutions = {
     "BUILDOUT_USER": opt.buildout_user,
     "PASSWORD": opt.password,
     "PYTHON": sys.executable,
-    "DISTRIBUTE_EGG": findEgg('distribute', opt.plone_home),
+    "SETUPTOOLS_EGG": findEgg('setuptools', opt.plone_home),
     "BUILDOUT_EGG": findEgg('zc.buildout', opt.plone_home),
 }
 
@@ -263,7 +263,7 @@ if opt.run_buildout:
 
     # sanity check PIL and lxml with our zopepy
     my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
-    if doCommand(my_python + " -c 'from _imaging import jpeg_decoder'"):
+    if doCommand(my_python + " -c 'from PIL._imaging import jpeg_decoder'"):
         print "Failed: JPEG support is not available."
         print "If the installer did not built a static libjpeg, using"
         print "--libjpeg=yes option may cure this problem."

@@ -123,13 +123,13 @@ Test a ZEO install
     Check the python
     ----------------
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import jpeg_decoder"' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
     >>> returncode
     0
     >>> stderr
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import zip_decoder"' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import zip_decoder"' % testTarget)
     >>> returncode
     0
     >>> stderr
@@ -336,13 +336,13 @@ Test building Python and dependencies
     >>> stderr
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import jpeg_decoder"' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
     >>> returncode
     0
     >>> stderr
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from _imaging import zip_decoder"' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import zip_decoder"' % testTarget)
     >>> returncode
     0
     >>> stderr

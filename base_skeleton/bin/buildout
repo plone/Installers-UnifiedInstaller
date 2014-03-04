@@ -2,10 +2,11 @@
 
 import sys
 sys.path[0:0] = [
+    '%(SETUPTOOLS_EGG)s',
     '%(BUILDOUT_EGG)s',
   ]
 
 import zc.buildout.buildout
 
 if __name__ == '__main__':
-    zc.buildout.buildout.main()
+    sys.exit(zc.buildout.buildout.main())
