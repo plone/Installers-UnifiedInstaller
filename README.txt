@@ -744,7 +744,7 @@ See `Backup Plone <https://plone.org/documentation/kb/backup-plone>`_
 Coexistence with System Python
 ==============================
 The Python installed by the Unified Installer should *not* interfere with
-any other Python on your system.  The Installer bundles Python 2.7.3,
+any other Python on your system.  The Installer bundles Python 2.7.6,
 placing it at ``/usr/local/Plone/Python-2.7`` or ``$HOME/Plone/Python-2.7``
 
 
