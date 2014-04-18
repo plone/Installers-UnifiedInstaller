@@ -63,8 +63,10 @@ Outline of this document
   - `Customizing the installation`_
 
 - `Third-party products installed`_
+
 - `Platform Notes`_
 
+  - `Mac OS X`_
   - `Mac OS X Server`_
   - `MacPorts`_
   - `OpenBSD/NetBSD`_
@@ -617,6 +619,20 @@ needs, you may force a particular choice by editing the script.
 Note that readline installation is forced on OS X, where the default
 readline library is incomplete.
 
+Mac OS X
+~~~~~~~~
+
+OS X users will generally need to install XCode and XCode Command Line Tools.
+Some have had luck using Homebrew to provide GNU build tools.
+We only test with XCode.
+
+XCode command-line tools have a separate step in recent versions of XCode.
+If you seem to be missing gcc, you've missed that install step.
+
+Building Python libraries with C-language components requires an extra step in XCode 5.1+.
+See Apple's release notes for 5.1. https://developer.apple.com/library/mac/releasenotes/DeveloperTools/RN-Xcode/xc5_release_notes/xc5_release_notes.html#//apple_ref/doc/uid/TP40001051-CH2-SW1
+The Unified Installer takes care of this for you when building the initial Plone, but you need to supply the environment flags when adding new Python eggs that have C-language components.
+
 MacPorts
 ~~~~~~~~
 
@@ -675,7 +691,7 @@ bzip2-1.0.4
 
 python-2.7.3
   interpreted object-oriented programming language
-  
+
 python-expat-2.6.7
   expat module for Python
 

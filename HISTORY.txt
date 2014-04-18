@@ -1,6 +1,8 @@
 4.3.3 - 2014-04-17
 ==================
 
+- Set the magic flags for C-language component builds under XCode 5.1+.
+
 - Adapt to 4.3.3.
 
 - Use newest version of Pillow; adapt jpeg_decoder tests for it.

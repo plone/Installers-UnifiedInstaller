@@ -479,12 +479,19 @@ unset CDPATH
 # set up the common build environment unless already existing
 if [ "x$CFLAGS" = 'x' ]; then
     export CFLAGS='-fPIC'
-    if [ `uname` = "Darwin" ] && [ -d /opt/local ]; then
-        # include MacPorts directories, which typically have additional
-        # and later libraries
-        export CFLAGS='-fPIC -I/opt/local/include'
+    if [ `uname` = "Darwin" ]; then
+        # try to undo Apple's attempt to prevent the use of their Python
+        # for open-source development
+        export CFLAGS='-fPIC -Qunused-arguments'
         export CPPFLAGS=$CFLAGS
-        export LDFLAGS='-L/opt/local/lib'
+        export ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
+        if [ -d /opt/local ]; then
+            # include MacPorts directories, which typically have additional
+            # and later libraries
+            export CFLAGS='-fPIC -Qunused-arguments -I/opt/local/include'
+            export CPPFLAGS=$CFLAGS
+            export LDFLAGS='-L/opt/local/lib'
+        fi
     fi
 fi
 
@@ -981,31 +988,6 @@ if [ ! -x "$PY" ]; then
 
     . helper_scripts/build_python.sh
 
-    # # The virtualenv kit has copies of setuptools and pip
-    # echo "Installing setuptools..."
-    # cd "$PKG"
-    # untar $VIRTUALENV_TB
-    # cd $VIRTUALENV_DIR/virtualenv_support
-    # untar setuptools*.tar.gz
-    # cd setuptools*
-    # "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
-    # if [ ! -x "$EI" ]; then
-    #     echo "$EI missing. Aborting."
-    #     seelog
-    #     exit 1
-    # fi
-    # cd ..
-    # untar pip*.tar.gz
-    # cd pip*
-    # "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
-    # cd "$PKG"
-    # rm -r $VIRTUALENV_DIR
-
-    # if [ ! -x "$EI" ]; then
-    #     echo "$EI missing. Aborting."
-    #     seelog
-    #     exit 1
-    # fi
     if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo "Python build looks OK."
     else
@@ -1022,10 +1004,14 @@ fi
 
 
 # From here on, we don't want any ad-hoc cflags or ldflags, as
-# they will foul the modules built via distutils
-unset CFLAGS
-unset LDFLAGS
-
+# they will foul the modules built via distutils.
+# Latest OS X is the exception, since their Mavericks Python
+# supplies bad flags. How did they build that Python? Probably
+# not with the latest XCode.
+if [ `uname` != "Darwin" ]; then
+    unset CFLAGS
+    unset LDFLAGS
+fi
 
 if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     if [ -x "$BUILDOUT_CACHE" ]; then
