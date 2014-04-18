@@ -981,31 +981,31 @@ if [ ! -x "$PY" ]; then
 
     . helper_scripts/build_python.sh
 
-    # The virtualenv kit has copies of setuptools and pip
-    echo "Installing setuptools..."
-    cd "$PKG"
-    untar $VIRTUALENV_TB
-    cd $VIRTUALENV_DIR/virtualenv_support
-    untar setuptools*.tar.gz
-    cd setuptools*
-    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
-    if [ ! -x "$EI" ]; then
-        echo "$EI missing. Aborting."
-        seelog
-        exit 1
-    fi
-    cd ..
-    untar pip*.tar.gz
-    cd pip*
-    "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
-    cd "$PKG"
-    rm -r $VIRTUALENV_DIR
+    # # The virtualenv kit has copies of setuptools and pip
+    # echo "Installing setuptools..."
+    # cd "$PKG"
+    # untar $VIRTUALENV_TB
+    # cd $VIRTUALENV_DIR/virtualenv_support
+    # untar setuptools*.tar.gz
+    # cd setuptools*
+    # "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
+    # if [ ! -x "$EI" ]; then
+    #     echo "$EI missing. Aborting."
+    #     seelog
+    #     exit 1
+    # fi
+    # cd ..
+    # untar pip*.tar.gz
+    # cd pip*
+    # "$PY" setup.py install >> "$INSTALL_LOG" 2>&1
+    # cd "$PKG"
+    # rm -r $VIRTUALENV_DIR
 
-    if [ ! -x "$EI" ]; then
-        echo "$EI missing. Aborting."
-        seelog
-        exit 1
-    fi
+    # if [ ! -x "$EI" ]; then
+    #     echo "$EI missing. Aborting."
+    #     seelog
+    #     exit 1
+    # fi
     if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo "Python build looks OK."
     else
