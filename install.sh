@@ -59,11 +59,6 @@
 # --without-ssl
 #   Optional. Allows the build to proceed without ssl dependency tests.
 #
-# --with-site-packages
-#   When --with-python is used to specify a python, that python is isolated
-#   via virtualenv without site packages. Set the --with-site-
-#   packages flag if you want to include system packages.
-#
 # --var=pathname
 #   Full pathname to the directory where you'd like to put the "var"
 #   components of the install. By default target/instance/var.
@@ -278,10 +273,6 @@ do
             else
                 BUILD_PYTHON="yes"
             fi
-            ;;
-
-        --with-site-packages )
-            WITH_SITE_PACKAGES=yes
             ;;
 
         --target=* | -target=* )
@@ -922,13 +913,8 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     cd "$PKG"
     untar $VIRTUALENV_TB
     cd $VIRTUALENV_DIR
-    if [ "X$WITH_SITE_PACKAGES" = "Xyes" ]; then
-        echo "Creating python virtual environment with site packages."
-        "$WITH_PYTHON" virtualenv.py "$PY_HOME"
-    else
-        echo "Creating python virtual environment, no site packages."
-        "$WITH_PYTHON" virtualenv.py --no-setuptools "$PY_HOME"
-    fi
+    echo "Creating python virtual environment, no site packages, no setuptools."
+    "$WITH_PYTHON" virtualenv.py --no-setuptools "$PY_HOME"
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
     PY=$PY_HOME/bin/python

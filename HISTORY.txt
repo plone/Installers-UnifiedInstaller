@@ -1,5 +1,13 @@
-4.3.3 (unreleased)
+4.3.3 - 2014-04-17
 ==================
+
+- Adapt to 4.3.3.
+
+- Use newest version of Pillow; adapt jpeg_decoder tests for it.
+
+- Return setuptools to 0.7.2 for fuller buildout compatability. Use
+  --no-setuptools with virtualenv (updated). Adapt to distribute no
+  longer being in use.
 
 - Update bootstrap.py to v 2, update zc.buildout to 2.2.1, setuptools to 2.2.
 
