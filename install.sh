@@ -701,13 +701,13 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
 
         if [ "x$XSLT_CONFIG" = "x" ]; then
             echo
-            echo "Unable to find libxml2 development libraries."
+            echo "Unable to find libxslt development libraries."
             XSLT_XML_MSG
             exit 1
         fi
         if [ "x$XML2_CONFIG" = "x" ]; then
             echo
-            echo "Unable to find libxslt development libraries."
+            echo "Unable to find libxml2 development libraries."
             XSLT_XML_MSG
             exit 1
         fi
