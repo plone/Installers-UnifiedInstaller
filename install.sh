@@ -559,6 +559,34 @@ else
         exit 1
     }
 
+    # check to see if we've what we need to build a suitable python
+    # Abort install if no libz
+    if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
+        echo
+        echo "Unable to find libz library and headers. These are required to build Python."
+        echo "Please use your system package or port manager to install libz dev."
+        echo "(Debian/Ubuntu zlibg-dev)"
+        echo "Exiting now."
+        exit 1
+    fi
+
+    if [ "X$WITHOUT_SSL" != "Xyes" ]; then
+        if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
+            echo
+            echo "Unable to find libssl or openssl/ssl.h."
+            echo "libssl and its development headers are required for Plone."
+            echo "Please install your platform's openssl-dev package"
+            echo "and try again."
+            echo "(If your system is using an SSL other than openssl or is"
+            echo "putting the libraries/headers in an unconventional place,"
+            echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
+            echo "to specify the locations.)"
+            echo "If you want to install Plone without SSL support, specify"
+            echo "--without-ssl on the installer command line."
+            exit 1
+        fi
+    fi
+
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         # if OpenBSD, apologize and surrender
         if [ `uname` = "OpenBSD" ]; then
@@ -568,35 +596,6 @@ else
             echo "Please consider installing the Python ${WANT_PYTHON} port and re-run installer."
             exit 1
         fi
-
-        # check to see if we've what we need to build a suitable python
-        # Abort install if no libz
-        if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
-            echo
-            echo "Unable to find libz library and headers. These are required to build Python."
-            echo "Please use your system package or port manager to install libz dev."
-            echo "(Debian/Ubuntu zlibg-dev)"
-            echo "Exiting now."
-            exit 1
-        fi
-
-        if [ "X$WITHOUT_SSL" != "Xyes" ]; then
-            if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
-                echo
-                echo "Unable to find libssl or openssl/ssl.h."
-                echo "libssl and its development headers are required for Plone."
-                echo "Please install your platform's openssl-dev package"
-                echo "and try again."
-                echo "(If your system is using an SSL other than openssl or is"
-                echo "putting the libraries/headers in an unconventional place,"
-                echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
-                echo "to specify the locations.)"
-                echo "If you want to install Plone without SSL support, specify"
-                echo "--without-ssl on the installer command line."
-                exit 1
-            fi
-        fi
-
     else
         if [ "X$WITH_PYTHON" = "X" ]; then
             # try to find a Python
