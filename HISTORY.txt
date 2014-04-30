@@ -1,3 +1,13 @@
+5.0a2 - 2014-04-29
+==================
+
+- Adapt to 5.0a2
+
+- Consolidate all the version files to one. Is this a good idea?
+
+NOTE: The 5.0a# series installers are basically the 4.3.x installer. The
+final 5.0 installer will likely have many changes.
+
 4.3.3 - 2014-04-17
 ==================
 

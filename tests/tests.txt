@@ -64,7 +64,7 @@ Test a ZEO install
 
     >>> print stdout
     -etc-
-    Installing Plone 4.3.3 at -etc-
+    Installing Plone 5.0a2 at -etc-
     Plone successfully installed at -etc-
       Username: admin
       Password: admin-etc-
@@ -75,7 +75,7 @@ Test a ZEO install
 
     There should now be a buildout skeleton in zeocluster
     >>> sorted(os.listdir('%s/zeocluster' % testTarget))
-    ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'bootstrap.py', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg', 'zope-versions.cfg', 'zopeapp-versions.cfg', 'ztk-versions.cfg']
+    ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'bootstrap.py', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg']
 
     Parts should look good
     >>> sorted(os.listdir('%s/zeocluster/parts' % testTarget))
@@ -314,7 +314,7 @@ Test building Python and dependencies
 
     >>> print stdout
     -etc-
-    Installing Plone 4.3.3 at -etc-
+    Installing Plone 5.0a2 at -etc-
     Compiling and installing jpeg local libraries-etc-
     Compiling and installing readline local libraries-etc-
     Installing Python-2.7-etc-
