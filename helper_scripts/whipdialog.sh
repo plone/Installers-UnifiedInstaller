@@ -50,7 +50,7 @@ WHIPTAIL () {
     fi
 
     if [ $whipdialog == "bashme" ]; then
-        echo
+        clear
         echo "=========================================="
         echo $backtitle
         echo "------------------------------------------"
