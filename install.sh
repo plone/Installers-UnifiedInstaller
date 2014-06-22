@@ -455,6 +455,12 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
     echo "--with-python and --build-python may not be employed at the same time."
 fi
 
+whiptail_goodbye() {
+    echo
+    echo "Goodbye for now."
+    exit 0
+}
+
 if [ $USE_WHIPTAIL -eq 1 ]; then
     WHIPTAIL --title="Welcome" --yesno \
         """Welcome to the Plone Unified Installer.
@@ -467,9 +473,7 @@ For command-line options, just re-run the installer with "--help".
 
 Shall we continue?"""
     if [ $? -gt 0 ]; then
-        echo
-        echo "Goodbye for now."
-        exit 0
+        whiptail_goodbye
     fi
 
     MENU_CHOICES=( \
@@ -477,6 +481,9 @@ Shall we continue?"""
         "ZEO Cluster (best for production; requires load-balancer setup.)" \
         )
     WHIPTAIL --title="Install Type" --menu "Choose a basic configuration."
+    if [ $? -gt 0 ]; then
+        whiptail_goodbye
+    fi
     case $WHIPTAIL_RESULT in
         Standalone*)
             INSTALL_STANDALONE=1
@@ -502,28 +509,36 @@ Shall we continue?"""
             This is easy to change later.
             Clients are memory/CPU-intensive."""
             CLIENTS=WHIPTAIL_RESULT
+        if [ $? -gt 0 ]; then
+            whiptail_goodbye
+        fi
     fi
 
     WHIPTAIL --title="Install Directory" --inputbox \
-        "Installation target directory? (Leave empty for ${HOME}/Plone): "
-    PLONE_HOME="$WHIPTAIL_RESULT"
-    if [ "X$PLONE_HOME" == "X" ]; then
-        PLONE_HOME="${HOME}/Plone"
+        "Installation target directory? (Leave empty for ${TARGET}): "
+    if [ $? -gt 0 ]; then
+        whiptail_goodbye
     fi
+    if [ "X$WHIPTAIL_RESULT" != "X" ]; then
+        PLONE_HOME="$WHIPTAIL_RESULT"
+    fi
+
     WHIPTAIL --title="Password" --passwordbox \
         "Pick an administrative password. (Leave empty for random): "
     PASSWORD="$WHIPTAIL_RESULT"
     if [ "X$PASSWORD" != "X" ]; then
         PCHOICE="--password=\"$PASSWORD\""
     fi
+    if [ $? -gt 0 ]; then
+        whiptail_goodbye
+    fi
+
     WHIPTAIL --title="Continue?" --yesno """
 install.sh $METHOD \\
   --target=$PLONE_HOME $PCHOICE
     """
     if [ $? -gt 0 ]; then
-        echo
-        echo "Goodbye for now."
-        exit 0
+        whiptail_goodbye
     fi
 fi
 
