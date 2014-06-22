@@ -515,7 +515,7 @@ Shall we continue?"""
     fi
 
     WHIPTAIL --title="Install Directory" --inputbox \
-        "Installation target directory? (Leave empty for ${TARGET}): "
+        "Installation target directory? (Leave empty for ${PLONE_HOME}): "
     if [ $? -gt 0 ]; then
         whiptail_goodbye
     fi
