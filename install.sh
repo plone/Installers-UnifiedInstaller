@@ -455,21 +455,44 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
     echo "--with-python and --build-python may not be employed at the same time."
 fi
 
-if [ $INSTALL_STANDALONE -eq 0 ] && [ $INSTALL_ZEO -eq 0 ]; then
-    if [ $USE_WHIPTAIL -eq 1 ]; then
-        MENU_CHOICES=("Standalone (best for testing/development)", "ZEO Cluster (best for production)")
-        WHIPTAIL --title="Install Type" --menu "Choose a basic configuration"
-        case $WHIPTAIL_RESULT in
-            Standalone*)
-                INSTALL_STANDALONE=1
-                ;;
-            ZEO*)
-                INSTALL_ZEO=1
-                ;;
-        esac
-    else
-        usage
+if [ $USE_WHIPTAIL -eq 1 ]; then
+    MENU_CHOICES=("Standalone (best for testing/development)", "ZEO Cluster (best for production)")
+    WHIPTAIL --title="Install Type" --menu "Choose a basic configuration"
+    case $WHIPTAIL_RESULT in
+        Standalone*)
+            INSTALL_STANDALONE=1
+            METHOD=Standalone
+            ;;
+        ZEO*)
+            INSTALL_ZEO=1
+            METHOD=zeocluster
+            ;;
+    esac
+    WHIPTAIL --title="Install Directory" --inputbox \
+        "Installation target directory? (Leave empty for ${HOME}/Plone): "
+    PLONE_HOME="$WHIPTAIL_RESULT"
+    if [ "X$PLONE_HOME" == "X" ]; then
+        PLONE_HOME="${HOME}/Plone"
     fi
+    WHIPTAIL --title="Password" --passwordbox \
+        "Pick an administrative password. (Leave empty for random): "
+    PASSWORD="$WHIPTAIL_RESULT"
+    if [ "X$PASSWORD" != "X" ]; then
+        PCHOICE="--password=\"$PASSWORD\""
+    fi
+    WHIPTAIL --title="Continue?" --yesno """
+install.sh $METHOD \\
+  --target=$PLONE_HOME $PCHOICE
+    """
+    if [ $? -gt 0 ]; then
+        echo
+        echo "Goodbye for now."
+        exit 0
+    fi
+fi
+
+if [ $INSTALL_STANDALONE -eq 0 ] && [ $INSTALL_ZEO -eq 0 ]; then
+    usage
 fi
 echo
 
