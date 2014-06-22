@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Unified Plone installer build script
-# Copyright (c) 2008-2013 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2014 Plone Foundation. Licensed under GPL v 2.
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
@@ -82,6 +82,7 @@
 #   Forces a static build of libxml2 and libxslt dependencies. Requires
 #   Internet access to download components.
 
+. helper_scripts/whipdialog.sh
 
 # Path for Root install
 #
@@ -249,6 +250,10 @@ CLIENT_COUNT=2
 TEMPLATE=buildout
 WITHOUT_SSL="no"
 
+USE_WHIPTAIL=0
+if [ "X$1" == "X" ]; then
+    USE_WHIPTAIL=1
+fi
 
 for option
 do
@@ -451,7 +456,20 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
 fi
 
 if [ $INSTALL_STANDALONE -eq 0 ] && [ $INSTALL_ZEO -eq 0 ]; then
-    usage
+    if [ $USE_WHIPTAIL -eq 1 ]; then
+        MENU_CHOICES=("Standalone (best for testing/development)", "ZEO Cluster (best for production)")
+        WHIPTAIL --title="Install Type" --menu "Choose a basic configuration"
+        case $WHIPTAIL_RESULT in
+            Standalone*)
+                INSTALL_STANDALONE=1
+                ;;
+            ZEO*)
+                INSTALL_ZEO=1
+                ;;
+        esac
+    else
+        usage
+    fi
 fi
 echo
 
