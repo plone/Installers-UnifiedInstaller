@@ -456,8 +456,27 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
 fi
 
 if [ $USE_WHIPTAIL -eq 1 ]; then
-    MENU_CHOICES=("Standalone (best for testing/development)", "ZEO Cluster (best for production)")
-    WHIPTAIL --title="Install Type" --menu "Choose a basic configuration"
+    WHIPTAIL --title="Welcome" --yesno \
+        """Welcome to the Plone Unified Installer.
+
+This kit installs Plone from source in many Linux/BSD/Unix environments.
+You may use the installer via command-line arguments, or by having us
+ask you questions about major options.
+
+For command-line options, just re-run the installer with "--help".
+
+Shall we continue?"""
+    if [ $? -gt 0 ]; then
+        echo
+        echo "Goodbye for now."
+        exit 0
+    fi
+
+    MENU_CHOICES=( \
+        "Standalone (best for testing/development)" \
+        "ZEO Cluster (best for production; requires load-balancer setup.)" \
+        )
+    WHIPTAIL --title="Install Type" --menu "Choose a basic configuration."
     case $WHIPTAIL_RESULT in
         Standalone*)
             INSTALL_STANDALONE=1
@@ -468,6 +487,23 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
             METHOD=zeocluster
             ;;
     esac
+
+    if [ $INSTALL_ZEO -eq 1 ]; then
+        MENU_CHOICES=( \
+            "1" \
+            "2" \
+            "3" \
+            "4" \
+            "5" \
+            "6" \
+            )
+        WHIPTAIL --title="ZEO Clients" --menu """
+            How many ZEO clients would you like to create?
+            This is easy to change later.
+            Clients are memory/CPU-intensive."""
+            CLIENTS=WHIPTAIL_RESULT
+    fi
+
     WHIPTAIL --title="Install Directory" --inputbox \
         "Installation target directory? (Leave empty for ${HOME}/Plone): "
     PLONE_HOME="$WHIPTAIL_RESULT"
