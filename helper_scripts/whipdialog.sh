@@ -7,6 +7,7 @@ WHIPTAIL () {
     dtype=error
     scrolltext=""
     title=""
+    backtitle="Plone Unified Installer"
     for option; do
         optarg=`expr "x$option" : 'x[^=]*=\(.*\)'`
         case $option in
@@ -28,6 +29,9 @@ WHIPTAIL () {
             --choices )
                 choices="$optarg"
                 ;;
+            --backtitle=*)
+                backtitle="$optarg"
+                ;;
             *)
                 prompt="$option"
                 ;;
@@ -48,6 +52,8 @@ WHIPTAIL () {
     if [ $whipdialog == "bashme" ]; then
         echo
         echo "=========================================="
+        echo $backtitle
+        echo "------------------------------------------"
         echo "$title"
         echo "=========================================="
         case "$dtype" in
@@ -97,12 +103,13 @@ WHIPTAIL () {
             for item in "${MENU_CHOICES[@]}"; do
                 DCHOICES=("${DCHOICES[@]}" "$item" "")
             done
-            WHIPTAIL_RESULT=$($whipdialog --title "$title" \
+            WHIPTAIL_RESULT=$($whipdialog --title "$title" --backtitle "$backtitle" \
                 $dtype "$prompt" $height $width \
                 ${#MENU_CHOICES[@]} "${DCHOICES[@]}" 3>&1 1>&2 2>&3)
         else
-            WHIPTAIL_RESULT=$($whipdialog --title "$title" $dtype "$prompt" \
-                $height $width 3>&1 1>&2 2>&3)
+            WHIPTAIL_RESULT=$($whipdialog --title "$title" --backtitle "$backtitle" \
+                $dtype "$prompt" $height $width \
+                3>&1 1>&2 2>&3)
         fi
     fi
     return $?
