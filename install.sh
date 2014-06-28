@@ -82,7 +82,6 @@
 #   Forces a static build of libxml2 and libxslt dependencies. Requires
 #   Internet access to download components.
 
-. helper_scripts/whipdialog.sh
 
 # Path for Root install
 #
@@ -166,69 +165,13 @@ CWD="$PWD"
 PKG="$CWD/$PACKAGES_DIR"
 
 . helper_scripts/shell_utils.sh
+. helper_scripts/messages.sh
 
 usage () {
-    echo
-    echo "Usage: [sudo] `basename $0` [options] standalone|zeo"
-    echo
-    echo "Install methods available:"
-    echo "   standalone - install standalone zope instance"
-    echo "   zeo        - install zeo cluster"
-    echo
-    echo "Use sudo (or run as root) for server-mode install."
-    echo
-    echo "Options (see top of install.sh for complete list):"
-    echo
-    echo "--with-python=/full/path/to/python-${WANT_PYTHON}"
-    echo "  Path to the Python-${WANT_PYTHON} that you wish to use with Plone."
-    echo "  virtualenv will be used to isolate the install."
-    echo
-    echo "--build-python"
-    echo "  If you do not have a suitable Python available, the installer will"
-    echo "  build one for you if you set this option. Requires Internet access"
-    echo "  to download Python source."
-    echo
-    echo "--password=InstancePassword"
-    echo "  If not specified, a random password will be generated."
-    echo
-    echo "--target=pathname"
-    echo "  Use to specify top-level path for installs. Plone instances"
-    echo "  and Python will be built inside this directory"
-    echo "  (default is $PLONE_HOME)"
-    echo
-    echo "--clients=client-count"
-    echo "  Use with the "zeo" install method to specify the number of Zope"
-    echo "  clients you wish to create. Default is 2."
-    echo
-    echo "--instance=instance-name"
-    echo "  Use to specify the name of the operating instance to be created."
-    echo "  This will be created inside the target directory."
-    echo "  Default is 'zinstance' for standalone, 'zeocluster' for ZEO."
-    echo
-    echo "--daemon-user=user-name"
-    echo "  In a server-mode install, sets the effective user for running the"
-    echo "  instance. Default is 'plone_daemon'. Ignored for non-server-mode installs."
-    echo
-    echo "--owner=owner-name"
-    echo "  In a server-mode install, sets the overall owner of the installation."
-    echo "  Default is 'buildout_user'. This is the user id that should be employed"
-    echo "  to run buildout or make src or product changes."
-    echo "  Ignored for non-server-mode installs."
-    echo
-    echo "--group=group-name"
-    echo "  In a server-mode install, sets the effective group for the daemon and"
-    echo "  buildout users. Default is 'plone_group'."
-    echo "  Ignored for non-server-mode installs."
-    echo
-    echo "--template=template-name"
-    echo "  Specifies the buildout.cfg template filename. The template file must"
-    echo "  be in the ${TEMPLATE_DIR} subdirectory. Defaults to buildout.cfg."
-    echo
-    echo "--static-lxml"
-    echo "  Forces a static built of libxml2 and libxslt dependencies. Requires"
-    echo "  Internet access to download components."
-    echo
-    echo "Read the top of install.sh for more install options."
+    eval "echo \"$USAGE_MESSAGE\""
+    if [ "$1" ]; then
+        eval "echo \"***\" \"$@\""
+    fi
     exit 1
 }
 
@@ -251,7 +194,8 @@ TEMPLATE=buildout
 WITHOUT_SSL="no"
 
 USE_WHIPTAIL=0
-if [ "X$1" == "X" ]; then
+if [ "$BASH_VERSION" ] && [ "X$1" == "X" ]; then
+    . helper_scripts/whipdialog.sh
     USE_WHIPTAIL=1
 fi
 
@@ -271,9 +215,8 @@ do
         --build-python | --build-python=* )
             if [ "$optarg" ]; then
                 BUILD_PYTHON="$optarg"
-                if [ $BUILD_PYTHON != 'yes'] && [ $BUILD_PYTHON != 'no']; then
-                    echo "Bad option for --build-python"
-                    usage
+                if [ $BUILD_PYTHON != 'yes' ] && [ $BUILD_PYTHON != 'no' ]; then
+                    usage $BAD_BUILD_PYTHON
                 fi
             else
                 BUILD_PYTHON="yes"
@@ -313,8 +256,7 @@ do
             ;;
 
         --user=* | -user=* )
-            echo "Did you want '--daemon-user' instead of '--user'?"
-            usage
+            usage $BAD_USER_OPTION
             ;;
 
         --daemon-user=* | -daemon-user=* )
@@ -362,8 +304,7 @@ do
                 TEMPLATE="$optarg"
                 if [ ! -f "${TEMPLATE_DIR}/$TEMPLATE" ] && \
                    [ ! -f "${TEMPLATE_DIR}/${TEMPLATE}.cfg" ]; then
-                   echo "Unable to find $TEMPLATE or ${TEMPLATE}.cfg in $TEMPLATE_DIR"
-                   usage
+                   usage "$BAD_TEMPLATE"
                 fi
             else
                 usage
@@ -438,8 +379,7 @@ do
                     INSTALL_STANDALONE=1
                     ;;
                 none )
-                    echo No template selected. Will use standalone template
-                    echo for convenience, but not run bin/buildout.
+                    echo "$NO_METHOD_SELECTED"
                     INSTALL_STANDALONE=1
                     RUN_BUILDOUT=0
                     ;;
@@ -452,36 +392,28 @@ do
 done
 
 if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
-    echo "--with-python and --build-python may not be employed at the same time."
+    echo "$CONTRADICTORY_PYTHON_COMMANDS"
 fi
 
 whiptail_goodbye() {
-    echo
-    echo "Goodbye for now."
+    echo "$POLITE_GOODBYE"
     exit 0
 }
 
 if [ $USE_WHIPTAIL -eq 1 ]; then
-    WHIPTAIL --title="Welcome" --yesno \
-        """Welcome to the Plone Unified Installer.
 
-This kit installs Plone from source in many Linux/BSD/Unix environments.
-You may use the installer via command-line arguments, or by having us
-ask you questions about major options.
-
-For command-line options, just re-run the installer with "--help".
-
-Shall we continue?"""
-    if [ $? -gt 0 ]; then
+    if ! WHIPTAIL \
+        --title="$WELCOME" \
+        --yesno \
+        "$DIALOG_WELCOME"; then
         whiptail_goodbye
     fi
 
-    MENU_CHOICES=( \
-        "Standalone (best for testing/development)" \
-        "ZEO Cluster (best for production; requires load-balancer setup.)" \
-        )
-    WHIPTAIL --title="Install Type" --menu "Choose a basic configuration."
-    if [ $? -gt 0 ]; then
+    if ! WHIPTAIL \
+        --title="$INSTALL_TYPE_MSG" \
+        --menu \
+        --choices="$INSTALL_TYPE_CHOICES" \
+        "$CHOOSE_CONFIG_MSG"; then
         whiptail_goodbye
     fi
     case $WHIPTAIL_RESULT in
@@ -496,47 +428,49 @@ Shall we continue?"""
     esac
 
     if [ $INSTALL_ZEO -eq 1 ]; then
-        MENU_CHOICES=( \
-            "1" \
-            "2" \
-            "3" \
-            "4" \
-            "5" \
-            "6" \
-            )
-        WHIPTAIL --title="ZEO Clients" --menu """
-            How many ZEO clients would you like to create?
-            This is easy to change later.
-            Clients are memory/CPU-intensive."""
-            CLIENTS=WHIPTAIL_RESULT
-        if [ $? -gt 0 ]; then
+        if ! WHIPTAIL \
+            --title="$CHOOSE_CLIENTS_TITLE" \
+            --menu \
+            --choices="$CLIENT_CHOICES" \
+            "$CHOOSE_CLIENTS_PROMPT" ; then
             whiptail_goodbye
+        fi
+        CLIENTS=$WHIPTAIL_RESULT
+        if [ "X$CLIENTS" != "X" ]; then
+            CCHOICE="--clients=$CLIENTS"
         fi
     fi
 
-    WHIPTAIL --title="Install Directory" --inputbox \
-        "Installation target directory? (Leave empty for ${PLONE_HOME}): "
-    if [ $? -gt 0 ]; then
+    # hack alert -- nasty quoting
+    INSTALL_DIR_PROMPT=$(eval "echo \"$INSTALL_DIR_PROMPT\"")
+    if ! WHIPTAIL \
+        --title="$INSTALL_DIR_TITLE" \
+        --inputbox \
+        "$INSTALL_DIR_PROMPT"; then
         whiptail_goodbye
     fi
     if [ "X$WHIPTAIL_RESULT" != "X" ]; then
         PLONE_HOME="$WHIPTAIL_RESULT"
     fi
 
-    WHIPTAIL --title="Password" --passwordbox \
-        "Pick an administrative password. (Leave empty for random): "
+
+    if ! WHIPTAIL \
+        --title="$PASSWORD_TITLE" \
+        --passwordbox \
+        "$PASSWORD_PROMPT"; then
+        whiptail_goodbye
+    fi
     PASSWORD="$WHIPTAIL_RESULT"
     if [ "X$PASSWORD" != "X" ]; then
         PCHOICE="--password=\"$PASSWORD\""
     fi
-    if [ $? -gt 0 ]; then
-        whiptail_goodbye
-    fi
 
-    WHIPTAIL --title="Continue?" --yesno """
+    WHIPTAIL \
+        --title="$Q_CONTINUE" \
+        --yesno \
+        "$CONTINUE_PROMPT
 install.sh $METHOD \\
-  --target=$PLONE_HOME $PCHOICE
-    """
+    --target=\"$PLONE_HOME\" $PCHOICE $CCHOICE"
     if [ $? -gt 0 ]; then
         whiptail_goodbye
     fi

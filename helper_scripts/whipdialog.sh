@@ -1,4 +1,3 @@
-#!/bin/sh
 # Wrapper for whiptail/dialog/bash-console to display the interface on console
 
 WHIPTAIL () {
@@ -7,6 +6,7 @@ WHIPTAIL () {
     dtype=error
     scrolltext=""
     title=""
+    CHOICES=()
     backtitle="Plone Unified Installer"
     for option; do
         optarg=`expr "x$option" : 'x[^=]*=\(.*\)'`
@@ -26,8 +26,11 @@ WHIPTAIL () {
             --scrolltext )
                 scrolltext=$option
                 ;;
-            --choices )
-                choices="$optarg"
+            --choices=*)
+                OIFS="$IFS"
+                IFS="#"
+                CHOICES=($optarg)
+                IFS="$OIFS"
                 ;;
             --backtitle=*)
                 backtitle="$optarg"
@@ -75,7 +78,7 @@ WHIPTAIL () {
                 ;;
             --menu)
                 echo $prompt
-                select answer in "${MENU_CHOICES[@]}"; do
+                select answer in "${CHOICES[@]}"; do
                     WHIPTAIL_RESULT="$answer"
                     break
                 done
@@ -100,12 +103,12 @@ WHIPTAIL () {
         if [ "$dtype" == "--menu" ]; then
             # double the choices
             DCHOICES=()
-            for item in "${MENU_CHOICES[@]}"; do
+            for item in "${CHOICES[@]}"; do
                 DCHOICES=("${DCHOICES[@]}" "$item" "")
             done
             WHIPTAIL_RESULT=$($whipdialog --title "$title" --backtitle "$backtitle" \
                 $dtype "$prompt" $height $width \
-                ${#MENU_CHOICES[@]} "${DCHOICES[@]}" 3>&1 1>&2 2>&3)
+                ${#CHOICES[@]} "${DCHOICES[@]}" 3>&1 1>&2 2>&3)
         else
             WHIPTAIL_RESULT=$($whipdialog --title "$title" --backtitle "$backtitle" \
                 $dtype "$prompt" $height $width \
