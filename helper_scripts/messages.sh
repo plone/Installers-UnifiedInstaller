@@ -96,7 +96,7 @@ This kit installs Plone from source in many Linux/BSD/Unix environments.
 You may use the installer via command-line arguments, or by having us
 ask you questions about major options.
 
-For command-line options, just re-run the installer with \"--help\".
+For command-line options, just re-run the installer with "--help".
 
 Shall we continue?'
 
