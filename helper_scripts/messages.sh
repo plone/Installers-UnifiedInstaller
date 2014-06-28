@@ -1,4 +1,4 @@
-# Installer messages. Not that these are typically single-quoted and
+# Installer messages. Note that these are typically single-quoted and
 # sometimes contain variables for expansion via eval.
 # So, all characters meaningful to the shell will need
 # escaping if they're not meant to be interpreted.
@@ -124,3 +124,18 @@ CONTINUE_PROMPT=\
 "
 Continue with the command line:
 "
+
+NO_GCC_MSG="
+Error: gcc is required for the install.
+See README.txt for dependencies."
+
+PREFLIGHT_FAILED_MSG="
+Unable to run preflight check. Basic build tools are missing.
+You may get more information about what went wrong by running
+sh ./preflight
+Aborting installation.
+"
+
+IGNORING_WITH_PYTHON="We already have a Python environment for this target; ignoring --with-python."
+IGNORING_BUILD_PYTHON="We already have a Python environment for this target; ignoring --build-python."
+

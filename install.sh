@@ -535,9 +535,7 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if no cc
     which cc > /dev/null
     if [ $? -gt 0 ]; then
-        echo
-        echo "Error: gcc is required for the install."
-        echo "See README.txt for dependencies."
+        echo "$NO_GCC_MSG"
         exit 1
     fi
 
@@ -550,12 +548,7 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     fi
     sh ./preflight -q
     if [ $? -gt 0 ] || [ ! -f "buildenv.sh" ]; then
-        echo ""
-        echo "Unable to run preflight check. Basic build tools are missing."
-        echo "You may get more information about what went wrong by running"
-        echo "sh ./preflight"
-        echo "Aborting installation."
-        echo ""
+        echo "$PREFLIGHT_FAILED_MSG"
         exit 1
     fi
     # suck in the results as shell variables that we can test.
@@ -565,11 +558,11 @@ fi
 if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
     HAVE_PYTHON=yes
     if [ "X$WITH_PYTHON" != "X" ]; then
-        echo "We already have a Python environment for this target; ignoring --with-python."
-        WITH_PYTHON=''
+        echo "$IGNORING_WITH_PYTHON"
+	WITH_PYTHON=''
     fi
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
-        echo "We already have a Python environment for this target; ignoring --build-python."
+        echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
 else
