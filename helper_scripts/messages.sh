@@ -139,3 +139,9 @@ Aborting installation.
 IGNORING_WITH_PYTHON="We already have a Python environment for this target; ignoring --with-python."
 IGNORING_BUILD_PYTHON="We already have a Python environment for this target; ignoring --build-python."
 
+SUDO_REQUIRED_MSG="sudo utility is required to do a server-mode install."
+
+MISSING_PARTS_MSG='
+The install script directory must contain
+$PACKAGES_DIR and $HSCRIPTS_DIR subdirectories.
+' 

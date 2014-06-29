@@ -484,8 +484,8 @@ echo
 
 if [ $ROOT_INSTALL -eq 1 ]; then
     if ! which sudo > /dev/null; then
-        echo "sudo utility is required to do a server-mode install."
-        echo
+        echo $SUDO_REQUIRED_MSG
+	echo
         exit 1
     fi
     SUDO="sudo -u $BUILDOUT_USER -E"
@@ -525,10 +525,7 @@ fi
 if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if this script is not run from within it's parent folder
     if [ ! -x "$PACKAGES_DIR" ] || [ ! -x "$HSCRIPTS_DIR" ]; then
-        echo ""
-        echo "The install script directory must contain"
-        echo "$PACKAGES_DIR and $HSCRIPTS_DIR subdirectories."
-        echo ""
+	eval "echo \"$MISSING_PARTS_MSG\""
         exit 1
     fi
 
