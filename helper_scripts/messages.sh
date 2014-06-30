@@ -144,4 +144,51 @@ SUDO_REQUIRED_MSG="sudo utility is required to do a server-mode install."
 MISSING_PARTS_MSG='
 The install script directory must contain
 $PACKAGES_DIR and $HSCRIPTS_DIR subdirectories.
-' 
+'
+
+NEED_INSTALL_PYTHON_MSG='
+Please do one of the following:
+1) Install python${WANT_PYTHON} as a system "dev" package\;
+2) Use --with-python=... option to point the installer to a useable python\; or
+3) Use the --build-python option to tell the installer to build Python.
+'
+
+NEED_INSTALL_LIBZ_MSG="
+
+Unable to find libz library and headers. These are required to build Python.
+Please use your system package or port manager to install libz dev.
+(Debian/Ubuntu zlibg-dev)
+Exiting now.
+"
+
+NEED_INSTALL_SSL_MSG="
+Unable to find libssl or openssl/ssl.h.
+libssl and its development headers are required for Plone.
+Please install your platform's openssl-dev package
+and try again.
+(If your system is using an SSL other than openssl or is
+putting the libraries/headers in an unconventional place,
+you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables
+to specify the locations.)
+If you want to install Plone without SSL support, specify
+--without-ssl on the installer command line.
+"
+
+SORRY_OPENSSL='
+***Aborting***
+Sorry, but the Unified Installer cannot build a Python ${WANT_PYTHON} for OpenBSD.
+There are too many platform-specific patches required.
+Please consider installing the Python ${WANT_PYTHON} port and re-run installer.
+'
+
+PYTHON_NOT_FOUND='Unable to find python${WANT_PYTHON} on system exec path.'
+
+WITH_PYTHON_IS_OK='$WITH_PYTHON looks OK. We will use it.'
+
+WITH_PYTHON_IS_BAD='
+$WITH_PYTHON does not meet the requirements for Zope/Plone.
+'
+
+WITH_PYTHON_NOT_EX='Error: $WITH_PYTHON is not an executable. It should be the filename of a Python binary.'
+
+TESTING_WITH_PYTHON='Testing $WITH_PYTHON for Zope/Plone requirements....'

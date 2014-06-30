@@ -567,38 +567,20 @@ else
 
     # shared message for need python
     python_usage () {
-        echo
-        echo "Please do one of the following:"
-        echo "1) Install python${WANT_PYTHON} as a system 'dev' package;"
-        echo "2) Use --with-python=... option to point the installer to a useable python; or"
-        echo "3) Use the --build-python option to tell the installer to build Python."
+        eval "echo \"$NEED_INSTALL_PYTHON_MSG\""
         exit 1
     }
 
     # check to see if we've what we need to build a suitable python
     # Abort install if no libz
     if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
-        echo
-        echo "Unable to find libz library and headers. These are required to build Python."
-        echo "Please use your system package or port manager to install libz dev."
-        echo "(Debian/Ubuntu zlibg-dev)"
-        echo "Exiting now."
+        echo $NEED_INSTALL_LIBZ_MSG
         exit 1
     fi
 
     if [ "X$WITHOUT_SSL" != "Xyes" ]; then
         if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
-            echo
-            echo "Unable to find libssl or openssl/ssl.h."
-            echo "libssl and its development headers are required for Plone."
-            echo "Please install your platform's openssl-dev package"
-            echo "and try again."
-            echo "(If your system is using an SSL other than openssl or is"
-            echo "putting the libraries/headers in an unconventional place,"
-            echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
-            echo "to specify the locations.)"
-            echo "If you want to install Plone without SSL support, specify"
-            echo "--without-ssl on the installer command line."
+            echo $NEED_INSTALL_SSL_MSG
             exit 1
         fi
     fi
@@ -606,10 +588,7 @@ else
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         # if OpenBSD, apologize and surrender
         if [ `uname` = "OpenBSD" ]; then
-            echo "\n***Aborting***"
-            echo "Sorry, but the Unified Installer can't build a Python ${WANT_PYTHON} for OpenBSD."
-            echo "There are way too many platform-specific patches required."
-            echo "Please consider installing the Python ${WANT_PYTHON} port and re-run installer."
+            eval "echo\"$SORRY_OPENSSL\""
             exit 1
         fi
     else
@@ -617,27 +596,26 @@ else
             # try to find a Python
             WITH_PYTHON=`which python${WANT_PYTHON}`
             if [ $? -gt 0 ] || [ "X$WITH_PYTHON" = "X" ]; then
-                echo "Unable to find python${WANT_PYTHON} on system exec path."
+                eval "echo \"$PYTHON_NOT_FOUND\""
                 python_usage
             fi
         fi
         # check our python
         if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
-            echo "Testing $WITH_PYTHON for Zope/Plone requirements...."
+            eval "echo \"$TESTING_WITH_PYTHON\""
             if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-                echo "$WITH_PYTHON looks OK. We'll try to use it."
+                eval "echo \"$WITH_PYTHON_IS_OK\""
                 echo
                 # if the supplied Python is adequate, we don't need to build libraries
                 INSTALL_ZLIB=no
                 INSTALL_READLINE=no
                 WITHOUT_SSL="yes"
             else
-                echo
-                echo "$WITH_PYTHON does not meet the requirements for Zope/Plone."
+                eval "echo \"$WITH_PYTHON_IS_BAD\""
                 python_usage
             fi
         else
-            echo "Error: '$WITH_PYTHON' is not an executable. It should be the filename of a Python binary."
+            eval "echo \"$WITH_PYTHON_NOT_EX\""
             python_usage
         fi
     fi
