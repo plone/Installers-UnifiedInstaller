@@ -209,7 +209,7 @@ MISSING_BUNZIP2="Note: bunzip2 is required for the install. Exiting now."
 
 MISSING_MINIMUM_XSLT='
 Plone installation requires the development versions of libxml2 and libxslt.
-libxml2 must be version $NEED_XML2 or greater; libxslt must be $NEED_XSLT or greater.
+libxml2 must be version $NEED_XML2 or greater\; libxslt must be $NEED_XSLT or greater.
 Ideally, you should install these as dev package libraries before running install.sh.
 If -- and only if -- these packages are not available for your platform, you may
 try adding --static-lxml=yes to your install.sh command line to force a
@@ -276,7 +276,7 @@ Check messages and the install.log to find out what went wrong.
 See the "Built Python does not meet requirements" section of
 README.txt for more information about this error.'
 
-FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE; skipping step.'
+FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE\; skipping step.'
 
 UNPACKING_BUILDOUT_CACHE='Unpacking buildout cache to $BUILDOUT_CACHE'
 

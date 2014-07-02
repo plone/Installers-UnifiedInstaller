@@ -165,7 +165,18 @@ CWD="$PWD"
 PKG="$CWD/$PACKAGES_DIR"
 
 . helper_scripts/shell_utils.sh
-. helper_scripts/messages.sh
+
+# Add message translations below:
+case $LANG in
+    # es_*)
+    #     . helper_scripts/messages_es.sh
+    #     ;;
+    *)
+        # default to English
+        . helper_scripts/messages_en.sh
+        ;;
+esac
+
 
 usage () {
     eval "echo \"$USAGE_MESSAGE\""
