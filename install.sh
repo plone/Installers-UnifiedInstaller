@@ -631,49 +631,49 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if no gcc
     if [ "x$CC" = "x" ] ; then
         echo
-        echo "Note: gcc is required for the install. Exiting now."
+        echo $MISSING_GCC
         exit 1
     fi
 
     # Abort install if no g++
     if [ "x$CXX" = "x" ] ; then
         echo
-        echo "Note: g++ is required for the install. Exiting now."
+        echo $MISSING_GPP
         exit 1
     fi
 
     # Abort install if no make
     if [ "X$have_make" != "Xyes" ] ; then
         echo
-        echo "Note: make is required for the install. Exiting now."
+        echo $MISSING_MAKE
         exit 1
     fi
 
     # Abort install if no tar
     if [ "X$have_tar" != "Xyes" ] ; then
         echo
-        echo "Note: gnu tar is required for the install. Exiting now."
+        echo $MISSING_TAR
         exit 1
     fi
 
     # Abort install if no patch
     if [ "X$have_patch" != "Xyes" ] ; then
         echo
-        echo "Note: gnu patch program is required for the install. Exiting now."
+        echo $MISSING_PATCH
         exit 1
     fi
 
     # Abort install if no gunzip
     if [ "X$have_gunzip" != "Xyes" ] ; then
         echo
-        echo "Note: gunzip is required for the install. Exiting now."
+        echo $MISSING_GUNZIP
         exit 1
     fi
 
     # Abort install if no bunzip2
     if [ "X$have_bunzip2" != "Xyes" ] ; then
         echo
-        echo "Note: bunzip2 is required for the install. Exiting now."
+        echo $MISSING_BUNZIP2
         exit 1
     fi
 
@@ -681,36 +681,28 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         # check for libxml2 / libxslt
 
         XSLT_XML_MSG () {
-            echo
-            echo "Plone installation requires the development versions of libxml2 and libxslt."
-            echo "libxml2 must be version $NEED_XML2 or greater; libxslt must be $NEED_XSLT or greater."
-            echo "Ideally, you should install these as dev package libraries before running install.sh."
-            echo "If -- and only if -- these packages are not available for your platform, you may"
-            echo "try adding --static-lxml=yes to your install.sh command line to force a"
-            echo "local, static build of these libraries. This will require Internet access for the"
-            echo "installer to download the extra source"
-            echo "Installation aborted."
+            eval "echo \"$MISSING_MINIMUM_XSLT\""
         }
 
         if [ "x$XSLT_CONFIG" = "x" ]; then
             echo
-            echo "Unable to find libxslt development libraries."
+            echo $MISSING_XML2_DEV
             XSLT_XML_MSG
             exit 1
         fi
         if [ "x$XML2_CONFIG" = "x" ]; then
             echo
-            echo "Unable to find libxml2 development libraries."
+            echo $MISSING_XSLT_DEV
             XSLT_XML_MSG
             exit 1
         fi
         if ! config_version xml2 $NEED_XML2; then
-            echo "We need development version $NEED_XML2 of libxml2. Not found."
+            eval "echo \"$BAD_XML2_VERSION\""
             XSLT_XML_MSG
             exit 1
         fi
         if ! config_version xslt $NEED_XSLT; then
-            echo "We need development version $NEED_XSLT of libxslt. Not found."
+            eval "echo \"$BAD_XSLT_VERSION\""
             XSLT_XML_MSG
             exit 1
         fi
@@ -740,11 +732,9 @@ fi
 ######################################
 # Pre-install messages
 if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Root install method chosen. Will install for use by users:"
-    echo "  ZEO & Client Daemons:      $DAEMON_USER"
-    echo "  Code Resources & buildout: $BUILDOUT_USER"
+    eval "echo \"$ROOT_INSTALL_CHOSEN\""
 else
-    echo "Rootless install method chosen. Will install for use by system user $USER"
+    eval "echo \"$ROOTLESS_INSTALL_CHOSEN\""
 fi
 echo
 
@@ -808,24 +798,20 @@ if [ -f "$INSTALL_LOG" ]; then
 fi
 touch "$INSTALL_LOG" 2> /dev/null
 if [ $? -gt 0 ]; then
-    echo "Unable to write to ${INSTALL_LOG}; detailed log will go to stdout."
+    eval "echo \"$CANNOT_WRITE_LOG\""
     INSTALL_LOG="/dev/stdout"
 else
-    echo "Detailed installation log being written to $INSTALL_LOG"
-    echo "Detailed installation log" > "$INSTALL_LOG"
-    echo "Starting at `date`" >> "$INSTALL_LOG"
+    eval "echo \"$LOGGING_MSG\""
+    echo "Detailed installation log" > "$INSTALL_LOG
+    echo "Starting at `date`" >> "$INSTALL_LOG
 fi
 seelog () {
-    echo
-    echo "Installation has failed."
-    echo "See the detailed installation log at $INSTALL_LOG"
-    echo "to determine the cause."
+    eval "echo \"$SEE_LOG_EXIT_MSG\""
     exit 1
 }
 
 
-echo "Installing Plone ${FOR_PLONE} at $PLONE_HOME"
-echo ""
+eval "echo \"$INSTALLING_NOW\""
 
 
 #######################################
@@ -852,10 +838,7 @@ if [ ! -x "$PLONE_HOME" ]; then
     mkdir "$PLONE_HOME"
     # normalize $PLONE_HOME so we can use it in prefixes
     if [ $? -gt 0 ] || [ ! -x "$PLONE_HOME" ]; then
-        echo "Unable to create $PLONE_HOME"
-        echo "Please check rights and pathnames."
-        echo
-        echo "Installation has failed."
+        eval "echo \"$CANNOT_CREATE_HOME\""
         exit 1
     fi
     cd "$PLONE_HOME"
@@ -891,7 +874,7 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     INSTANCE_HOME=$RINSTANCE_HOME
 fi
 if [ -x "$INSTANCE_HOME" ]; then
-    echo "Instance target $INSTANCE_HOME already exists; aborting install."
+    eval "echo \"$INSTANCE_HOME_EXISTS\""
     exit 1
 fi
 
@@ -913,13 +896,13 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     cd "$PKG"
     untar $VIRTUALENV_TB
     cd $VIRTUALENV_DIR
-    echo "Creating python virtual environment, no site packages, no setuptools."
+    echo $CREATING_VIRTUALENV
     "$WITH_PYTHON" virtualenv.py --no-setuptools "$PY_HOME"
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
     PY=$PY_HOME/bin/python
     if [ ! -x "$PY" ]; then
-        echo "\nFailed to create virtual environment for $WITH_PYTHON"
+        eval "echo \"$VIRTUALENV_CREATION_FAILED\""
         exit 1
     fi
     cd "$PY_HOME"/bin
@@ -929,11 +912,7 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     fi
     cd "$CWD"
     if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-        echo
-        echo "Python created with virtualenv no longer passes baseline"
-        echo "tests."
-        echo "You may need to omit --with-python and let the Unified Installer"
-        echo "build its own Python. "
+        echo $VIRTUALENV_BAD
         exit 1
     fi
 else # use already-placed python or build one
@@ -974,7 +953,7 @@ if [ ! -x "$PY" ]; then
     # download python tarball if necessary
     cd "$PKG"
     if [ ! -f $PYTHON_TB ]; then
-        echo "Downloading Python source from $PYTHON_URL"
+        eval "echo \"$DOWNLOADING_PYTHON\""
         download $PYTHON_URL $PYTHON_TB $PYTHON_MD5
     fi
     cd "$CWD"
@@ -982,15 +961,9 @@ if [ ! -x "$PY" ]; then
     . helper_scripts/build_python.sh
 
     if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-        echo "Python build looks OK."
+        echo $PYTHON_BUILD_OK
     else
-        echo
-        echo "***Aborting***"
-        echo "The built Python does not meet the requirements for Zope/Plone."
-        echo "Check messages and the install.log to find out what went wrong."
-        echo
-        echo "See the 'Built Python does not meet requirements' section of"
-        echo "README.txt for more information about this error."
+        echo $PYTHON_BUILD_BAD
         exit 1
     fi
 fi
@@ -1008,9 +981,9 @@ fi
 
 if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     if [ -x "$BUILDOUT_CACHE" ]; then
-        echo "Found existing buildout cache at $BUILDOUT_CACHE; skipping step."
+        eval "echo \"$FOUND_BUILDOUT_CACHE\""
     else
-        echo "Unpacking buildout cache to $BUILDOUT_CACHE"
+        eval "echo \"$UNPACKING_BUILDOUT_CACHE\""
         cd $PLONE_HOME
         untar "${PKG}/buildout-cache.tar.bz2"
         # # compile .pyc files in cache
@@ -1018,7 +991,7 @@ if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
         # "$PY" "$PLONE_HOME"/Python*/lib/python*/compileall.py "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
     fi
     if [ ! -x "$BUILDOUT_CACHE"/eggs ]; then
-        echo "Buildout cache unpack failed. Unable to continue."
+        echo $BUILDOUT_CACHE_UNPACK_FAILED
         seelog
         exit 1
     fi
@@ -1085,11 +1058,11 @@ $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--template=$TEMPLATE" \
     "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
 if [ $? -gt 0 ]; then
-    echo "Buildout failed. Unable to continue"
+    echo $BUILDOUT_FAILED
     seelog
     exit 1
 fi
-echo "Buildout completed"
+echo $BUILDOUT_SUCCESS
 
 if [ $ROOT_INSTALL -eq 0 ]; then
     # for non-root installs, restrict var access.
@@ -1111,32 +1084,16 @@ if [ -d "$PLONE_HOME" ]; then
         echo " "
         echo "#####################################################################"
         if [ $RUN_BUILDOUT -eq 1 ]; then
-            echo "######################  Installation Complete  ######################"
-            echo " "
-            echo "Plone successfully installed at $PLONE_HOME"
-            echo "See $RMFILE"
-            echo "for startup instructions"
-            echo " "
+            eval "echo \"$INSTALL_COMPLETE\""
             cat $PWFILE
         else
-            echo "Buildout was skipped at your request, but the installation is"
-            echo "otherwise complete and may be found at $PLONE_HOME"
+            eval "echo \"$BUILDOUT_SKIPPED_OK\""
         fi
-        echo " "
-        echo " "
-        echo "- If you need help, ask the mailing lists or #plone on irc.freenode.net."
-        echo "- The live support channel also exists at http://plone.org/chat"
-        echo "- You can read/post to the lists via http://plone.org/forums"
-        echo " "
-        echo "- Submit feedback and report errors at http://dev.plone.org/plone"
-        echo '(For install problems, specify component "Installer (Unified)")'
-        echo " "
+        echo $NEED_HELP_MSG
     fi
     echo "Finished at `date`" >> "$INSTALL_LOG"
 else
-    echo "There were errors during the install.  Please read readme.txt and try again."
-    echo "To report errors with the installer, visit http://dev.plone.org/plone"
-    echo 'and specify component "Installer (Unified).'
+    eval "echo \"$REPORT_ERRORS_MSG\""
     exit 1
 fi
 

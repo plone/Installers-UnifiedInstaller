@@ -192,3 +192,126 @@ $WITH_PYTHON does not meet the requirements for Zope/Plone.
 WITH_PYTHON_NOT_EX='Error: $WITH_PYTHON is not an executable. It should be the filename of a Python binary.'
 
 TESTING_WITH_PYTHON='Testing $WITH_PYTHON for Zope/Plone requirements....'
+
+MISSING_GCC="Note: gcc is required for the install. Exiting now."
+
+MISSING_GPP="Note: g++ is required for the install. Exiting now."
+
+MISSING_MAKE="Note: make is required for the install. Exiting now."
+
+MISSING_TAR="Note: gnu tar is required for the install. Exiting now."
+
+MISSING_PATCH="Note: gnu patch program is required for the install. Exiting now."
+
+MISSING_GUNZIP="Note: gunzip is required for the install. Exiting now."
+
+MISSING_BUNZIP2="Note: bunzip2 is required for the install. Exiting now."
+
+MISSING_MINIMUM_XSLT='
+Plone installation requires the development versions of libxml2 and libxslt.
+libxml2 must be version $NEED_XML2 or greater; libxslt must be $NEED_XSLT or greater.
+Ideally, you should install these as dev package libraries before running install.sh.
+If -- and only if -- these packages are not available for your platform, you may
+try adding --static-lxml=yes to your install.sh command line to force a
+local, static build of these libraries. This will require Internet access for the
+installer to download the extra source.
+Installation aborted.'
+
+MISSING_XSLT_DEV="Unable to find libxslt development libraries."
+
+MISSING_XML2_DEV="Unable to find libxml2 development libraries."
+
+BAD_XML2_VER='We need development version $NEED_XML2 of libxml2. Not found.'
+
+BAD_XSLT_VER='We need development version $NEED_XSLT of libxslt. Not found.'
+
+ROOT_INSTALL_CHOSEN='
+Root install method chosen. Will install for use by users:
+  ZEO & Client Daemons:      $DAEMON_USER
+  Code Resources & buildout: $BUILDOUT_USER'
+
+ROOTLESS_INSTALL_CHOSEN='Rootless install method chosen. Will install for use by system user $USER'
+
+CANNOT_WRITE_LOG='Unable to write to ${INSTALL_LOG}\; detailed log will go to stdout.'
+
+LOGGING_MSG='
+Detailed installation log being written to $INSTALL_LOG'
+
+SEE_LOG_EXIT_MSG='
+Installation has failed.
+See the detailed installation log at $INSTALL_LOG
+to determine the cause.'
+
+INSTALLING_NOW='Installing Plone ${FOR_PLONE} at $PLONE_HOME
+'
+
+CANNOT_CREATE_HOME='
+Unable to create $PLONE_HOME
+Please check rights and pathnames.
+
+Installation has failed.
+'
+
+INSTANCE_HOME_EXISTS='Instance target $INSTANCE_HOME already exists\; aborting install.'
+
+CREATING_VIRTUALENV="Creating python virtual environment, no site packages, no setuptools."
+
+VIRTUALENV_CREATION_FAILED='
+Failed to create virtual environment for $WITH_PYTHON'
+
+VIRTUALENV_BAD='
+Python created with virtualenv no longer passes baseline tests.
+You may need to use --build-python and let the Unified Installer
+build its own Python.'
+
+DOWNLOADING_PYTHON='Downloading Python source from $PYTHON_URL'
+
+PYTHON_BUILD_OK="Python build looks OK."
+
+PYTHON_BUILD_BAD='
+***Aborting***
+The built Python does not meet the requirements for Zope/Plone.
+Check messages and the install.log to find out what went wrong.
+
+See the "Built Python does not meet requirements" section of
+README.txt for more information about this error.'
+
+FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE; skipping step.'
+
+UNPACKING_BUILDOUT_CACHE='Unpacking buildout cache to $BUILDOUT_CACHE'
+
+BUILDOUT_CACHE_UNPACK_FAILED="Buildout cache unpack failed. Unable to continue."
+
+BUILDOUT_FAILED="Buildout failed. Unable to continue"
+
+BUILDOUT_SUCCESS="Buildout completed"
+
+INSTALL_COMPLETE='
+######################  Installation Complete  ######################
+
+Plone successfully installed at $PLONE_HOME
+See $RMFILE
+for startup instructions.
+'
+
+BUILDOUT_SKIPPED_OK='
+Buildout was skipped at your request, but the installation is
+otherwise complete and may be found at $PLONE_HOME
+'
+
+NEED_HELP_MSG='
+
+
+- If you need help, ask the mailing lists or #plone on irc.freenode.net.
+- The live support channel also exists at http://plone.org/chat
+- You can read/post to the lists via http://plone.org/forums
+
+- Submit feedback and report errors at http://dev.plone.org/plone
+(For install problems, specify component "Installer (Unified)")
+'
+
+REPORT_ERRORS_MSG='
+There were errors during the install.  Please read readme.txt and try again.
+To report errors with the installer, visit http://dev.plone.org/plone
+and specify component "Installer (Unified)".
+'
