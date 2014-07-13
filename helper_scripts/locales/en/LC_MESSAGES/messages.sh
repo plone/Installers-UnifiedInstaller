@@ -354,7 +354,7 @@ ADD_USER_TO_GROUP='Adding user $TARGET_USER to group $TARGET_GROUP.'
 
 USING_PW="Using pw to create users and groups"
 
-UNKNOWN_USER_ENV='We don't know how to add users and groups in this environment.
+UNKNOWN_USER_ENV='We do not know how to add users and groups in this environment.
 Please add users and group manually, then try again.
 See README.txt for instructions on how to proceed.
 '
