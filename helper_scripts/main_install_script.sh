@@ -62,6 +62,17 @@ readonly NEED_XSLT="1.1.26"
 
 DEBUG_OPTIONS=no
 
+# Add message translations below:
+case $LANG in
+    # es_*)
+    #     . helper_scripts//locales/es/LC_MESSAGES/messages.sh
+    #     ;;
+    *)
+        # default to English
+        . helper_scripts/locales/en/LC_MESSAGES/messages.sh
+        ;;
+esac
+
 if [ `whoami` = "root" ]; then
     ROOT_INSTALL=1
 else
@@ -79,18 +90,6 @@ CWD="$PWD"
 PKG="$CWD/$PACKAGES_DIR"
 
 . helper_scripts/shell_utils.sh
-
-# Add message translations below:
-case $LANG in
-    # es_*)
-    #     . helper_scripts/messages_es.sh
-    #     ;;
-    *)
-        # default to English
-        . helper_scripts/messages_en.sh
-        ;;
-esac
-
 
 usage () {
     eval "echo \"$USAGE_MESSAGE\""

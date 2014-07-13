@@ -4,14 +4,14 @@
 
 if [ "X$INSTALL_JPEG" = "Xyes" ] && [ ! -f "$LOCAL_HOME/lib/libjpeg.a" ]
 then
-    echo "Compiling and installing jpeg local libraries ..."
+    echo $INSTALLING_JPEG
 
     mkdir "$LOCAL_HOME/lib" >> "$INSTALL_LOG" 2>&1
     mkdir "$LOCAL_HOME/bin" >> "$INSTALL_LOG" 2>&1
     mkdir "$LOCAL_HOME/include" >> "$INSTALL_LOG" 2>&1
     mkdir "$LOCAL_HOME/man" >> "$INSTALL_LOG" 2>&1
     mkdir "$LOCAL_HOME/man/man1" >> "$INSTALL_LOG" 2>&1
-    
+
     cd "$PKG"
     untar "$JPEG_TB"
     chmod -R 755 "$JPEG_DIR"
@@ -33,7 +33,6 @@ then
             rm -rf "$JPEG_DIR"
     fi
 else
-    echo "Skipping libjpeg build"
-fi
+    echo $SKIPPING_JPEG
 
 cd "$CWD"

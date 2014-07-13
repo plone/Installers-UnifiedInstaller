@@ -4,6 +4,7 @@
 #
 
 echo "Installing ${PYTHON_DIR}. This takes a while..."
+eval "echo \"$INSTALLING_PYTHON\""
 cd "$PKG"
 untar "$PYTHON_TB"
 chmod -R 755 "$PYTHON_DIR"
@@ -33,17 +34,16 @@ if [ `uname` = 'Darwin' ]; then
     fi
 fi
 
-
 ./configure $EXFLAGS --prefix="$PY_HOME" >> "$INSTALL_LOG" 2>&1
 if [ $? -gt 0 ]; then
-    echo "Unable to configure Python build."
+    eval "echo \"$INSTALLING_PYTHON\""
     seelog
     exit 1
 fi
 
 make install >> "$INSTALL_LOG" 2>&1
 if [ $? -gt 0 ]; then
-    echo "Python build has failed."
+    echo $PY_BUILD_FAILED
     seelog
     exit 1
 fi
@@ -53,7 +53,7 @@ if [ -d "$PYTHON_DIR" ]; then
     rm -rf "$PYTHON_DIR"
 fi
 if [ ! -x "$PY_HOME/bin/python" ]; then
-	echo "Install of ${PYTHON_DIR} has failed."
+	eval "echo \"$INSTALL_PY_FAILED\""
 	seelog
     exit 1
 fi

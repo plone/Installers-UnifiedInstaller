@@ -3,7 +3,7 @@
 
 if [ "X$INSTALL_READLINE" = "Xyes" ] && [ ! -f "$LOCAL_HOME/lib/libreadline.a" ]
 then
-	echo "Compiling and installing readline local libraries ..."
+	echo $INSTALLING_READLINE
 
 	mkdir "$LOCAL_HOME/lib" >> "$INSTALL_LOG" 2>&1
 	mkdir "$LOCAL_HOME/bin" >> "$INSTALL_LOG" 2>&1
@@ -23,7 +23,7 @@ then
 
 	if [ ! -f "$LOCAL_HOME/lib/libreadline.a" ]
 	then
-		echo "Local install of readline has failed"
+		echo $LREADLINE_FAILED
 		seelog
 		exit 1
 	fi
@@ -34,7 +34,7 @@ then
 	        rm -rf "$NREADLINE_DIR"
 	fi
 else
-	echo "Skipping readline build"
+	echo $SKIPPING_READLINE
 fi
 
 cd "$CWD"
