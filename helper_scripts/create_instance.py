@@ -6,6 +6,8 @@
 # that will choose the exec Python.
 #
 
+from i18n import _
+
 import argparse
 import glob
 import random
@@ -73,7 +75,7 @@ def inPlaceSub(fn, substitutions):
 ##########################################################
 # Get command line arguments
 #
-argparser = argparse.ArgumentParser(description="Plone instance creation utility")
+argparser = argparse.ArgumentParser(description=_("Plone instance creation utility"))
 argparser.add_argument('--uidir', required=True)
 argparser.add_argument('--plone_home', required=True)
 argparser.add_argument('--instance_home', default='zinstance')
@@ -108,7 +110,7 @@ substitutions = {
 ##########################################################
 # Copy the buildout skeleton into place, clean up a bit
 #
-print "Copying buildout skeleton"
+print _("Copying buildout skeleton")
 shutil.copytree(os.path.join(opt.uidir, 'base_skeleton'), opt.instance_home)
 
 # remove OS X and svn detritus (this is mainly helpful for installer development)
@@ -192,7 +194,7 @@ os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
 
 # boostrapping is problematic when the python may not have the right
 # components; so, let's fix up the bin/buildout ourselves.
-print "Fixing up bin/buildout"
+print _("Fixing up bin/buildout")
 inPlaceSub(os.path.join(opt.instance_home, 'bin', 'buildout'), substitutions)
 
 
@@ -202,29 +204,29 @@ if opt.run_buildout:
     os.chdir(opt.instance_home)
 
     if opt.install_lxml == 'yes':
-        print "Building lxml with static libxml2/libxslt; this requires Internet access,"
-        print "and takes a while..."
+        print _("Building lxml with static libxml2/libxslt; this requires Internet access,")
+        print _("and takes a while...")
         returncode = doCommand(
             os.path.join(opt.instance_home, 'bin', 'buildout') + \
             " -c lxml_static.cfg")
         if returncode:
-            print "\nlxml build failed."
-            print "See log file for details."
+            print _("\nlxml build failed.")
+            print _("See log file for details.")
             print
-            print "Try preinstalling up-to-date libxml2/libxslt system libraries, then run"
-            print "the installer again."
+            print _("Try preinstalling up-to-date libxml2/libxslt system libraries, then run")
+            print _("the installer again.")
         else:
             # test generated lxml via lxmlpy interpreter installed during build
             returncode = doCommand(
                 os.path.join(opt.instance_home, 'bin', 'lxmlpy') + \
                   ' -c "from lxml import etree"')
             if returncode:
-                print "Failed to build working lxml."
-                print "lxml built with no errors, but does not have a working etree component."
-                print "See log file for details."
+                print _("Failed to build working lxml.")
+                print _("lxml built with no errors, but does not have a working etree component.")
+                print _("See log file for details.")
                 print
-                print "Try preinstalling up-to-date libxml2/libxslt system libraries, then run"
-                print "the installer again."
+                print _("Try preinstalling up-to-date libxml2/libxslt system libraries, then run")
+                print _("the installer again.")
             else:
                 # cleanup; if we leave around .installed.cfg, it will give
                 # us a cascade of misleading messages and under some circumstances
@@ -238,39 +240,39 @@ if opt.run_buildout:
         returncode = 0
 
     if not returncode:
-        print "Building Zope/Plone; this takes a while..."
+        print _("Building Zope/Plone; this takes a while...")
         returncode = doCommand(
             os.path.join(opt.instance_home, 'bin', 'buildout') + \
             " -NU buildout:install-from-cache=true")
 
     if returncode:
-        print "Buildout returned an error code: %s; Aborting." % returncode
+        print _("Buildout returned an error code: %s; Aborting.") % returncode
         sys.exit(returncode)
 
     if opt.itype == 'standalone':
         if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'instance')) and
                  os.path.exists(os.path.join(opt.instance_home, 'parts', 'instance')) and
                  os.path.exists(os.path.join(opt.instance_home, 'var'))):
-            print "Parts of the install are missing. Buildout must have failed. Aborting."
+            print _("Parts of the install are missing. Buildout must have failed. Aborting.")
             sys.exit(1)
     else:
         if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'zeoserver')) and
                  os.path.exists(os.path.join(opt.instance_home, 'bin', 'client1')) and
                  os.path.exists(os.path.join(opt.instance_home, 'parts', 'client1')) and
                  os.path.exists(os.path.join(opt.instance_home, 'var'))):
-            print "Parts of the install are missing. Buildout must have failed. Aborting."
+            print _("Parts of the install are missing. Buildout must have failed. Aborting.")
             sys.exit(1)
 
     # sanity check PIL and lxml with our zopepy
     my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
     if doCommand(my_python + " -c 'from PIL._imaging import jpeg_decoder'"):
-        print "Failed: JPEG support is not available."
-        print "If the installer did not built a static libjpeg, using"
-        print "--libjpeg=yes option may cure this problem."
+        print _("Failed: JPEG support is not available.")
+        print _("If the installer did not built a static libjpeg, using")
+        print _("--libjpeg=yes option may cure this problem.")
         sys.exit(1)
     if doCommand(my_python + " -c 'from lxml import etree'"):
-        print "Failed: lxml does not have a working etree component."
+        print _("Failed: lxml does not have a working etree component.")
         sys.exit(1)
 
 else:
-    print "Skipping bin/buildout at your request."
+    print _("Skipping bin/buildout at your request.")
