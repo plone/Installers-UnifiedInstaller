@@ -1,3 +1,7 @@
+4.3.x - unreleased
+
+- Make sure egg cache isn't group writeable to avoid complain from new setuptools.
+
 4.3.4 - 2014-11-22
 
 - Adapt to 4.3.4.
