@@ -1,4 +1,14 @@
-4.3.x - unreleased
+4.3.4 - r1 - 2014-12-01
+
+- NOTE: The latest setuptools and virtualenv are troubled with older Python 2.7's.
+  If you have odd buildout problems, particularly with production installs, try
+  building Python 2.7.6 - or updating to it.
+
+- Fix regression in zc.buildout
+
+- Add missing plone.recipe.precompiler and plone.recipe.command to buildout cache.
+
+- Update to Pillow 2.6.1.
 
 - Make sure egg cache isn't group writeable to avoid complain from new setuptools.
 

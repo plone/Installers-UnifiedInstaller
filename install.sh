@@ -135,8 +135,8 @@ readonly JPEG_TB=jpegsrc.v9a.tar.bz2
 readonly JPEG_DIR=jpeg-9a
 readonly READLINE_TB=readline-6.2.tar.bz2
 readonly READLINE_DIR=readline-6.2
-readonly VIRTUALENV_TB=virtualenv-1.11.4.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-1.11.4
+readonly VIRTUALENV_TB=virtualenv-1.11.6.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-1.11.6
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
