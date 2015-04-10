@@ -13,12 +13,32 @@ or running buildout to update.**
 Features
 --------
 
-tbc
+- checks for needed dependencies
+- choose between zeo and standalone install
+- choose between user and root install
+- create system user and group for running plone
+- ...
 
 Installation
 ------------
 
-tbc
+Download the installer
+
+  > wget --no-check-certificate https://launchpad.net/plone/5.0/5.0/+download/Plone-5.0-UnifiedInstaller.tgz
+
+Extract the downloaded file
+
+  > tar -xf Plone-5.0-UnifiedInstaller.tgz
+
+Go the folder containing installer script
+
+  > cd Plone-5.0-UnifiedInstaller
+
+Run script
+
+  > ./install.sh $OPTION
+
+.. note:: For certain install options you will have to run the installer with sudo or as root.
 
 Documentation
 -------------
