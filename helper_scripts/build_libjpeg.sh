@@ -34,5 +34,6 @@ then
     fi
 else
     echo $SKIPPING_JPEG
+fi
 
 cd "$CWD"
