@@ -38,7 +38,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0a2
+readonly FOR_PLONE=5.0b2
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -46,16 +46,16 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=http://www.python.org/ftp/python/2.7.6/Python-2.7.6.tgz
-readonly PYTHON_MD5=1d8728eb0dfcac72a0fd99c17ec7f386
-readonly PYTHON_TB=Python-2.7.6.tgz
-readonly PYTHON_DIR=Python-2.7.6
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz
+readonly PYTHON_MD5=5eebcaa0030dc4061156d3429657fb83
+readonly PYTHON_TB=Python-2.7.9.tgz
+readonly PYTHON_DIR=Python-2.7.9
 readonly JPEG_TB=jpegsrc.v9a.tar.bz2
 readonly JPEG_DIR=jpeg-9a
 readonly READLINE_TB=readline-6.2.tar.bz2
 readonly READLINE_DIR=readline-6.2
-readonly VIRTUALENV_TB=virtualenv-1.11.4.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-1.11.4
+readonly VIRTUALENV_TB=virtualenv-12.1.1.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-12.1.1
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
@@ -821,7 +821,7 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     untar $VIRTUALENV_TB
     cd $VIRTUALENV_DIR
     echo $CREATING_VIRTUALENV
-    "$WITH_PYTHON" virtualenv.py --no-setuptools "$PY_HOME"
+    "$WITH_PYTHON" virtualenv.py "$PY_HOME"
     cd "$PKG"
     rm -r $VIRTUALENV_DIR
     PY=$PY_HOME/bin/python
