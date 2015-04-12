@@ -86,7 +86,7 @@ ORIGIN_PATH=`pwd`
 PWD=`dirname $0`
 cd $PWD
 if which bash > /dev/null; then
-    bash helper_scripts/main_install_script.sh
+    bash helper_scripts/main_install_script.sh "$@"
 else
     . helper_scripts/main_install_script.sh
 fi
