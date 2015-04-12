@@ -103,6 +103,7 @@ INSTALL_LOG="$ORIGIN_PATH/install.log"
 CLIENT_COUNT=2
 TEMPLATE=buildout
 WITHOUT_SSL="no"
+INSTALL_ZEO=0
 
 USE_WHIPTAIL=0
 if [ "$BASH_VERSION" ] && [ "X$1" == "X" ]; then
@@ -797,8 +798,6 @@ if [ ! -x "$LOCAL_HOME" ]; then
     echo "Unable to create $LOCAL_HOME"
     exit 1
 fi
-
-. helper_scripts/build_libjpeg.sh
 
 if [ ! -x "$PY" ]; then
     # download python tarball if necessary
