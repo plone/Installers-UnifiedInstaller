@@ -72,8 +72,6 @@
 #
 # Library build control options:
 #
-# --libjpeg=auto|yes|no
-# --readline=auto|yes|no
 # --static-lxml
 #   Forces a static build of libxml2 and libxslt dependencies. Requires
 #   Internet access to download components.

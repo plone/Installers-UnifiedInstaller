@@ -316,12 +316,6 @@ To report errors with the installer, visit http://dev.plone.org/plone
 and specify component "Installer (Unified)".
 '
 
-# build_libjpeg.sh
-
-INSTALLING_JPEG="Compiling and installing jpeg local libraries ..."
-
-SKIPPING_JPEG="Skipping libjpeg build"
-
 # build_python.sh
 
 INSTALLING_PYTHON='Installing ${PYTHON_DIR}. This takes a while...'
@@ -331,14 +325,6 @@ UNABLE_TO_CONFIGURE_PY="Unable to configure Python build."
 PY_BUILD_FAILED="Python build has failed."
 
 INSTALL_PY_FAILED='Install of ${PYTHON_DIR} has failed.'
-
-# build_readline.sh
-
-INSTALLING_READLINE="Compiling and installing readline local libraries ..."
-
-LREADLINE_FAILED="Local install of readline has failed"
-
-SKIPPING_READLINE="Skipping readline build"
 
 # user_group_utilities.sh
 

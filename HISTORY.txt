@@ -1,6 +1,11 @@
 5.0b1 - unreleased
 ==================
 
+- Remove facilities to build readline and jpeg libraries. We really
+  wish to discourage any local libraries.
+
+- Replace zopeskel with mr.bob.
+
 - Adapt to Plone 5.0b1
 
 5.0a2 - 2014-04-29

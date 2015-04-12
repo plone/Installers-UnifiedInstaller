@@ -21,14 +21,6 @@ ZEOCLUSTER_HOME=zeocluster
 RINSTANCE_HOME=zinstance
 
 INSTALL_LXML=no
-INSTALL_ZLIB=auto
-INSTALL_JPEG=auto
-if [ `uname` = "Darwin" ]; then
-  # Darwin ships with a readtext rather than readline; it doesn't work.
-  INSTALL_READLINE=yes
-else
-  INSTALL_READLINE=auto
-fi
 
 # default user/group ids for root installs; ignored in non-root.
 DAEMON_USER=plone_daemon
@@ -50,10 +42,6 @@ readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz
 readonly PYTHON_MD5=5eebcaa0030dc4061156d3429657fb83
 readonly PYTHON_TB=Python-2.7.9.tgz
 readonly PYTHON_DIR=Python-2.7.9
-readonly JPEG_TB=jpegsrc.v9a.tar.bz2
-readonly JPEG_DIR=jpeg-9a
-readonly READLINE_TB=readline-6.2.tar.bz2
-readonly READLINE_DIR=readline-6.2
 readonly VIRTUALENV_TB=virtualenv-12.1.1.tar.gz
 readonly VIRTUALENV_DIR=virtualenv-12.1.1
 
@@ -104,7 +92,6 @@ usage () {
 # Pick up options from command line
 #
 #set defaults
-INSTALL_ZEO=0
 INSTALL_STANDALONE=0
 INSTANCE_NAME=""
 WITH_PYTHON=""
@@ -202,22 +189,6 @@ do
         --group=* | -group=* )
             if [ "$optarg" ]; then
                 PLONE_GROUP="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --jpeg=* | --libjpeg=* )
-            if [ "$optarg" ]; then
-                INSTALL_JPEG="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --readline=* | --libreadline=* )
-            if [ "$optarg" ]; then
-                INSTALL_READLINE="$optarg"
             else
                 usage
             fi
@@ -531,8 +502,6 @@ else
                 eval "echo \"$WITH_PYTHON_IS_OK\""
                 echo
                 # if the supplied Python is adequate, we don't need to build libraries
-                INSTALL_ZLIB=no
-                INSTALL_READLINE=no
                 WITHOUT_SSL="yes"
             else
                 eval "echo \"$WITH_PYTHON_IS_BAD\""
@@ -636,23 +605,6 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
 fi # not skip tool tests
 
 
-if [ "X$INSTALL_JPEG" = "Xauto" ] ; then
-    if [ "X$HAVE_LIBJPEG" = "Xyes" ] ; then
-        INSTALL_JPEG=no
-    else
-        INSTALL_JPEG=yes
-    fi
-fi
-
-if [ "X$INSTALL_READLINE" = "Xauto" ] ; then
-    if [ "X$HAVE_LIBREADLINE" = "Xyes" ] ; then
-        INSTALL_READLINE=no
-    else
-        INSTALL_READLINE=yes
-    fi
-fi
-
-
 ######################################
 # Pre-install messages
 if [ $ROOT_INSTALL -eq 1 ]; then
@@ -671,9 +623,6 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "ZEOCLUSTER_HOME=$ZEOCLUSTER_HOME"
     echo "RINSTANCE_HOME=$RINSTANCE_HOME"
     echo "INSTALL_LXML=$INSTALL_LXML"
-    echo "INSTALL_ZLIB=$INSTALL_ZLIB"
-    echo "INSTALL_JPEG=$INSTALL_JPEG"
-    echo "INSTALL_READLINE=$INSTALL_READLINE"
     echo "DAEMON_USER=$DAEMON_USER"
     echo "BUILDOUT_USER=$BUILDOUT_USER"
     echo "PLONE_GROUP=$PLONE_GROUP"
@@ -804,16 +753,6 @@ fi
 
 cd "$CWD"
 
-if  [ "X$INSTALL_ZLIB" = "Xyes" ] || \
-    [ "X$INSTALL_JPEG" = "Xyes" ] || \
-    [ "X$INSTALL_READLINE" = "Xyes" ]
-then
-    NEED_LOCAL=1
-else
-    NEED_LOCAL=0
-fi
-
-
 if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
     PYBNAME=`basename "$WITH_PYTHON"`
     PY_HOME=$PLONE_HOME/Python-2.7
@@ -842,10 +781,6 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
 else # use already-placed python or build one
     PY_HOME=$PLONE_HOME/Python-2.7
     PY=$PY_HOME/bin/python
-    if [ -x "$PY" ]; then
-        # no point in installing zlib -- too late!
-        INSTALL_ZLIB=no
-    fi
 fi
 
 
@@ -866,14 +801,6 @@ fi
 . helper_scripts/build_libjpeg.sh
 
 if [ ! -x "$PY" ]; then
-    . helper_scripts/build_readline.sh
-
-    if [ `uname` = "Darwin" ]; then
-        # Remove dylib files that will prevent static linking,
-        # which we need for relocatability
-        rm -f "$PY_HOME/lib/"*.dylib
-    fi
-
     # download python tarball if necessary
     cd "$PKG"
     if [ ! -f $PYTHON_TB ]; then

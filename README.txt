@@ -241,14 +241,6 @@ Options
 --password=InstancePassword
   If not specified, a random password will be generated.
 
---libjpeg=<auto|yes|no>
-  Overrides the automatic determination of whether and where to
-  install the libjpeg JPEG library.
-
---readline=<auto|yes|no>
-  Optional. Installs a local readline library. Only necessary
-  on platforms with odd libraries (like OS X Leopard).
-
 --without-ssl
   Optional. Allows the build to proceed without ssl dependency tests.
 
@@ -542,13 +534,6 @@ See `Plone Support Center <http://plone.org/support>`_.
 If you suspect the error is due to a bug in the installer,
 see the `Installer Bug Reports`_ section below.
 
-Errors building dependencies
-----------------------------
-
-If the install fails while trying to build a library like libjpeg or readline,
-the best thing to do is nearly always to install an up-to-date system library
-to meet the dependency. Then clean up the aborted install and try again.
-
 Built Python does not meet requirements
 ---------------------------------------
 
@@ -596,9 +581,6 @@ Third-party products installed
 ==============================
 
 - PIL (Python Imaging Library)
-- libjpeg (JPEG library)
-- libreadline (terminal mode command-line and prompt editing)
-- Cheetah, Paste, PasteDeploy, PasteScript, ZopeSkel
 - lxml, libxml2, libxslt
 
 
@@ -610,14 +592,6 @@ install script to specify use of zsh, bash or a later version of sh.
 
 The install script requires several GNU build utilities such as gcc,
 g++, make, gunzip, bunzip2 and tar.
-
-The install script tries to find readline and libjpeg libraries.
-If it can't find them, it installs them locally in the target directory.
-If the library detection code in the installation script doesn't meet your
-needs, you may force a particular choice by editing the script.
-
-Note that readline installation is forced on OS X, where the default
-readline library is incomplete.
 
 Mac OS X
 ~~~~~~~~
@@ -760,7 +734,7 @@ See `Backup Plone <https://plone.org/documentation/kb/backup-plone>`_
 Coexistence with System Python
 ==============================
 The Python installed by the Unified Installer should *not* interfere with
-any other Python on your system.  The Installer bundles Python 2.7.6,
+any other Python on your system.  The Installer bundles Python 2.7.9,
 placing it at ``/usr/local/Plone/Python-2.7`` or ``$HOME/Plone/Python-2.7``
 
 
@@ -793,11 +767,9 @@ bug reports. Specify the "Installer (Unified)" component.
 Credits
 =======
 The Unified Installer was originally developed for Plone 2.5 by Kamal Gill.
-Adaptation to Plone 3.x, 4.x and buildout: Steve McMahon (steve@dcn.org)
-Maintainer for Plone 3.x, 4.x: Steve McMahon
-
-Thanks to Martin Aspeli and Wichert Akkerman for vital hints and suggestions
-with the buildout version.
+Adaptation to Plone 3.x, 4.x, 5.x and buildout: Steve McMahon (steve@dcn.org)
+Maintainer for Plone 3.x, 4.x: Steve McMahon and the Plone installer team.
+Special thanks to Sven Strack.
 
 Thanks for Naotaka Jay Hotta for suggesting -- and offering an initial
 implementation for -- stand-alone and cluster configuration options.
