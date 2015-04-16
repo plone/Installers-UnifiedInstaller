@@ -103,7 +103,7 @@ substitutions = {
     "BUILDOUT_USER": opt.buildout_user,
     "PASSWORD": opt.password,
     "PYTHON": sys.executable,
-    "SETUPTOOLS_EGG": findEgg('setuptools', opt.plone_home),
+    # "SETUPTOOLS_EGG": findEgg('setuptools', opt.plone_home),
     "BUILDOUT_EGG": findEgg('zc.buildout', opt.plone_home),
 }
 

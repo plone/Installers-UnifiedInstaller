@@ -80,6 +80,7 @@
 # if available, use it.
 # Capture current working directory for build script
 ORIGIN_PATH=`pwd`
+export ORIGIN_PATH
 # change to directory with script
 PWD=`dirname $0`
 cd $PWD

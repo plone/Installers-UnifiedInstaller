@@ -1,6 +1,14 @@
 5.0b1 - unreleased
 ==================
 
+- Change root-method install default target from /usr/local/Plone
+  to /opt/plone. This is principally to work around a bug in the
+  patched Python 2.7.x in some versions of debian/ubuntu which
+  sabotage Python installs under /usr/local for recent versions
+  of setuptools.
+
+- Update to use recent setuptools.
+
 - Remove facilities to build readline and jpeg libraries. We really
   wish to discourage any local libraries.
 

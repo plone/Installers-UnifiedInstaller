@@ -8,7 +8,7 @@
 if [ `uname` = "Darwin" ]; then
     PLONE_HOME=/Applications/Plone
 else
-    PLONE_HOME=/usr/local/Plone
+    PLONE_HOME=/opt/plone
 fi
 # Path options for Non-Root install
 #
@@ -30,7 +30,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0b2
+readonly FOR_PLONE=5.0b1
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -676,8 +676,8 @@ if [ $? -gt 0 ]; then
     INSTALL_LOG="/dev/stdout"
 else
     eval "echo \"$LOGGING_MSG\""
-    echo "Detailed installation log" > "$INSTALL_LOG
-    echo "Starting at `date`" >> "$INSTALL_LOG
+    echo "Detailed installation log" > "$INSTALL_LOG"
+    echo "Starting at `date`" >> "$INSTALL_LOG"
 fi
 seelog () {
     eval "echo \"$SEE_LOG_EXIT_MSG\""

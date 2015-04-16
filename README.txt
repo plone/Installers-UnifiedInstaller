@@ -24,6 +24,9 @@ before continuing.
 :Important: Back up your existing Plone site prior to running the installer
   or running buildout to update.
 
+:Important: Debian/Ubuntu users. Read platform notes if you wish to install
+  under /usr/local.
+
 Outline of this document
 ------------------------
 
@@ -142,10 +145,10 @@ For a super-user (root) installation
 ------------------------------------
 
 If you run the installation with root privileges, it will install
-Python/Zope/Plone to ``/usr/local/Plone``.
+Python/Zope/Plone to ``/opt/plone``.
 
 [Darwin (OS X) Note: Under Darwin, the default installation is to
-/Applications/Plone for the root install. Please replace /usr/local with
+/Applications/Plone for the root install. Please replace /opt with
 /Applications in the instructions below.]
 
 Two Plone users will be created: plone_daemon and plone_buildout. You will
@@ -196,7 +199,7 @@ Options
 --target=pathname
   Use to specify top-level path for installs. Plone instances
   and Python will be built inside this directory.
-  Default is ``/usr/local/Plone`` for root install,
+  Default is ``/opt/plone`` for root install,
   ``$HOME/Plone`` for non-root.
 
   PLEASE NOTE: Your pathname should not include spaces.
@@ -341,30 +344,30 @@ Mainly used to support indexing of office-automation documents.
 Install Location, Root Install
 ==============================
 
-- Base install at ``/usr/local/Plone`` by default. This may be changed
+- Base install at ``/opt/plone`` by default. This may be changed
   with the ``--target`` installation option. If you change it, you'll also need
   to change the paths below.
 
-- Python installed at ``/usr/local/Plone/Python-2.7``
+- Python installed at ``/opt/plone/Python-2.7``
 
 - For ZEO Cluster:
 
   - ZEO cluster (server and 2 clients) installed and configured at
-    ``/usr/local/Plone/zeocluster``
+    ``/opt/plone/zeocluster``
     Both ``--target`` and ``--name`` options may change this.
-  - Add-on Products folder at ``/usr/local/Plone/zeocluster/`` products.
+  - Add-on Products folder at ``/opt/plone/zeocluster/`` products.
     (You may also install products via buildout.)
-  - ``Data.fs`` (ZODB) at ``/usr/local/Plone/zeocluster/var/filestorage``
-  - ``adminPassword.txt`` at ``/usr/local/Plone/zeocluster/adminPassword.txt``
+  - ``Data.fs`` (ZODB) at ``/opt/plone/zeocluster/var/filestorage``
+  - ``adminPassword.txt`` at ``/opt/plone/zeocluster/adminPassword.txt``
 
 - For Stand-Alone:
 
-  - Zope Instance installed and configured at ``/usr/local/Plone/zinstance``
+  - Zope Instance installed and configured at ``/opt/plone/zinstance``
     Both ``--target`` and ``--name`` options may change this.
-  - Add-on Products folder at ``/usr/local/Plone/zinstance/products``
+  - Add-on Products folder at ``/opt/plone/zinstance/products``
     (You may also install products via buildout.)
-  - ``Data.fs`` (ZODB) at ``/usr/local/Plone/zinstance/var/filestorage``
-  - ``adminPassword.txt`` at ``/usr/local/Plone/zinstance/adminPassword.txt``
+  - ``Data.fs`` (ZODB) at ``/opt/plone/zinstance/var/filestorage``
+  - ``adminPassword.txt`` at ``/opt/plone/zinstance/adminPassword.txt``
 
 
 Install Location, Root-less Install
@@ -404,19 +407,19 @@ Root Install
 
 To start Plone::
 
-    >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl start
+    >> sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl start
 
 To stop Plone::
 
-    >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl stop
+    >> sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl stop
 
 To restart Plone::
 
-    >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl restart
+    >> sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl restart
 
 To check status::
 
-    >> sudo -u plone_daemon /usr/local/Plone/zeocluster/bin/plonectl status
+    >> sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl status
 
 Replace "zeocluster" with "zinstance" or your instance name if this wasn't a
 standard zeo install.
@@ -593,6 +596,20 @@ install script to specify use of zsh, bash or a later version of sh.
 The install script requires several GNU build utilities such as gcc,
 g++, make, gunzip, bunzip2 and tar.
 
+Ubuntu/Debian
+~~~~~~~~~~~~~
+
+There is a bug in the platform patch for Python's sysconfig.py that prevents
+installation of Python libraries under /usr/local for recent versions of
+Python's setuptools and recent versions of debian/ubuntu.
+
+If you need to install under /usr/local, you'll need to establish a symbolic
+or hard link to alias the path to something other than /usr/local for
+purposes of the Plone install.
+
+(For the curious: look for the bug in the get_config_h_filename function in
+sysconfig.py. There's nothing subtle about it.)
+
 Mac OS X
 ~~~~~~~~
 
@@ -717,15 +734,15 @@ to pass the execution environment via sudo.
 Uninstall instructions
 ======================
 1) Stop Plone
-2) Remove folder ``/usr/local/Plone`` or ``$HOME/Plone``
+2) Remove folder ``/opt/plone`` or ``$HOME/Plone``
 
 
 Backup instructions
 ===================
 1) Stop Plone
-2) Back up folder ``/usr/local/Plone`` or ``$HOME/Plone``::
+2) Back up folder ``/opt/plone`` or ``$HOME/Plone``::
 
-   >> tar -zcvf Plone-backup.tgz /usr/local/Plone
+   >> tar -zcvf Plone-backup.tgz /opt/plone
 
 Live backup is possible.
 See `Backup Plone <https://plone.org/documentation/kb/backup-plone>`_
@@ -735,7 +752,7 @@ Coexistence with System Python
 ==============================
 The Python installed by the Unified Installer should *not* interfere with
 any other Python on your system.  The Installer bundles Python 2.7.9,
-placing it at ``/usr/local/Plone/Python-2.7`` or ``$HOME/Plone/Python-2.7``
+placing it at ``/opt/plone/Python-2.7`` or ``$HOME/Plone/Python-2.7``
 
 
 Developer Options

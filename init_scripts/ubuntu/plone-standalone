@@ -2,12 +2,12 @@
 # /etc/init.d/plone
 # Startup script for standalone Zope
 #
-# adapted for Ubuntu paths, Plone 3.0 version and LSB functions
+# adapted for Ubuntu paths, Plone 5.0 version and LSB functions
 #
 # description: Zope, a web application server
 # this works as is for a default universal plone linux install
 #
-# config: /usr/local/plone/zinstance/buildout.cfg
+# config: /opt/plone/zinstance/buildout.cfg
 
 # LSB Source function library
 . /lib/lsb/init-functions
@@ -15,7 +15,7 @@
 RETVAL=0
 
 # this is for the default install path for Plone-4.x-buildout
-instancepath="/usr/local/Plone/zinstance"
+instancepath="/opt/plone/zinstance"
 
 prog="plone"
 
