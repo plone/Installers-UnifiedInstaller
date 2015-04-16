@@ -43,11 +43,11 @@ and getting stdout, stderr and return code.
 Usage Message
 -------------
 
-Running install.sh with no options should result in a usage message:
+Running install.sh with help option should result in a usage message:
 
-    >>> stdout, stderr, returncode = doCommand('./install.sh')
+    >>> stdout, stderr, returncode = doCommand('./install.sh --help')
     >>> returncode
-    1
+    0
     >>> stderr
     ''
     >>> stdout
@@ -64,7 +64,7 @@ Test a ZEO install
 
     >>> print stdout
     -etc-
-    Installing Plone 5.0b2 at -etc-
+    Installing Plone 5.0b1 at -etc-
     Plone successfully installed at -etc-
       Username: admin
       Password: admin-etc-
@@ -175,7 +175,7 @@ Test a ZEO install
     >>> stderr
     ''
 
-    >>> time.sleep(10)
+    >>> time.sleep(30)
 
     Fetch root page via client1
     >>> urllib2.urlopen('http://localhost:8080/').read()
@@ -253,7 +253,7 @@ Test a standalone install
     >>> stderr
     ''
 
-    >>> time.sleep(10)
+    >>> time.sleep(30)
 
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zinstance/bin/instance status' % testTarget)
@@ -314,7 +314,7 @@ Test building Python and dependencies
 
     >>> print stdout
     -etc-
-    Installing Plone 5.0b2 at -etc-
+    Installing Plone 5.0b1 at -etc-
     Compiling and installing jpeg local libraries-etc-
     Compiling and installing readline local libraries-etc-
     Installing Python-2.7-etc-
