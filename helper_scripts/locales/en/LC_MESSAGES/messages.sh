@@ -254,7 +254,7 @@ Installation has failed.
 
 INSTANCE_HOME_EXISTS='Instance target $INSTANCE_HOME already exists\; aborting install.'
 
-CREATING_VIRTUALENV="Creating python virtual environment, no site packages, no setuptools."
+CREATING_VIRTUALENV="Creating Python virtual environment."
 
 VIRTUALENV_CREATION_FAILED='
 Failed to create virtual environment for $WITH_PYTHON'
@@ -275,6 +275,10 @@ Check messages and the install.log to find out what went wrong.
 
 See the "Built Python does not meet requirements" section of
 README.txt for more information about this error.'
+
+INSTALLING_BUILDOUT='Installing zc.buildout in virtual environment.'
+
+INSTALLING_BUILDOUT_FAILED='Unable to install zc.buildout in virtual environment.'
 
 FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE\; skipping step.'
 

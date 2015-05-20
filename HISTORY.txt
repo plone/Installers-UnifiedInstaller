@@ -1,5 +1,14 @@
 5.0b2 - unreleased
 
+- Eliminate bootstrap.py; install zc.buildout via pip in
+  virtualenv to avoid setuptools conflicts. Thanks, Jens.
+  https://community.plone.org/t/not-using-bootstrap-py-as-default/620
+
+- Change virtualenv strategy. Install inside the instance rather
+  than base directory.
+
+- Update links in README.
+
 - Fix jpeg missing message. Closes #28.
 
 - Update to 5.0b2-pending.
