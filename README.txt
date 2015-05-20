@@ -525,7 +525,7 @@ Installation Errors
 The installer may fail for a variety of reasons. If the error message is not
 helpful, check the detailed installation log, install.log, to look for
 problems. You may be able to get help on the #plone IRC channel on
-freenode.net, or from the plone-users or plone-setup mailing lists.
+freenode.net, or from the `Plone Community Forum <https://community.plone.org/>`_ or the plone-setup mailing list.
 See `Plone Support Center <http://plone.org/support>`_.
 If you suspect the error is due to a bug in the installer,
 see the `Installer Bug Reports`_ section below.
