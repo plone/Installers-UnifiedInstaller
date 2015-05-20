@@ -213,7 +213,7 @@ if opt.run_buildout:
             print _("\nlxml build failed.")
             print _("See log file for details.")
             print
-            print _("Try preinstalling up-to-date libxml2/libxslt system libraries, then run")
+            print _("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
             print _("the installer again.")
         else:
             # test generated lxml via lxmlpy interpreter installed during build
@@ -225,7 +225,7 @@ if opt.run_buildout:
                 print _("lxml built with no errors, but does not have a working etree component.")
                 print _("See log file for details.")
                 print
-                print _("Try preinstalling up-to-date libxml2/libxslt system libraries, then run")
+                print _("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
                 print _("the installer again.")
             else:
                 # cleanup; if we leave around .installed.cfg, it will give
@@ -267,8 +267,9 @@ if opt.run_buildout:
     my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
     if doCommand(my_python + " -c 'from PIL._imaging import jpeg_decoder'"):
         print _("Failed: JPEG support is not available.")
-        print _("If the installer did not built a static libjpeg, using")
-        print _("--libjpeg=yes option may cure this problem.")
+        print
+        print _("Try preinstalling up-to-date libjpeg development libraries, then run")
+        print _("the installer again.")
         sys.exit(1)
     if doCommand(my_python + " -c 'from lxml import etree'"):
         print _("Failed: lxml does not have a working etree component.")

@@ -1,5 +1,7 @@
 5.0b2 - unreleased
 
+- Fix jpeg missing message. Closes #28.
+
 - Update to 5.0b2-pending.
 
 5.0b1
