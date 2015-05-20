@@ -14,12 +14,10 @@ for component: **Installer (Unified)**
 
 For a guide to installing and maintaining Plone, see
 `Installing and maintaining Plone sites
-<http://developer.plone.org/index.html#installing-and-maintaining-plone-sites>`_
+<http://docs.plone.org/manage>`_
 
-If you are a deploying Plone for production, read
-`Basics of Plone Production Deployment
-<https://developer.plone.org/reference_manuals/active/deployment/index.html>`_
-before continuing.
+If you are a deploying Plone for production on a new server, consider using
+our `Ansible full-stack installer <http://docs.plone.org/external/ansible-playbook/docs>`.
 
 :Important: Back up your existing Plone site prior to running the installer
   or running buildout to update.
@@ -112,11 +110,6 @@ steps, but this is a better starting point.
 The clustered (ZEO) setup will take advantage of multi-core CPUs and is
 recommended for a production deployment, while the standalone method is
 easier for development or testing.
-
-For more detail on both root/non-root and ZEO/standalone choices, see
-`Installing on Linux / Unix / BSD
-<http://plone.org/documentation/manual/installing-plone/installing-on-linux-unix-bsd>`_
-in the Plone.org documentation section.
 
 
 For a non-super-user (rootless) installation
@@ -572,8 +565,8 @@ You may control most aspects of your installation, including
 changing ports and adding new packages and products by editing the
 ``buildout.cfg`` file in your instance home.
 
-See tutorial `Managing projects with Buildout
-<https://plone.org/documentation/manual/developer-manual/managing-projects-with-buildout>`_
+See tutorial `Installing add-on packages with Buildout
+<http://docs.plone.org/manage/installing/installing_addons.html>`_
 for information on buildout options.
 
 Apply settings by running ``bin/buildout`` in your buildout installation
@@ -744,8 +737,8 @@ Backup instructions
 
    >> tar -zcvf Plone-backup.tgz /opt/plone
 
-Live backup is possible.
-See `Backup Plone <https://plone.org/documentation/kb/backup-plone>`_
+Live backup is possible and desirable.
+See `Backing up your Plone deployment <http://docs.plone.org/manage/deploying/backup.html>`_
 
 
 Coexistence with System Python
@@ -777,8 +770,7 @@ use cases with common add-on needs.
 
 Installer Bug reports
 =====================
-Please use the Plone issue tracker at https://dev.plone.org for all
-bug reports. Specify the "Installer (Unified)" component.
+Open an issue at https://github.com/plone/Installers-UnifiedInstaller/issues.
 
 
 Credits
