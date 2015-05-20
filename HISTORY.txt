@@ -1,4 +1,8 @@
-5.0b1 - unreleased
+5.0b2 - unreleased
+
+- Update to 5.0b2-pending.
+
+5.0b1
 ==================
 
 - Change root-method install default target from /usr/local/Plone
