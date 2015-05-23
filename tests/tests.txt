@@ -50,9 +50,9 @@ Running install.sh with help option should result in a usage message:
     0
     >>> stderr
     ''
-    >>> stdout
-    "\nUsage: -etc-"
-
+    >>> print stdout
+    <BLANKLINE>
+    Usage: -etc-
 
 ------------------
 Test a ZEO install
@@ -63,23 +63,32 @@ Test a ZEO install
     0
 
     >>> print stdout
+    <BLANKLINE>
     -etc-
     Installing Plone 5.0b2 at -etc-
+    #####################################################################
+    <BLANKLINE>
+    ######################  Installation Complete  ######################
+    <BLANKLINE>
     Plone successfully installed at -etc-
       Username: admin
       Password: admin-etc-
 
     target should have basic kit
     >>> sorted(os.listdir(testTarget))
-    [-etc-'Python-2.7', 'buildout-cache', 'zeocluster']
+    ['buildout-cache', 'zeocluster']
 
     There should now be a buildout skeleton in zeocluster
-    >>> sorted(os.listdir('%s/zeocluster' % testTarget))
-    ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'bootstrap.py', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg']
+    >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg']
+    >>> found = os.listdir('%s/zeocluster' % testTarget)
+    >>> [s for s in expected if s not in found]
+    []
 
-    Parts should look good
-    >>> sorted(os.listdir('%s/zeocluster/parts' % testTarget))
-    ['README.txt', 'client1', 'client2', 'zeoserver']
+    Parts should look contain the needed components
+    >>> expected = ['README.txt', 'client1', 'client2', 'zeoserver']
+    >>> found = os.listdir('%s/zeocluster/parts' % testTarget)
+    >>> [s for s in expected if s not in found]
+    []
 
     parts/README.html should be a warning
     >>> print open('%s/zeocluster/parts/README.txt' % testTarget).read()
@@ -90,37 +99,20 @@ Test a ZEO install
     admin:{SHA}-etc-
 
     Check bin contents
-    >>> sorted(os.listdir('%s/zeocluster/bin' % testTarget))
-    ['backup', 'buildout', 'client1', 'client2', 'fullbackup', 'pilconvert.py', 'pildriver.py', 'pilfile.py', 'pilfont.py', 'pilprint.py', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
+    >>> expected = ['backup', 'buildout', 'client1', 'client2', 'fullbackup', 'pilconvert.py', 'plonectl', 'pip', 'python', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
+    >>> found = os.listdir('%s/zeocluster/bin' % testTarget)
+    >>> [s for s in expected if s not in found]
+    []
 
     Installing again to the same target should fail
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
     >>> print stdout
-    -etc-/zeocluster already exists; aborting install-etc-
+    <BLANKLINE>
+    -etc-
+    Instance target -etc-zeocluster already exists\; aborting install.
+    -etc-
 
-
-#     Ownership tests
-#     ----------------
-#     >>> if root:
-#     ...    plone_uid = pwd.getpwnam('plone')[2]
-#     ...    zeo_uid = pwd.getpwnam('plone')[2]
-#     ... else:
-#     ...    plone_uid = zeo_uid = uid
-#
-#     >>> os.stat('%s/zeocluster/var/filestorage' % testTarget)[stat.ST_UID] == zeo_uid
-#     True
-#
-#     >>> os.stat('%s/zeocluster/var/zeoserver' % testTarget)[stat.ST_UID] == zeo_uid
-#     True
-#
-#     >>> os.stat('%s/zeocluster/var/client1' % testTarget)[stat.ST_UID] == plone_uid
-#     True
-#
-#     >>> os.stat('%s/zeocluster/var/client2' % testTarget)[stat.ST_UID] == plone_uid
-#     True
-
-
-    Check the python
+    Check the Python
     ----------------
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
@@ -142,8 +134,9 @@ Test a ZEO install
     ''
 
     Since we didn't specify otherwise, this Python should be a virtualenv.
-    >>> os.path.exists(os.path.join(testTarget, 'Python-2.7', 'bin', 'activate'))
+    >>> os.path.exists(os.path.join(testTarget, 'zeocluster', 'bin', 'activate'))
     True
+
 
     Run it
     ------
@@ -166,6 +159,8 @@ Test a ZEO install
     >>> stderr
     ''
 
+    >>> time.sleep(30)
+
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
 
@@ -174,8 +169,6 @@ Test a ZEO install
 
     >>> stderr
     ''
-
-    >>> time.sleep(30)
 
     Fetch root page via client1
     >>> urllib2.urlopen('http://localhost:8080/').read()
@@ -198,109 +191,6 @@ Test a ZEO install
     >>> stderr
     ''
 
--------------------------
-Test a standalone install
--------------------------
-
-    >>> stdout, stderr, returncode = doCommand('./install.sh standalone --target=%s --password=admin' % testTarget)
-
-    >>> returncode and (stdout + stderr)
-    0
-
-    stderr is going to have a little warning noise, but should not have errors
-    >>> stderr.find('error') < 0
-    True
-
-    >>> print stdout
-    -etc-Plone successfully installed at-etc-
-      Username: admin
-      Password: admin-etc-
-
-
-    Installing again to the same target should fail
-    >>> stdout, stderr, returncode = doCommand('./install.sh standalone --target=%s --password=admin' % testTarget)
-    >>> print stdout
-    -etc-/zinstance already exists; aborting install-etc-
-
-
-    target should have basic kit
-    >>> sorted(os.listdir(testTarget))
-    [-etc-'Python-2.7', 'buildout-cache', 'zeocluster', 'zinstance']
-
-    There should now be a buildout skeleton in zinstance
-    >>> [item for item in sorted(os.listdir('%s/zinstance' % testTarget)) if item != 'PloneController.app']
-    ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'bootstrap.py', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg', 'zope-versions.cfg', 'zopeapp-versions.cfg', 'ztk-versions.cfg']
-
-    Parts should look good
-    >>> sorted(os.listdir('%s/zinstance/parts' % testTarget))
-    ['README.txt', 'instance']
-
-    parts/README.html should be a warning
-    >>> print open('%s/zeocluster/parts/README.txt' % testTarget).read()
-    WARNING:-etc-run bin/buildout-etc-
-
-    Check bin contents
-    >>> sorted(os.listdir('%s/zinstance/bin' % testTarget))
-    ['backup', 'buildout', 'fullbackup', 'instance', 'pilconvert.py', 'pildriver.py', 'pilfile.py', 'pilfont.py', 'pilprint.py', 'plonectl', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zopepy']
-
-
-    Run it
-    ------
-
-    >>> stdout, stderr, returncode = doCommand('%s/zinstance/bin/instance start' % testTarget)
-    >>> returncode
-    0
-    >>> stderr
-    ''
-
-    >>> time.sleep(30)
-
-    Status check
-    >>> stdout, stderr, returncode = doCommand('%s/zinstance/bin/instance status' % testTarget)
-
-    >>> returncode
-    0
-
-    >>> stderr
-    ''
-
-    Fetch root page
-    >>> urllib2.urlopen('http://localhost:8080/').read()
-    '-etc-Plone is up and running-etc-
-
-    Check Banner
-    >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
-    Zope/(2.-etc-, python 2.7-etc-) ZServer/1.1
-
-    Stop it
-    >>> stdout, stderr, returncode = doCommand('%s/zinstance/bin/instance stop' % testTarget)
-
-    >>> returncode
-    0
-
-    >>> stderr
-    ''
-
-------------------------------
-Test an --instance=... install
-------------------------------
-
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --instance=zeocluster2' % testTarget)
-
-    >>> returncode and (stdout + stderr)
-    0
-
-    >>> print stdout
-    -etc-
-    Plone successfully installed at -etc-
-      Username: admin
-      Password: admin-etc-
-
-      There should now be a buildout skeleton in zeocluster2
-      >>> sorted(os.listdir('%s/zeocluster2' % testTarget))
-      ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'bootstrap.py', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg', 'zope-versions.cfg', 'zopeapp-versions.cfg', 'ztk-versions.cfg']
-
-
 -------------------------------------
 Test building Python and dependencies
 -------------------------------------
@@ -308,21 +198,19 @@ Test building Python and dependencies
     First, clean out prior work
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
 
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --build-python --static-lxml --libjpeg=yes --readline=yes' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --build-python --static-lxml' % testTarget)
     >>> returncode and (stdout + stderr)
     0
 
     >>> print stdout
     -etc-
-    Installing Plone 5.0b2 at -etc-
-    Compiling and installing jpeg local libraries-etc-
-    Compiling and installing readline local libraries-etc-
-    Installing Python-2.7-etc-
-    Python build looks OK-etc-
-    Building lxml with static libxml2/libxslt-etc-
+    <BLANKLINE>
+    Rootless install method chosen. Will install for use by system user -etc-
+    -etc-
+    Installing Python-2.7.9. This takes a while...
+    Python build looks OK.
+    -etc-
     Plone successfully installed at -etc-
-      Username: admin
-      Password: admin-etc-
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import readline"' % testTarget)
     >>> returncode
