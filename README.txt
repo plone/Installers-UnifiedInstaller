@@ -1,5 +1,5 @@
 ==============================
-Plone 4.3.4: Unified Installer
+Plone 4.3.5: Unified Installer
 ==============================
 
 The Plone Unified Installer is a source-installation kit that installs Plone
@@ -7,7 +7,7 @@ and its dependencies from source on most Unix-like platforms. The kit includes
 Plone and Zope and will download components like Python if needed. Python is
 installed in a way that will not change or interfere with your system Python.
 
-This version includes Plone 4.3.4, Zope 2.13.x, and uses Python 2.7.x.
+This version includes Plone 4.3.5, Zope 2.13.x, and uses Python 2.7.x.
 
 Feedback/bugs to `Plone Development Workspace <https://dev.plone.org>`_
 for component: **Installer (Unified)**
@@ -125,13 +125,13 @@ directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
 
-To install Plone 4.3.4 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.3.5 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command::
 
     >> ./install.sh standalone
 
-To install Plone 4.3.4 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.3.5 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command::
 
@@ -152,7 +152,7 @@ Two Plone users will be created: plone_daemon and plone_buildout. You will
 need to start Plone as plone_daemon and run buildout as plone_buildout. The
 install will also create a plone_group group that includes both plone users.
 
-To install Plone 4.3.4 in a stand-alone (single Zope instance) configuration:
+To install Plone 4.3.5 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command::
 
@@ -162,7 +162,7 @@ To install Plone 4.3.4 in a stand-alone (single Zope instance) configuration:
 
   >> su; ./install.sh standalone
 
-To install Plone 4.3.4 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 4.3.5 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command::
 
