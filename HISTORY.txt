@@ -1,4 +1,8 @@
-5.0b2 - unreleased
+5.0b2 - 2015-05-23
+
+- Update virtualenv to 13.0.1.
+
+- Remove "-pending"
 
 - Eliminate bootstrap.py; install zc.buildout via pip in
   virtualenv to avoid setuptools conflicts. Thanks, Jens.

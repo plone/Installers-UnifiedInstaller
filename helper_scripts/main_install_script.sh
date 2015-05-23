@@ -43,8 +43,8 @@ readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz
 readonly PYTHON_MD5=5eebcaa0030dc4061156d3429657fb83
 readonly PYTHON_TB=Python-2.7.9.tgz
 readonly PYTHON_DIR=Python-2.7.9
-readonly VIRTUALENV_TB=virtualenv-12.1.1.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-12.1.1
+readonly VIRTUALENV_TB=virtualenv-13.0.1.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-13.0.1
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
@@ -794,7 +794,7 @@ cd "$PKG"
 untar $VIRTUALENV_TB
 cd $VIRTUALENV_DIR
 echo $CREATING_VIRTUALENV
-"$WITH_PYTHON" virtualenv.py "$PY_HOME"
+"$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
 cd "$PKG"
 rm -r $VIRTUALENV_DIR
 PY=$PY_HOME/bin/python
