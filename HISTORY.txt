@@ -1,3 +1,7 @@
+5.0b2-r1 - 2015-05-26
+
+- precompiler was missing from packages. Fixed.
+
 5.0b2 - 2015-05-23
 
 - Update virtualenv to 13.0.1.
