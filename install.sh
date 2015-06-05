@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Unified Plone installer build script
-# Copyright (c) 2008-2013 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2015 Plone Foundation. Licensed under GPL v 2.
 #
 
 # Usage: [sudo] ./install.sh [options] standalone|zeo|none
@@ -119,7 +119,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=4.3.5
+readonly FOR_PLONE=4.3.6
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -127,10 +127,10 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=http://www.python.org/ftp/python/2.7.6/Python-2.7.6.tgz
-readonly PYTHON_MD5=1d8728eb0dfcac72a0fd99c17ec7f386
-readonly PYTHON_TB=Python-2.7.6.tgz
-readonly PYTHON_DIR=Python-2.7.6
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz
+readonly PYTHON_MD5=d7547558fd673bd9d38e2108c6b42521
+readonly PYTHON_TB=Python-2.7.10.tgz
+readonly PYTHON_DIR=Python-2.7.10
 readonly JPEG_TB=jpegsrc.v9a.tar.bz2
 readonly JPEG_DIR=jpeg-9a
 readonly READLINE_TB=readline-6.2.tar.bz2
