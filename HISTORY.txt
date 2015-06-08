@@ -1,5 +1,9 @@
 5.0b2-r1 - 2015-05-26
 
+- Install would fail if installing sudo in an environment where
+  it doesn't know how to created users/groups -- even if users and
+  group existed. Fixes #32.
+
 - precompiler was missing from packages. Fixed.
 
 5.0b2 - 2015-05-23
