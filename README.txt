@@ -1,6 +1,6 @@
-==============================
-Plone 5.0a2: Unified Installer
-==============================
+==========================
+Plone 5: Unified Installer
+==========================
 
 The Plone Unified Installer is a source-installation kit that installs Plone
 and its dependencies from source on most Unix-like platforms. The kit includes
@@ -22,19 +22,27 @@ Features
 Installation
 ------------
 
-Download the installer
+Download the Installer
+
+.. code-block:: bash
 
   > wget --no-check-certificate https://launchpad.net/plone/5.0/5.0/+download/Plone-5.0-UnifiedInstaller.tgz
 
 Extract the downloaded file
 
+.. code-block:: bash
+
   > tar -xf Plone-5.0-UnifiedInstaller.tgz
 
 Go the folder containing installer script
 
+.. code-block:: bash
+
   > cd Plone-5.0-UnifiedInstaller
 
 Run script
+
+.. code-block:: bash
 
   > ./install.sh $OPTION
 
@@ -49,9 +57,9 @@ Full documentation for end users can be found in the "docs" folder, and is also 
 Contribute
 ----------
 
-- Issue Tracker: github.com/plone//Installers-UnifiedInstaller/issues
-- Source Code: github.com/plone//Installers-UnifiedInstaller
-- Documentation: docs.plone.org/foo/bar
+- Issue Tracker: https://github.com/plone//Installers-UnifiedInstaller/issues
+- Source Code: https://github.com/plone//Installers-UnifiedInstaller
+- Documentation: http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer
 
 Support
 -------
