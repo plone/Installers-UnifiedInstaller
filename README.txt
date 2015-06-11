@@ -24,29 +24,29 @@ For a full list of features, please check http://docs.plone.org/manage/installin
 Installation
 ------------
 
-Download the Installer
+Download the Installer:
 
 .. code-block:: bash
 
-  > wget --no-check-certificate https://launchpad.net/plone/5.0/5.0/+download/Plone-5.0-UnifiedInstaller.tgz
+  $ wget --no-check-certificate https://launchpad.net/plone/5.0/5.0/+download/Plone-5.0-UnifiedInstaller.tgz
 
-Extract the downloaded file
-
-.. code-block:: bash
-
-  > tar -xf Plone-5.0-UnifiedInstaller.tgz
-
-Go the folder containing installer script
+Extract the downloaded file:
 
 .. code-block:: bash
 
-  > cd Plone-5.0-UnifiedInstaller
+  $ tar -xf Plone-5.0-UnifiedInstaller.tgz
 
-Run script
+Go the folder containing installer script:
 
 .. code-block:: bash
 
-  > ./install.sh $OPTION
+  $ cd Plone-5.0-UnifiedInstaller
+
+Run script:
+
+.. code-block:: bash
+
+  $ ./install.sh $OPTION
 
 Please see http://docs.plone.org/manage/installing/installation.html/unified-unix-installer/options for a overview about all different options.
 
