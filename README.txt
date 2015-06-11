@@ -46,6 +46,8 @@ Run script
 
   > ./install.sh $OPTION
 
+Please see http://docs.plone.org/manage/installing/installation.html/unified-unix-installer/options for a overview about all different options.
+
 .. note:: For certain install options you will have to run the installer with sudo or as root.
 
 Documentation
@@ -59,7 +61,7 @@ Contribute
 
 - Issue Tracker: https://github.com/plone//Installers-UnifiedInstaller/issues
 - Source Code: https://github.com/plone//Installers-UnifiedInstaller
-- Documentation: http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer
+- Documentation: http://docs.plone.org/manage/installing/installation.html/unified-unix-installer
 
 Support
 -------
