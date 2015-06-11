@@ -67,7 +67,7 @@ Support
 -------
 
 If you are having issues, please let us know.
-We have our community space at: https://community.plone.org/foo
+We have our community space at: https://community.plone.org/c/installer
 
 
 License
