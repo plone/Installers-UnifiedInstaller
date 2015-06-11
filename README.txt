@@ -17,7 +17,9 @@ Features
 - choose between zeo and standalone install
 - choose between user and root install
 - create system user and group for running plone
-- ...
+- and more
+
+For a full list of features, please check http://docs.plone.org/manage/installing/installation.html/unified-unix-installer/options.
 
 Installation
 ------------
