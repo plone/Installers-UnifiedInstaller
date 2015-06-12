@@ -18,13 +18,24 @@ To install Plone 5.0b2 in a stand-alone (single Zope instance) configuration:
 TODO: MISSING COMMANDS
 
 Install Location, Root-less Install
-===================================
+-----------------------------------
 
 - Base install at ``$HOME/Plone``, where ``$HOME`` is the user's home
   directory, by default. This may be changed with the ``--target`` installation
   option. If you change it, you'll also need to change the paths below.
 
 - Python installed at ``$HOME/Plone/Python-2.7``
+
+Stand-Alone, Root-less Overview
+-------------------------------
+
+- Zope Instance installed and configured at ``$HOME/Plone/zinstance``
+    Both ``--target`` and ``--name`` options may change this.
+- Add-on Products folder at ``$HOME/Plone/zinstance/products``
+   (You may also install products via buildout.)
+- ``Data.fs`` (ZODB) at ``$HOME/Plone/zinstance/var/filestorage``
+- ``adminPassword.txt`` at ``$HOME/zinstance/adminPassword.txt``
+
 
 For a super-user (root) installation
 ====================================
@@ -51,4 +62,21 @@ or on a sudo-less system
   $ su; ./install.sh standalone
 
 
+Install Location, Root Install
+------------------------------
 
+- Base install at ``/opt/plone`` by default. This may be changed
+  with the ``--target`` installation option. If you change it, you'll also need
+  to change the paths below.
+
+- Python installed at ``/opt/plone/Python-2.7``
+
+Stand-Alone, Root Overview
+--------------------------
+
+- Zope Instance installed and configured at ``/opt/plone/zinstance``
+    Both ``--target`` and ``--name`` options may change this.
+- Add-on Products folder at ``/opt/plone/zinstance/products``
+    (You may also install products via buildout.)
+- ``Data.fs`` (ZODB) at ``/opt/plone/zinstance/var/filestorage``
+- ``adminPassword.txt`` at ``/opt/plone/zinstance/adminPassword.txt``
