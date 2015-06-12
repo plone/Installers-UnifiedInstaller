@@ -6,7 +6,7 @@ For a non-super-user (rootless) installation
 ============================================
 
 If you run the installation while logged in as a normal (non-root) user,
-Python/Zope/Plone will be built at *$HOME/Plone* (the user's home
+Python/Zope/Plone will be built at ``$HOME/Plone`` (the user's home
 directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
@@ -14,6 +14,17 @@ privileges of that user.
 To install Plone 5.0b2 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command::
+
+TODO: MISSING COMMANDS
+
+Install Location, Root-less Install
+===================================
+
+- Base install at ``$HOME/Plone``, where ``$HOME`` is the user's home
+  directory, by default. This may be changed with the ``--target`` installation
+  option. If you change it, you'll also need to change the paths below.
+
+- Python installed at ``$HOME/Plone/Python-2.7``
 
 For a super-user (root) installation
 ====================================
@@ -38,4 +49,6 @@ or on a sudo-less system
 .. code-block:: bash
 
   $ su; ./install.sh standalone
+
+
 
