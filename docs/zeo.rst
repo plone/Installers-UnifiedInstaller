@@ -23,7 +23,6 @@ privileges of that user.
 
 To install Plone 5.0in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
-
 * cd to the installer directory and issue the following command::
 
 .. code-block:: bash
@@ -37,13 +36,13 @@ To start Plone:
 
 .. code-block:: bash
 
-	$ $HOME/Plone/zeocluster/bin/plonectl start
+  $ $HOME/Plone/zeocluster/bin/plonectl start
 
 To stop Plone:
 
 .. code-block:: bash
 
-	$ $HOME/Plone/zeocluster/bin/plonectl stop
+  $ $HOME/Plone/zeocluster/bin/plonectl stop
 
 To restart Plone:
 
@@ -57,17 +56,16 @@ To check status:
 
   $ $HOME/Plone/zeocluster/bin/plonectl status
 
-
 Install Location, Root-less Install
 -----------------------------------
 
 - ZEO cluster (server and 2 clients) installed and configured at
     ``$HOME/Plone/zeocluster``
     Both ``--target`` and ``--name`` options may change this.
-  - Add-on Products folder at ``$HOME/Plone/zeocluster/products``
+- Add-on Products folder at ``$HOME/Plone/zeocluster/products``
     (You may also install products via buildout.)
-  - ``Data.fs`` (ZODB) at ``$HOME/Plone/zeocluster/var/filestorage``
-  - ``adminPassword.txt`` at ``$HOME/Plone/zeocluster/adminPassword.txt``
+- ``Data.fs`` (ZODB) at ``$HOME/Plone/zeocluster/var/filestorage``
+- ``adminPassword.txt`` at ``$HOME/Plone/zeocluster/adminPassword.txt``
 
 For a super-user (root) installation
 =====================================
@@ -85,13 +83,13 @@ To install Plone 5.0b2 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 .. code-block:: bash
 
-	$ sudo ./install.sh zeo
+  $ sudo ./install.sh zeo
 
 or on a sudo-less system:
 
 .. code-block:: bash
 
-	$ su; ./install.sh zeo
+  $ su; ./install.sh zeo
 
 The "sudo" utility is required for a root install. This security utility is
 included with most recent Unix workalikes and is easily installed on other
@@ -105,26 +103,25 @@ To start Plone:
 
 .. code-block:: bash
 
-	$ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl start
+  $ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl start
 
 To stop Plone:
 
 .. code-block:: bash
 
-	$ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl stop
+  $ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl stop
 
 To restart Plone:
 
 .. code-block:: bash
 
-	$ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl restart
+  $ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl restart
 
 To check status:
 
 .. code-block:: bash
 
-	$ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl status
-
+  $ sudo -u plone_daemon /opt/plone/zeocluster/bin/plonectl status
 Install Location, Root Install
 ------------------------------
 
