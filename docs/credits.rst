@@ -3,7 +3,7 @@ Credits
 =======
 
 The Unified Installer was originally developed for Plone 2.5 by Kamal Gill.
-Adaptation to Plone 3.x, 4.x, 5x and buildout: Steve McMahon (steve@dcn.org)
+Adaptation to Plone 3.x, 4.x and buildout: Steve McMahon (steve@dcn.org)
 Maintainer for Plone 3.x, 4.x: Steve McMahon
 
 Thanks to Martin Aspeli and Wichert Akkerman for vital hints and suggestions
