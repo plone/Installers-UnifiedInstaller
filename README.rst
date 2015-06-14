@@ -21,7 +21,7 @@ Features
 - create system user and group for running plone
 - and more
 
-For a full list of features, please check http://docs.plone.org/manage/installing/installation.html/unified-unix-installer/options.
+For a full list of features, please check http://docs.plone.org/manage/installing/unified-unix-installer/options.
 
 Installation
 ------------
