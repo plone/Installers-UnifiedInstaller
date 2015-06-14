@@ -1,6 +1,6 @@
-====
+===
 Zeo
-====
+===
 
 .. admonition:: Description
 
@@ -28,7 +28,7 @@ To install Plone 5.0in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 .. code-block:: bash
 
-$ ./install.sh zeo
+  $ ./install.sh zeo
 
 Startup/Shutdown/Restart/Status instructions
 --------------------------------------------
@@ -49,13 +49,13 @@ To restart Plone:
 
 .. code-block:: bash
 
-    $  $HOME/Plone/zeocluster/bin/plonectl restart
+  $  $HOME/Plone/zeocluster/bin/plonectl restart
 
 To check status:
 
 .. code-block:: bash
 
-    $ $HOME/Plone/zeocluster/bin/plonectl status
+  $ $HOME/Plone/zeocluster/bin/plonectl status
 
 
 Install Location, Root-less Install

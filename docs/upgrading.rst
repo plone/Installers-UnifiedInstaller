@@ -1,5 +1,8 @@
+====================
 Upgrade Instructions
 ====================
+
+.. contents:: :local:
 
 For general instructions on upgrading a Plone installation,
 see `Plone Upgrade Guide
