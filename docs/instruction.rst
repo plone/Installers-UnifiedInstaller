@@ -4,7 +4,7 @@ Installation Instructions
 
 The installer will compile Python, Zope, and key required libraries from
 source on an as-needed basis. (Basic build tools and common libraries are
-required. See `Utility Dependencies <http://docs.plone.org/installing/unified-unix-installer/dependencies>`_ .
+required. See `Utility Dependencies <http://docs.plone.org/installing/unified-unix-installer/dependencies>`_.
 
 For different install options, please read our docs about all the different `install options <http://docs.plone.org/installing/unified-unix-installer/options>`_.  
 
