@@ -10,6 +10,8 @@ installed in a way that will not change or interfere with your system Python.
 **Important: Back up your existing Plone site prior to running the installer
 or running buildout to update.**
 
+.. contents:: :local:
+
 Features
 --------
 
@@ -55,9 +57,8 @@ Please see http://docs.plone.org/manage/installing/installation.html/unified-uni
 Documentation
 -------------
 
-Full documentation for end users can be found in the "docs" folder, and is also available online at http://docs.plone.org/foo/bar
+Full documentation for end users can be found in the ``/docs`` directory of this repository, and is also available at http://docs.plone.org/foo/bar
 
-TODO: ADD LINK TO /DOCS/DIR HERE
 
 Contribute
 ----------
