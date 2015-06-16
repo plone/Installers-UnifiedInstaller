@@ -3,7 +3,7 @@ Upgrade Instructions
 
 For general instructions on upgrading a Plone installation,
 see `Plone Upgrade Guide
-<http://plone.org/documentation/manual/upgrade-guide/>`_ .
+<http://docs.plone.org/manage/upgrading/index.html>`_ .
 
 Major Version Upgrades
 ======================
