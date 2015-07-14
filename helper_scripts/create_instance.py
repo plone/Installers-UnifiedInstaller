@@ -6,6 +6,7 @@
 # that will choose the exec Python.
 #
 
+from distutils.dir_util import copy_tree
 from i18n import _
 
 import argparse
@@ -41,17 +42,6 @@ def createPassword():
     return pw
 
 
-# find the full egg name for a module in the buildout-cache
-def findEgg(basename, plone_home):
-    return glob.glob(
-        "%s*.egg" % os.path.join(
-            plone_home,
-            'buildout-cache',
-            'eggs',
-            basename)
-        )[0]
-
-
 def doCommand(command):
     po = subprocess.Popen(command,
                           shell=True,
@@ -60,16 +50,6 @@ def doCommand(command):
     stdout, stderr = po.communicate()
     sys.stderr.write(stdout)
     return po.returncode
-
-
-# apply substitutions to a file
-def inPlaceSub(fn, substitutions):
-    fd = file(fn)
-    contents = fd.read()
-    fd.close()
-    fd = file(fn, 'w')
-    fd.write(contents % substitutions)
-    fd.close()
 
 
 ##########################################################
@@ -96,22 +76,15 @@ if not opt.password:
 opt.root_install = bool(int(opt.root_install))
 opt.run_buildout = bool(int(opt.run_buildout))
 
-substitutions = {
-    "PLONE_HOME": opt.plone_home,
-    "INSTANCE_HOME": opt.instance_home,
-    "DAEMON_USER": opt.daemon_user,
-    "BUILDOUT_USER": opt.buildout_user,
-    "PASSWORD": opt.password,
-    "PYTHON": sys.executable,
-    "SETUPTOOLS_EGG": findEgg('setuptools', opt.plone_home),
-    "BUILDOUT_EGG": findEgg('zc.buildout', opt.plone_home),
-}
-
 ##########################################################
 # Copy the buildout skeleton into place, clean up a bit
 #
 print _("Copying buildout skeleton")
-shutil.copytree(os.path.join(opt.uidir, 'base_skeleton'), opt.instance_home)
+copy_tree(
+    os.path.join(opt.uidir, 'base_skeleton'),
+    opt.instance_home,
+    update=1
+    )
 
 # remove OS X and svn detritus (this is mainly helpful for installer development)
 doCommand('find %s -name "._*" -exec rm {} \; > /dev/null' % opt.instance_home)
@@ -192,12 +165,6 @@ fd.close()
 os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
 
 
-# boostrapping is problematic when the python may not have the right
-# components; so, let's fix up the bin/buildout ourselves.
-print _("Fixing up bin/buildout")
-inPlaceSub(os.path.join(opt.instance_home, 'bin', 'buildout'), substitutions)
-
-
 ################
 # Start the fun!
 if opt.run_buildout:
@@ -213,7 +180,7 @@ if opt.run_buildout:
             print _("\nlxml build failed.")
             print _("See log file for details.")
             print
-            print _("Try preinstalling up-to-date libxml2/libxslt system libraries, then run")
+            print _("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
             print _("the installer again.")
         else:
             # test generated lxml via lxmlpy interpreter installed during build
@@ -225,7 +192,7 @@ if opt.run_buildout:
                 print _("lxml built with no errors, but does not have a working etree component.")
                 print _("See log file for details.")
                 print
-                print _("Try preinstalling up-to-date libxml2/libxslt system libraries, then run")
+                print _("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
                 print _("the installer again.")
             else:
                 # cleanup; if we leave around .installed.cfg, it will give
@@ -267,8 +234,9 @@ if opt.run_buildout:
     my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
     if doCommand(my_python + " -c 'from PIL._imaging import jpeg_decoder'"):
         print _("Failed: JPEG support is not available.")
-        print _("If the installer did not built a static libjpeg, using")
-        print _("--libjpeg=yes option may cure this problem.")
+        print
+        print _("Try preinstalling up-to-date libjpeg development libraries, then run")
+        print _("the installer again.")
         sys.exit(1)
     if doCommand(my_python + " -c 'from lxml import etree'"):
         print _("Failed: lxml does not have a working etree component.")

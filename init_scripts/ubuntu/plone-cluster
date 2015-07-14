@@ -2,12 +2,12 @@
 # /etc/init.d/zeocluster
 # Startup script for Zope with ZEOCluster
 #
-# adapted for Ubuntu paths, Plone 3.0 version and LSB functions
+# adapted for Ubuntu paths, Plone 5.0 version and LSB functions
 #
 # description: Zope, a web application server
 # this works as is for a default universal plone linux install
 #
-# config: /usr/local/plone/zeocluster/buildout.cfg
+# config: /opt/plone/zeocluster/buildout.cfg
 
 # LSB Source function library
 . /lib/lsb/init-functions
@@ -15,7 +15,7 @@
 RETVAL=0
 
 # this is for the default install path for Plone-4.x-buildout
-clusterpath="/usr/local/Plone/zeocluster"
+clusterpath="/opt/plone/zeocluster"
 
 prog="plone"
 

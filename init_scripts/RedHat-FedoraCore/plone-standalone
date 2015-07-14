@@ -16,7 +16,7 @@
 # Typical removal:
 # sudo /sbin/chkconfig --del plone
 #
-# config: /usr/local/plone/zinstance/buildout.cfg
+# config: /opt/plone/zinstance/buildout.cfg
 
 # Source function library.
 if [ -f /etc/init.d/functions ] ; then
@@ -30,7 +30,7 @@ fi
 RETVAL=0
 
 # this is for the default install path for Plone-3.0-buildout
-standalonepath="/usr/local/Plone/zinstance"
+standalonepath="/opt/plone/zinstance"
 prog="plone"
 
 start() {

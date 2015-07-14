@@ -1,5 +1,5 @@
 # Unified Plone installer build script
-# Copyright (c) 2008-2014 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2015 Plone Foundation. Licensed under GPL v 2.
 #
 
 # Path for Root install
@@ -8,8 +8,9 @@
 if [ `uname` = "Darwin" ]; then
     PLONE_HOME=/Applications/Plone
 else
-    PLONE_HOME=/usr/local/Plone
+    PLONE_HOME=/opt/plone
 fi
+
 # Path options for Non-Root install
 #
 # Path for install of Python/Zope/Plone
@@ -21,14 +22,6 @@ ZEOCLUSTER_HOME=zeocluster
 RINSTANCE_HOME=zinstance
 
 INSTALL_LXML=no
-INSTALL_ZLIB=auto
-INSTALL_JPEG=auto
-if [ `uname` = "Darwin" ]; then
-  # Darwin ships with a readtext rather than readline; it doesn't work.
-  INSTALL_READLINE=yes
-else
-  INSTALL_READLINE=auto
-fi
 
 # default user/group ids for root installs; ignored in non-root.
 DAEMON_USER=plone_daemon
@@ -38,7 +31,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0a2
+readonly FOR_PLONE=5.0b2
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -46,16 +39,12 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=http://www.python.org/ftp/python/2.7.6/Python-2.7.6.tgz
-readonly PYTHON_MD5=1d8728eb0dfcac72a0fd99c17ec7f386
-readonly PYTHON_TB=Python-2.7.6.tgz
-readonly PYTHON_DIR=Python-2.7.6
-readonly JPEG_TB=jpegsrc.v9a.tar.bz2
-readonly JPEG_DIR=jpeg-9a
-readonly READLINE_TB=readline-6.2.tar.bz2
-readonly READLINE_DIR=readline-6.2
-readonly VIRTUALENV_TB=virtualenv-1.11.4.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-1.11.4
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz
+readonly PYTHON_MD5=5eebcaa0030dc4061156d3429657fb83
+readonly PYTHON_TB=Python-2.7.9.tgz
+readonly PYTHON_DIR=Python-2.7.9
+readonly VIRTUALENV_TB=virtualenv-13.0.3.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-13.0.3
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
@@ -104,7 +93,6 @@ usage () {
 # Pick up options from command line
 #
 #set defaults
-INSTALL_ZEO=0
 INSTALL_STANDALONE=0
 INSTANCE_NAME=""
 WITH_PYTHON=""
@@ -116,6 +104,7 @@ INSTALL_LOG="$ORIGIN_PATH/install.log"
 CLIENT_COUNT=2
 TEMPLATE=buildout
 WITHOUT_SSL="no"
+INSTALL_ZEO=0
 
 USE_WHIPTAIL=0
 if [ "$BASH_VERSION" ] && [ "X$1" == "X" ]; then
@@ -202,22 +191,6 @@ do
         --group=* | -group=* )
             if [ "$optarg" ]; then
                 PLONE_GROUP="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --jpeg=* | --libjpeg=* )
-            if [ "$optarg" ]; then
-                INSTALL_JPEG="$optarg"
-            else
-                usage
-            fi
-            ;;
-
-        --readline=* | --libreadline=* )
-            if [ "$optarg" ]; then
-                INSTALL_READLINE="$optarg"
             else
                 usage
             fi
@@ -476,27 +449,41 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     . ./buildenv.sh
 fi
 
+
+# Begin the process of finding a viable Python or creating one
+# if it can't be found.
+
 if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
+    # There is a Python that was probably built by the installer;
+    # use it.
     HAVE_PYTHON=yes
     if [ "X$WITH_PYTHON" != "X" ]; then
         echo "$IGNORING_WITH_PYTHON"
-	WITH_PYTHON=''
+        WITH_PYTHON='$PLONE_HOME/Python-${WANT_PYTHON}/bin/python'
     fi
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
-else
-    HAVE_PYTHON=no
+fi
 
-    # shared message for need python
-    python_usage () {
-        eval "echo \"$NEED_INSTALL_PYTHON_MSG\""
+# shared message for need python
+python_usage () {
+    eval "echo \"$NEED_INSTALL_PYTHON_MSG\""
+    exit 1
+}
+
+
+if [ "X$BUILD_PYTHON" = "Xyes" ]; then
+    # if OpenBSD, apologize and surrender
+    if [ `uname` = "OpenBSD" ]; then
+        eval "echo\"$SORRY_OPENSSL\""
         exit 1
-    }
+    fi
 
     # check to see if we've what we need to build a suitable python
-    # Abort install if no libz
+    # Abort install if no libz or libssl
+
     if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
         echo $NEED_INSTALL_LIBZ_MSG
         exit 1
@@ -508,40 +495,33 @@ else
             exit 1
         fi
     fi
+else
+    # no build Python specified
 
-    if [ "X$BUILD_PYTHON" = "Xyes" ]; then
-        # if OpenBSD, apologize and surrender
-        if [ `uname` = "OpenBSD" ]; then
-            eval "echo\"$SORRY_OPENSSL\""
-            exit 1
-        fi
-    else
-        if [ "X$WITH_PYTHON" = "X" ]; then
-            # try to find a Python
-            WITH_PYTHON=`which python${WANT_PYTHON}`
-            if [ $? -gt 0 ] || [ "X$WITH_PYTHON" = "X" ]; then
-                eval "echo \"$PYTHON_NOT_FOUND\""
-                python_usage
-            fi
-        fi
-        # check our python
-        if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
-            eval "echo \"$TESTING_WITH_PYTHON\""
-            if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-                eval "echo \"$WITH_PYTHON_IS_OK\""
-                echo
-                # if the supplied Python is adequate, we don't need to build libraries
-                INSTALL_ZLIB=no
-                INSTALL_READLINE=no
-                WITHOUT_SSL="yes"
-            else
-                eval "echo \"$WITH_PYTHON_IS_BAD\""
-                python_usage
-            fi
-        else
-            eval "echo \"$WITH_PYTHON_NOT_EX\""
+    if [ "X$WITH_PYTHON" = "X" ]; then
+        # try to find a Python
+        WITH_PYTHON=`which python${WANT_PYTHON}`
+        if [ $? -gt 0 ] || [ "X$WITH_PYTHON" = "X" ]; then
+            eval "echo \"$PYTHON_NOT_FOUND\""
             python_usage
         fi
+    fi
+
+    # We have a Python, let's see if it's viable.
+    if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
+        eval "echo \"$TESTING_WITH_PYTHON\""
+        if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
+            eval "echo \"$WITH_PYTHON_IS_OK\""
+            echo
+            # if the supplied Python is adequate, we don't need to build libraries
+            WITHOUT_SSL="yes"
+        else
+            eval "echo \"$WITH_PYTHON_IS_BAD\""
+            python_usage
+        fi
+    else
+        eval "echo \"$WITH_PYTHON_NOT_EX\""
+        python_usage
     fi
 fi
 
@@ -636,23 +616,6 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
 fi # not skip tool tests
 
 
-if [ "X$INSTALL_JPEG" = "Xauto" ] ; then
-    if [ "X$HAVE_LIBJPEG" = "Xyes" ] ; then
-        INSTALL_JPEG=no
-    else
-        INSTALL_JPEG=yes
-    fi
-fi
-
-if [ "X$INSTALL_READLINE" = "Xauto" ] ; then
-    if [ "X$HAVE_LIBREADLINE" = "Xyes" ] ; then
-        INSTALL_READLINE=no
-    else
-        INSTALL_READLINE=yes
-    fi
-fi
-
-
 ######################################
 # Pre-install messages
 if [ $ROOT_INSTALL -eq 1 ]; then
@@ -671,9 +634,6 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "ZEOCLUSTER_HOME=$ZEOCLUSTER_HOME"
     echo "RINSTANCE_HOME=$RINSTANCE_HOME"
     echo "INSTALL_LXML=$INSTALL_LXML"
-    echo "INSTALL_ZLIB=$INSTALL_ZLIB"
-    echo "INSTALL_JPEG=$INSTALL_JPEG"
-    echo "INSTALL_READLINE=$INSTALL_READLINE"
     echo "DAEMON_USER=$DAEMON_USER"
     echo "BUILDOUT_USER=$BUILDOUT_USER"
     echo "PLONE_GROUP=$PLONE_GROUP"
@@ -692,7 +652,6 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "PKG=$PKG"
     echo "WITH_PYTHON=$WITH_PYTHON"
     echo "BUILD_PYTHON=$BUILD_PYTHON"
-    echo "HAVE_PYTHON=$HAVE_PYTHON"
     echo "CC=$CC"
     echo "CPP=$CPP"
     echo "CXX=$CXX"
@@ -726,8 +685,8 @@ if [ $? -gt 0 ]; then
     INSTALL_LOG="/dev/stdout"
 else
     eval "echo \"$LOGGING_MSG\""
-    echo "Detailed installation log" > "$INSTALL_LOG
-    echo "Starting at `date`" >> "$INSTALL_LOG
+    echo "Detailed installation log" > "$INSTALL_LOG"
+    echo "Starting at `date`" >> "$INSTALL_LOG"
 fi
 seelog () {
     eval "echo \"$SEE_LOG_EXIT_MSG\""
@@ -804,76 +763,7 @@ fi
 
 cd "$CWD"
 
-if  [ "X$INSTALL_ZLIB" = "Xyes" ] || \
-    [ "X$INSTALL_JPEG" = "Xyes" ] || \
-    [ "X$INSTALL_READLINE" = "Xyes" ]
-then
-    NEED_LOCAL=1
-else
-    NEED_LOCAL=0
-fi
-
-
-if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
-    PYBNAME=`basename "$WITH_PYTHON"`
-    PY_HOME=$PLONE_HOME/Python-2.7
-    cd "$PKG"
-    untar $VIRTUALENV_TB
-    cd $VIRTUALENV_DIR
-    echo $CREATING_VIRTUALENV
-    "$WITH_PYTHON" virtualenv.py --no-setuptools "$PY_HOME"
-    cd "$PKG"
-    rm -r $VIRTUALENV_DIR
-    PY=$PY_HOME/bin/python
-    if [ ! -x "$PY" ]; then
-        eval "echo \"$VIRTUALENV_CREATION_FAILED\""
-        exit 1
-    fi
-    cd "$PY_HOME"/bin
-    if [ ! -x python ]; then
-        # add a symlink so that it's easy to use
-        ln -s "$PYBNAME" python
-    fi
-    cd "$CWD"
-    if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-        echo $VIRTUALENV_BAD
-        exit 1
-    fi
-else # use already-placed python or build one
-    PY_HOME=$PLONE_HOME/Python-2.7
-    PY=$PY_HOME/bin/python
-    if [ -x "$PY" ]; then
-        # no point in installing zlib -- too late!
-        INSTALL_ZLIB=no
-    fi
-fi
-
-
-# Now we know where our Python is, and may finish setting our paths
-LOCAL_HOME="$PY_HOME"
-EI="$PY_HOME/bin/easy_install"
-BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
-BUILDOUT_DIST="$PLONE_HOME/buildout-cache/downloads/dist"
-
-if [ ! -x "$LOCAL_HOME" ]; then
-    mkdir "$LOCAL_HOME"
-fi
-if [ ! -x "$LOCAL_HOME" ]; then
-    echo "Unable to create $LOCAL_HOME"
-    exit 1
-fi
-
-. helper_scripts/build_libjpeg.sh
-
-if [ ! -x "$PY" ]; then
-    . helper_scripts/build_readline.sh
-
-    if [ `uname` = "Darwin" ]; then
-        # Remove dylib files that will prevent static linking,
-        # which we need for relocatability
-        rm -f "$PY_HOME/lib/"*.dylib
-    fi
-
+if [ "X$BUILD_PYTHON" = "Xyes" ]; then
     # download python tarball if necessary
     cd "$PKG"
     if [ ! -f $PYTHON_TB ]; then
@@ -882,14 +772,50 @@ if [ ! -x "$PY" ]; then
     fi
     cd "$CWD"
 
+    PY_HOME="$PLONE_HOME/Python-${WANT_PYTHON}"
+    WITH_PYTHON="${PY_HOME}/bin/python"
     . helper_scripts/build_python.sh
 
-    if "$PY" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
+
+    if "$WITH_PYTHON" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo $PYTHON_BUILD_OK
     else
         echo $PYTHON_BUILD_BAD
         exit 1
     fi
+
+fi
+
+
+# Create and check a Python virtualenv
+PYBNAME=`basename "$WITH_PYTHON"`
+PY_HOME="$INSTANCE_HOME"
+cd "$PKG"
+untar $VIRTUALENV_TB
+cd $VIRTUALENV_DIR
+echo $CREATING_VIRTUALENV
+"$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
+cd "$PKG"
+rm -r $VIRTUALENV_DIR
+PY=$PY_HOME/bin/python
+if [ ! -x "$PY" ]; then
+    eval "echo \"$VIRTUALENV_CREATION_FAILED\""
+    exit 1
+fi
+cd "$CWD"
+if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
+    echo $VIRTUALENV_BAD
+    exit 1
+fi
+
+
+# Install zc.buildout in the virtualenv
+echo $INSTALLING_BUILDOUT
+"${PY_HOME}/bin/pip" install "$PKG"/zc.buildout* >> "$INSTALL_LOG" 2>&1
+if [ $? -gt 0 ]; then
+    echo $INSTALLING_BUILDOUT_FAILED
+    seelog
+    exit 1
 fi
 
 
@@ -903,6 +829,10 @@ if [ `uname` != "Darwin" ]; then
     unset LDFLAGS
 fi
 
+
+# Create the buildout cache
+BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
+BUILDOUT_DIST="$PLONE_HOME/buildout-cache/downloads/dist"
 if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     if [ -x "$BUILDOUT_CACHE" ]; then
         eval "echo \"$FOUND_BUILDOUT_CACHE\""
@@ -926,6 +856,8 @@ else
     mkdir "$BUILDOUT_CACHE"/downloads
 fi
 
+
+# copy docs
 if [ -x "$CWD/Plone-docs" ] && [ ! -x "$PLONE_HOME/Plone-docs" ]; then
     echo "Copying Plone-docs"
     cp -R "$CWD/Plone-docs" "$PLONE_HOME/Plone-docs"

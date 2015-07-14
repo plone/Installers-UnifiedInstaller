@@ -254,7 +254,7 @@ Installation has failed.
 
 INSTANCE_HOME_EXISTS='Instance target $INSTANCE_HOME already exists\; aborting install.'
 
-CREATING_VIRTUALENV="Creating python virtual environment, no site packages, no setuptools."
+CREATING_VIRTUALENV="Creating Python virtual environment."
 
 VIRTUALENV_CREATION_FAILED='
 Failed to create virtual environment for $WITH_PYTHON'
@@ -275,6 +275,10 @@ Check messages and the install.log to find out what went wrong.
 
 See the "Built Python does not meet requirements" section of
 README.txt for more information about this error.'
+
+INSTALLING_BUILDOUT='Installing zc.buildout in virtual environment.'
+
+INSTALLING_BUILDOUT_FAILED='Unable to install zc.buildout in virtual environment.'
 
 FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE\; skipping step.'
 
@@ -316,12 +320,6 @@ To report errors with the installer, visit http://dev.plone.org/plone
 and specify component "Installer (Unified)".
 '
 
-# build_libjpeg.sh
-
-INSTALLING_JPEG="Compiling and installing jpeg local libraries ..."
-
-SKIPPING_JPEG="Skipping libjpeg build"
-
 # build_python.sh
 
 INSTALLING_PYTHON='Installing ${PYTHON_DIR}. This takes a while...'
@@ -331,14 +329,6 @@ UNABLE_TO_CONFIGURE_PY="Unable to configure Python build."
 PY_BUILD_FAILED="Python build has failed."
 
 INSTALL_PY_FAILED='Install of ${PYTHON_DIR} has failed.'
-
-# build_readline.sh
-
-INSTALLING_READLINE="Compiling and installing readline local libraries ..."
-
-LREADLINE_FAILED="Local install of readline has failed"
-
-SKIPPING_READLINE="Skipping readline build"
 
 # user_group_utilities.sh
 
@@ -355,9 +345,8 @@ ADD_USER_TO_GROUP='Adding user $TARGET_USER to group $TARGET_GROUP.'
 USING_PW="Using pw to create users and groups"
 
 UNKNOWN_USER_ENV='We do not know how to add users and groups in this environment.
-Please add users and group manually, then try again.
-See README.txt for instructions on how to proceed.
+This is no problem if the required users and group already exist.
 '
 
 UG_CREATE_FAILED='Expected to find uid for $TARGET_USER and gid for $TARGET_GROUP but did not.
-Please use your system tools to create/edit users and groups, then try again.'
+Please use your system tools to create/edit required users and group, then try again.'

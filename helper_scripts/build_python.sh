@@ -3,7 +3,6 @@
 # note: Install readline and zlib before running this script
 #
 
-echo "Installing ${PYTHON_DIR}. This takes a while..."
 eval "echo \"$INSTALLING_PYTHON\""
 cd "$PKG"
 untar "$PYTHON_TB"

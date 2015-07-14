@@ -16,7 +16,7 @@
 # Typical removal:
 # sudo /sbin/chkconfig --del plone
 #
-# config: /usr/local/plone/zeocluster/buildout.cfg
+# config: /opt/plone/zeocluster/buildout.cfg
 
 # Source function library.
 if [ -f /etc/init.d/functions ] ; then
@@ -31,7 +31,7 @@ RETVAL=0
 # list zeo clients in the list below
 zeoclients="client1 client2"
 # this is for the default install path for Plone-3.0-buildout
-clusterpath="/usr/local/Plone/zeocluster"
+clusterpath="/opt/plone/zeocluster"
 prog="plone"
 user="plone_daemon"
 

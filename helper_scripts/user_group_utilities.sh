@@ -100,10 +100,16 @@ elif [ -x /usr/sbin/pw ]; then
         fi
     }
 else
-    # we don't know what we're doing -- so don't do it.
     check_ug_ability () {
-            echo $UNKNOWN_USER_ENV
-        exit 1
+        echo $UNKNOWN_USER_ENV
+    }
+
+    # we don't know what we're doing -- so don't do anything.
+    create_user () {
+        return 0
+    }
+    create_group () {
+        return 0
     }
 fi
 

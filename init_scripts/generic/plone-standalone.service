@@ -1,12 +1,12 @@
 [Unit]
 Description=Plone
 After=network.target
-     
+
 [Service]
 Type=forking
-ExecStart=/usr/local/Plone/zinstance/bin/plonectl start
-ExecStop=/usr/local/Plone/zinstance/bin/plonectl stop
-ExecReload=/usr/local/Plone/zinstance/bin/plonectl restart
-   
+ExecStart=/opt/plone/zinstance/bin/plonectl start
+ExecStop=/opt/plone/zinstance/bin/plonectl stop
+ExecReload=/opt/plone/zinstance/bin/plonectl restart
+
 [Install]
 WantedBy=multi-user.target

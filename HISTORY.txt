@@ -1,3 +1,52 @@
+5.0b2-r2 - unreleased
+
+- Update virtualenv to 13.0.1. Suppress misleading pip messages.
+
+- Install would fail if installing sudo in an environment where
+  it doesn't know how to created users/groups -- even if users and
+  group existed. Fixes #32.
+
+5.0b2-r1 - 2015-05-26
+
+- precompiler was missing from packages. Fixed.
+
+5.0b2 - 2015-05-23
+
+- Update virtualenv to 13.0.1.
+
+- Remove "-pending"
+
+- Eliminate bootstrap.py; install zc.buildout via pip in
+  virtualenv to avoid setuptools conflicts. Thanks, Jens.
+  https://community.plone.org/t/not-using-bootstrap-py-as-default/620
+
+- Change virtualenv strategy. Install inside the instance rather
+  than base directory.
+
+- Update links in README.
+
+- Fix jpeg missing message. Closes #28.
+
+- Update to 5.0b2-pending.
+
+5.0b1
+==================
+
+- Change root-method install default target from /usr/local/Plone
+  to /opt/plone. This is principally to work around a bug in the
+  patched Python 2.7.x in some versions of debian/ubuntu which
+  sabotage Python installs under /usr/local for recent versions
+  of setuptools.
+
+- Update to use recent setuptools.
+
+- Remove facilities to build readline and jpeg libraries. We really
+  wish to discourage any local libraries.
+
+- Replace zopeskel with mr.bob.
+
+- Adapt to Plone 5.0b1
+
 5.0a2 - 2014-04-29
 ==================
 

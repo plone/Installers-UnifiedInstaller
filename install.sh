@@ -72,8 +72,6 @@
 #
 # Library build control options:
 #
-# --libjpeg=auto|yes|no
-# --readline=auto|yes|no
 # --static-lxml
 #   Forces a static build of libxml2 and libxslt dependencies. Requires
 #   Internet access to download components.
@@ -82,11 +80,12 @@
 # if available, use it.
 # Capture current working directory for build script
 ORIGIN_PATH=`pwd`
+export ORIGIN_PATH
 # change to directory with script
 PWD=`dirname $0`
 cd $PWD
 if which bash > /dev/null; then
-    bash helper_scripts/main_install_script.sh
+    bash helper_scripts/main_install_script.sh "$@"
 else
     . helper_scripts/main_install_script.sh
 fi
