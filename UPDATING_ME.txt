@@ -1,0 +1,57 @@
+Updating the Unified Installer
+==============================
+
+Use a text editor to replace old version with new. Do not auto-replace in HISTORY.txt.
+
+Update the version files:
+
+    cd base_skeleton
+    rm *versions.cfg
+    ../fetch_versions.py
+
+Run preliminary installs:
+
+    rm ~/Plone
+    ./install.sh zeo
+    ./install.sh standalone
+
+Expect these builds to fail, as the buildout cache is outdated.
+
+Buildout to update buildout cache:
+
+    cd ~/Plone/zeocluster
+    bin/buildout -c develop.cfg
+    cd ~/Plone/zinstance
+    bin/buildout -c develop.cfg
+
+Make sure these builds succeed.
+
+Update the buildout cache from the new builds:
+
+    cd ~/nui5.0 # or to your installer location
+    ./update_packages.py
+
+Sanity check installs:
+
+    rm ~/Plone
+    ./install.sh zeo
+    ./install.sh standalone
+
+If that fails, there is probably a version regression. Notify the release manager.
+
+Run the tests:
+
+    cd tests
+    python testall.py testout.txt
+
+Read the test results. Fix silly problems. Wash and repeat until clean.
+
+Build a new installer:
+
+    ./buildme.sh destination
+
+Upload to Launchpad.
+Update release page to link to new installer.
+Upload buildout cache to dist.plone.org.
+
+Tag and push.
