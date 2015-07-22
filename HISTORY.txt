@@ -1,5 +1,7 @@
 5.0b3-pending (unreleased)
 
+- Add checkdocs to develop.cfg.
+
 - Update versions.
 
 5.0b2-r2 - unreleased
