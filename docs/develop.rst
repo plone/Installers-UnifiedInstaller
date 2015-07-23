@@ -22,3 +22,7 @@ Common development tools:
  * Diazo command-line tools: diazocompile and diazorun. Useful for debugging and understanding Diazo and plone.app.theming. See http://docs.diazo.org/en/latest/compiler.html
 
  * zest.releaser, a kit for managing the release cycle for Python packages. See https://pypi.python.org/pypi/zest.releaser.
+
+ * pocompile, a tool to compile message translation files. https://pypi.python.org/pypi/zest.pocompile
+
+ * collective.checkdocs adds new distutils commands checkdocs and showdocs to validate restructured text in long_description field of Python eggs. This package aims to make Python egg help page publishing and editing easier.
