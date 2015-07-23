@@ -1,5 +1,7 @@
 5.0b3-pending (unreleased)
 
+- Update issue-report URLs.
+
 - Fix ownership problems with multiple instance installs to same target.
   Fixes #38.
 

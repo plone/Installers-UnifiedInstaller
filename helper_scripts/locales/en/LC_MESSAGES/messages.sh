@@ -310,14 +310,13 @@ NEED_HELP_MSG='
 - The live support channel also exists at http://plone.org/chat
 - You can read/post to the lists via http://plone.org/forums
 
-- Submit feedback and report errors at http://dev.plone.org/plone
-(For install problems, specify component "Installer (Unified)")
+- Submit feedback and report errors at https://github.com/plone/Products.CMFPlone/issues
+(For install problems, https://github.com/plone/Installers-UnifiedInstaller/issues)
 '
 
 REPORT_ERRORS_MSG='
 There were errors during the install.  Please read readme.txt and try again.
-To report errors with the installer, visit http://dev.plone.org/plone
-and specify component "Installer (Unified)".
+To report errors with the installer, visit https://github.com/plone/Installers-UnifiedInstaller/issues
 '
 
 # build_python.sh
