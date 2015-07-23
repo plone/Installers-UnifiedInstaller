@@ -1,6 +1,8 @@
 Updating the Unified Installer
 ==============================
 
+If you are working from a git clone you will not have the binary packaages. For a good starting point, copy the "packages" subdirectory from a previous installer tarball.
+
 Use a text editor to replace old version with new. Do not auto-replace in HISTORY.txt.
 
 Update the version files:
