@@ -15,7 +15,7 @@ Upgrading from Plone 2.x to Plone 4
 -----------------------------------
 
 You will nearly always want to upgrade your Plone 2.x installation first to a
-working Plone 3.3.x installation, then attempt the Plone 4 upgrade.
+working Plone 3.3.x installation, then attempt the Plone 5 upgrade.
 Upgrades of very old installations will nearly always require add-on-product
 problem solving.
 
@@ -33,25 +33,14 @@ Upgrading from Plone 3.2 or later
 
 The general strategy for this upgrade path is to:
 
-1) Independently install Plone 4
+1) Independently install Plone 5
 
-2) Get all of your add-on products working on your new Plone 4 install
+2) Get all of your add-on products working on your new Plone 5 install
 
    This will usually involve adding new product version specifications
-   to the "eggs" list of the Plone 4 install. If you're upgrading a
-   custom product, see  `Updating add-on products for Plone 4
-   <http://plone.org/documentation/manual/upgrade-guide/version/upgrading-plone-3-x-to-4.0/updating-add-on-products-for-plone-4.0>`_
-   
-3) Copy the ``Data.fs`` database file from your old to ``var/filestorage`` in
+   to the "eggs" list of the Plone 5 install. If you're upgrading a
+   custom product, see TODO: add Plone 5 add-on ugrade doc reference
+
+3) Copy the file and blob storage directories to
    your new install. Restart Zope and run the portal migration to update
    database entries to new formats.
-   
-Upgrading from an earlier Plone 4
----------------------------------
-
-You probably do not need a new installation. Instead, follow the 
-instructions in your ``buildout.cfg`` file for switching your version
-configuration file to use the latest available.
-
-Make sure you back up your complete installation before running
-any in-place update! 
