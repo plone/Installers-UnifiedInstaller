@@ -719,6 +719,11 @@ fi # if $ROOT_INSTALL
 # create plone home
 if [ ! -x "$PLONE_HOME" ]; then
     mkdir "$PLONE_HOME"
+    if [ $ROOT_INSTALL -eq 1 ]; then
+        chown "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME"
+        chmod g+s "$PLONE_HOME"
+    fi
+
     # normalize $PLONE_HOME so we can use it in prefixes
     if [ $? -gt 0 ] || [ ! -x "$PLONE_HOME" ]; then
         eval "echo \"$CANNOT_CREATE_HOME\""
@@ -795,6 +800,9 @@ untar $VIRTUALENV_TB
 cd $VIRTUALENV_DIR
 echo $CREATING_VIRTUALENV
 "$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
+if [ $ROOT_INSTALL -eq 1 ]; then
+    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PY_HOME"
+fi
 cd "$PKG"
 rm -r $VIRTUALENV_DIR
 PY=$PY_HOME/bin/python
@@ -849,11 +857,17 @@ if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
         seelog
         exit 1
     fi
+    if [ $ROOT_INSTALL -eq 1 ]; then
+        chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
+    fi
 else
     mkdir "$BUILDOUT_CACHE"
     mkdir "$BUILDOUT_CACHE"/eggs
     mkdir "$BUILDOUT_CACHE"/extends
     mkdir "$BUILDOUT_CACHE"/downloads
+    if [ $ROOT_INSTALL -eq 1 ]; then
+        chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
+    fi
 fi
 
 
@@ -861,6 +875,9 @@ fi
 if [ -x "$CWD/Plone-docs" ] && [ ! -x "$PLONE_HOME/Plone-docs" ]; then
     echo "Copying Plone-docs"
     cp -R "$CWD/Plone-docs" "$PLONE_HOME/Plone-docs"
+    if [ $ROOT_INSTALL -eq 1 ]; then
+        chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME/Plone-docs"
+    fi
 fi
 
 
@@ -874,21 +891,17 @@ mkdir "$WORKDIR" > /dev/null 2>&1
 cp -R ./buildout_templates "$WORKDIR"
 cp -R ./base_skeleton "$WORKDIR"
 cp -R ./helper_scripts "$WORKDIR"
+if [ $ROOT_INSTALL -eq 1 ]; then
+    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$WORKDIR"
+    find "$WORKDIR" -type d -exec chmod g+s {} \;
+fi
+
 
 ########################
 # Instance install steps
 ########################
 
 cd "$WORKDIR"
-
-if [ $ROOT_INSTALL -eq 1 ]; then
-    echo "Setting $PLONE_HOME ownership to $BUILDOUT_USER:$PLONE_GROUP"
-    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME"
-    # let's have whatever we create from now on sticky group'd
-    chmod g+s "$PLONE_HOME"
-    # including things copied from the work directory
-    find "$WORKDIR" -type d -exec chmod g+s {} \;
-fi
 
 ################################################
 # Install the zeocluster or stand-alone instance
@@ -898,6 +911,7 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     INSTALL_METHOD="standalone"
     CLIENT_COUNT=0
 fi
+
 $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--uidir=$WORKDIR" \
     "--plone_home=$PLONE_HOME" \

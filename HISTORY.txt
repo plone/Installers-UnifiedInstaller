@@ -1,5 +1,8 @@
 5.0b3-pending (unreleased)
 
+- Fix ownership problems with multiple instance installs to same target.
+  Fixes #38.
+
 - Add checkdocs to develop.cfg.
 
 - Update versions.
