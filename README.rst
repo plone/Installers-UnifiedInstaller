@@ -50,14 +50,20 @@ Run script:
 
   $ ./install.sh $OPTION
 
+If you run the installer with no option arguments, it will ask a series of questions about basic options.
+
+For a full list of options, many of which are not available via the dialog questions, use:
+
+  $ ./install.sh --help
+
 Please see http://docs.plone.org/manage/installing/installation.html/unified-unix-installer/options for a overview about all different options.
 
-.. note:: For certain install options you will have to run the installer with sudo or as root.
+.. note:: For certain production install options you will have to run the installer with sudo or as root. This is generally not necessary when building development or evaluation systems.
 
 Documentation
 -------------
 
-Full documentation for end users can be found in the ``/docs`` directory of this repository, and is also available at http://docs.plone.org/foo/bar
+Full documentation for end users can be found in the ``/docs`` directory of this repository, and is also available at http://docs.plone.org/foo/bar (TODO: establish final URL in Plone 5 docs)
 
 
 Contribute
