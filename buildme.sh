@@ -28,7 +28,7 @@ else
   TAR='tar'
 fi
 
-BASE_VER=5.0b3-pending
+BASE_VER=5.0b3
 NEWVER=${BASE_VER}
 INSTALLER_REVISION=""
 
@@ -62,9 +62,9 @@ mkdir ${TARGET_DIR}
 cd ${TARGET_DIR}
 
 echo "Getting docs"
-$WGET --no-check-certificate http://pypi.python.org/packages/source/P/Plone/Plone-${BASE_VER}.zip
-unzip Plone-${BASE_VER}.zip
-rm Plone-${BASE_VER}.zip
+$WGET --no-check-certificate https://github.com/plone/Plone/archive/${BASE_VER}.zip
+unzip ${BASE_VER}.zip
+rm ${BASE_VER}.zip
 mv Plone-${BASE_VER}/docs Plone-docs
 rm -r Plone-${BASE_VER}
 

@@ -1,2 +1,2 @@
-Plone version: 5.0b3-pending (with Zope 2.13.x, Python 2.7.x)
-Installer version: Unified Installer 5.0b3-pending
+Plone version: 5.0b3 (with Zope 2.13.x, Python 2.7.x)
+Installer version: Unified Installer 5.0b3

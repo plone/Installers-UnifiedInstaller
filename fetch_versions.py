@@ -6,7 +6,7 @@ import re
 import urllib2
 import urlparse
 
-version = '5.0b3-pending'
+version = '5.0b3'
 
 extends_pattern = re.compile(r"(^extends\s*?=\s*http.+?^\S)", re.MULTILINE + re.DOTALL)
 url_pattern = re.compile(r"(http\S+)")

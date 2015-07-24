@@ -1,3 +1,7 @@
+5.0b3 2015-07-24
+
+- Update to 5.0b3
+
 5.0b3-pending (unreleased)
 
 - Update issue-report URLs.
