@@ -43,8 +43,8 @@ readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz
 readonly PYTHON_MD5=d7547558fd673bd9d38e2108c6b42521
 readonly PYTHON_TB=Python-2.7.10.tgz
 readonly PYTHON_DIR=Python-2.7.10
-readonly VIRTUALENV_TB=virtualenv-13.1.0.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-13.1.0
+readonly VIRTUALENV_TB=virtualenv-13.1.2.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-13.1.2
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"

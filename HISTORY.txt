@@ -1,3 +1,9 @@
+5.0? Unreleased
+
+- Update virtualenv to 13.1.2
+
+- Update zc.buildout to 2.4.2
+
 5.0b4 2015-08-26
 
 - Update to 5.0b4
