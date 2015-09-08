@@ -1,4 +1,6 @@
-5.0? Unreleased
+5.0rc1 2015-09-08
+
+- Update to 5.0rc1
 
 - Update virtualenv to 13.1.2
 
