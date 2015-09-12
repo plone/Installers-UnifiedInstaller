@@ -306,9 +306,9 @@ otherwise complete and may be found at $PLONE_HOME
 NEED_HELP_MSG='
 
 
-- If you need help, ask the mailing lists or #plone on irc.freenode.net.
+- If you need help, ask in IRC channel #plone on irc.freenode.net.
 - The live support channel also exists at http://plone.org/chat
-- You can read/post to the lists via http://plone.org/forums
+- You can also ask for help on https://community.plone.org
 
 - Submit feedback and report errors at https://github.com/plone/Products.CMFPlone/issues
 (For install problems, https://github.com/plone/Installers-UnifiedInstaller/issues)
