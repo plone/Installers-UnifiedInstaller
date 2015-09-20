@@ -1,3 +1,9 @@
+5.0? Unreleased
+
+- Fix quoting error that would manifest if --with-python was specified and a Python was already built.
+  Fixes #43.
+  [Thanks, Oleg Sadov]
+
 5.0rc2 2015-09-13
 
 - Update to 5.0rc2

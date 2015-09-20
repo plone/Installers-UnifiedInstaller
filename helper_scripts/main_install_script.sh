@@ -459,7 +459,7 @@ if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
     HAVE_PYTHON=yes
     if [ "X$WITH_PYTHON" != "X" ]; then
         echo "$IGNORING_WITH_PYTHON"
-        WITH_PYTHON='$PLONE_HOME/Python-${WANT_PYTHON}/bin/python'
+        WITH_PYTHON="$PLONE_HOME/Python-${WANT_PYTHON}/bin/python"
     fi
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         echo "$IGNORING_BUILD_PYTHON"
