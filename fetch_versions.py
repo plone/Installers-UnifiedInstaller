@@ -3,10 +3,15 @@
 
 import os.path
 import re
+import sys
 import urllib2
 import urlparse
 
-version = '5.0rc2'
+try:
+    version = sys.argv[1]
+except IndexError:
+    print "Usage: fetch_versions version_#"
+    sys.exit(1)
 
 extends_pattern = re.compile(r"(^extends\s*?=\s*http.+?^\S)", re.MULTILINE + re.DOTALL)
 url_pattern = re.compile(r"(http\S+)")
