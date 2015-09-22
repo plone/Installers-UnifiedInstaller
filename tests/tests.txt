@@ -65,7 +65,7 @@ Test a ZEO install
     >>> print stdout
     <BLANKLINE>
     -etc-
-    Installing Plone 5.0rc2 at -etc-
+    Installing Plone 5.0rc3 at -etc-
     #####################################################################
     <BLANKLINE>
     ######################  Installation Complete  ######################
