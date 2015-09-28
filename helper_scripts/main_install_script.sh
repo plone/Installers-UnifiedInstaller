@@ -332,9 +332,9 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
             "$CHOOSE_CLIENTS_PROMPT" ; then
             whiptail_goodbye
         fi
-        CLIENTS=$WHIPTAIL_RESULT
-        if [ "X$CLIENTS" != "X" ]; then
-            CCHOICE="--clients=$CLIENTS"
+        CLIENT_COUNT=$WHIPTAIL_RESULT
+        if [ "X$CLIENT_COUNT" != "X" ]; then
+            CCHOICE="--clients=$CLIENT_COUNT"
         fi
     fi
 
