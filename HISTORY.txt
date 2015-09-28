@@ -1,3 +1,9 @@
+5.0 2015-09-26
+
+- Adapt to Plone 5.0
+
+- Dialog-driven choice of client count was always resulting in two clients. Fixed.
+
 5.0rc3 2015-09-22
 
 - Update to 5.0rc3
