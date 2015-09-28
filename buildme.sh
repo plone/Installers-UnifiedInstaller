@@ -28,7 +28,7 @@ else
   TAR='tar'
 fi
 
-BASE_VER=4.3.6
+BASE_VER=4.3.7
 NEWVER=${BASE_VER}
 
 SDIR=`pwd`

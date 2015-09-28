@@ -1,3 +1,15 @@
+4.3.7 - 2015-09-28
+
+- Update to Plone 4.3.7
+
+- Update to latest zc.buildout, setuptools
+
+- Replace ZopeSkel with mr.bob.
+
+4.3.6r1 - 2015-09-10
+
+- incorporate Products.PloneHotfix20150910==1.0
+
 4.3.6 - 2015-06-05
 
 - Update to 4.3.6
