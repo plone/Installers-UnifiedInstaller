@@ -56,7 +56,7 @@ For a full list of options, many of which are not available via the dialog quest
 
   $ ./install.sh --help
 
-Please see http://docs.plone.org/manage/installing/installation.html/unified-unix-installer/options for a overview about all different options.
+
 
 .. note:: For certain production install options you will have to run the installer with sudo or as root. This is generally not necessary when building development or evaluation systems.
 
