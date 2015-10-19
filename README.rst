@@ -21,7 +21,7 @@ Features
 - create system user and group for running plone
 - and more
 
-For a full list of features, please check http://docs.plone.org/manage/installing/unified-unix-installer/options.
+For a full list of features, please check http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer.
 
 Installation
 ------------
@@ -63,7 +63,7 @@ Please see http://docs.plone.org/manage/installing/installation.html/unified-uni
 Documentation
 -------------
 
-Full documentation for end users can be found in the ``/docs`` directory of this repository, and is also available at http://docs.plone.org/foo/bar (TODO: establish final URL in Plone 5 docs)
+Full documentation for end users can be found in the ``/docs`` directory of this repository, and is also available at http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer.
 
 
 Contribute
