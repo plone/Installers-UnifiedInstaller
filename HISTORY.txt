@@ -1,3 +1,7 @@
+4.3.7 - r1 - 2015-12-08
+
+- Products.PloneHotfix20151208 added to egg list.
+
 4.3.7 - 2015-09-28
 
 - Update to Plone 4.3.7

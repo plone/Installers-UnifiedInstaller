@@ -1,2 +1,2 @@
 Plone version: 4.3.7 (with Zope 2.13.x, Python 2.7.x)
-Installer version: Unified Installer 4.3.7 (incorporates Products.PloneHotfix20150910==1.0)
+Installer version: Unified Installer 4.3.7-r1 (incorporates Products.PloneHotfix20151208==1.0)
