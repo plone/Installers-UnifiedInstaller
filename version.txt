@@ -1,2 +1,2 @@
 Plone version: 5.0 (with Zope 2.13.x, Python 2.7.x)
-Installer version: Unified Installer 5.0
+Installer version: Unified Installer 5.0-r1
