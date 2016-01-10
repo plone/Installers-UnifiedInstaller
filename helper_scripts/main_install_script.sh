@@ -31,7 +31,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0
+readonly FOR_PLONE=5.0.2
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -359,7 +359,7 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
     fi
     PASSWORD="$WHIPTAIL_RESULT"
     if [ "X$PASSWORD" != "X" ]; then
-        PCHOICE="--password=\"$PASSWORD\""
+        PCHOICE="--password=\"*****...\""
     fi
 
     WHIPTAIL \
