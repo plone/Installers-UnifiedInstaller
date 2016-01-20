@@ -1,3 +1,7 @@
+5.0.? unreleased
+
+- Restore test for libjpeg, which got lost somewhere during the time that the library was optional.
+
 5.0.2 2015-01-10
 
 - Update to 5.0.2.
@@ -6,7 +10,7 @@
 
 - Update developer package pins to latest.
 
-- Mask password on confirmation dialog.
+- Mask password on confirmation dialog.si
 
 5.0 - r1 - 2015-12-08
 

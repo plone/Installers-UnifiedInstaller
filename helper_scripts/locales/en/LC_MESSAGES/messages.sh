@@ -161,6 +161,14 @@ Please use your system package or port manager to install libz dev.
 Exiting now.
 "
 
+NEED_INSTALL_LIBJPEG_MSG="
+
+Unable to find libjpeg library and headers. These are required to build Plone.
+Please use your system package or port manager to install libjpeg dev.
+(Debian/Ubuntu libjpeg-dev)
+Exiting now.
+"
+
 NEED_INSTALL_SSL_MSG="
 Unable to find libssl or openssl/ssl.h.
 libssl and its development headers are required for Plone.
