@@ -1,5 +1,8 @@
 5.0.? unreleased
 
+- Update virtualenv to 14.0.5. Fixes #44.
+  [Thanks, idgserpro]
+
 - Restore test for libjpeg, which got lost somewhere during the time that the library was optional.
 
 5.0.2 2015-01-10
