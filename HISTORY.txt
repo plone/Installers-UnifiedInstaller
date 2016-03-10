@@ -1,3 +1,7 @@
+4.3.8 - 2016-03-10
+
+- Update to Plone 4.3.8; remove hotfix.
+
 4.3.7 - r1 - 2015-12-08
 
 - Products.PloneHotfix20151208 added to egg list.
