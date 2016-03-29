@@ -31,7 +31,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0.2
+readonly FOR_PLONE=5.0.3
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -316,7 +316,7 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
     case $WHIPTAIL_RESULT in
         Standalone*)
             INSTALL_STANDALONE=1
-            METHOD=Standalone
+            METHOD=standalone
             ;;
         ZEO*)
             INSTALL_ZEO=1
