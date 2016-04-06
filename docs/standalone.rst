@@ -18,7 +18,7 @@ directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
 
-To install Plone 5.0.3 in a stand-alone (single Zope instance) configuration:
+To install Plone 5.0.4 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 
@@ -84,7 +84,7 @@ Two Plone users will be created: plone_daemon and plone_buildout. You will
 need to start Plone as plone_daemon and run buildout as plone_buildout. The
 install will also create a plone_group group that includes both plone users.
 
-To install Plone 5.0.3 in a stand-alone (single Zope instance) configuration:
+To install Plone 5.0.4 in a stand-alone (single Zope instance) configuration:
 
 * cd to the installer directory and issue the following command:
 
