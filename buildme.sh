@@ -29,7 +29,7 @@ else
 fi
 
 BASE_VER=4.3.9
-NEWVER=${BASE_VER}
+NEWVER=${BASE_VER}-r1
 
 SDIR=`pwd`
 
@@ -58,8 +58,8 @@ cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
 $WGET --no-check-certificate https://pypi.python.org/packages/source/P/Plone/Plone-${BASE_VER}.tar.gz
-tar xf Plone-${BASE_VER}.zip
-rm Plone-${BASE_VER}.zip
+tar xf Plone-${BASE_VER}.tar.gz
+rm Plone-${BASE_VER}.tar.gz
 mv Plone-${BASE_VER}/docs Plone-docs
 rm -r Plone-${BASE_VER}
 
