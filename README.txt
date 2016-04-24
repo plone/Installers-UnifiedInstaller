@@ -245,10 +245,6 @@ Options
   Overrides the automatic determination of whether and where to
   install the libjpeg JPEG library.
 
---readline=<auto|yes|no>
-  Optional. Installs a local readline library. Only necessary
-  on platforms with odd libraries (like OS X Leopard).
-
 --without-ssl
   Optional. Allows the build to proceed without ssl dependency tests.
 
@@ -627,11 +623,13 @@ Some have had luck using Homebrew to provide GNU build tools.
 We only test with XCode.
 
 XCode command-line tools have a separate step in recent versions of XCode.
-If you seem to be missing gcc, you've missed that install step.
+If you seem to be missing gcc, you've missed that install step::
 
-Building Python libraries with C-language components requires an extra step in XCode 5.1+.
-See Apple's release notes for 5.1. https://developer.apple.com/library/mac/releasenotes/DeveloperTools/RN-Xcode/xc5_release_notes/xc5_release_notes.html#//apple_ref/doc/uid/TP40001051-CH2-SW1
-The Unified Installer takes care of this for you when building the initial Plone, but you need to supply the environment flags when adding new Python eggs that have C-language components.
+    sudo xcode-select install
+
+Then, run one of the command line tools (like "cc") from the command line and accept the user agreement.
+
+If libraries or headers show up missing in builds (particularly Pillow or lxml), you probably need to reinstall the command line tools. Your development environment has been mangled, probably in the course of upgrading from earlier XCodes.
 
 MacPorts
 ~~~~~~~~

@@ -77,7 +77,6 @@
 # Library build control options:
 #
 # --libjpeg=auto|yes|no
-# --readline=auto|yes|no
 # --static-lxml
 #   Forces a static build of libxml2 and libxslt dependencies. Requires
 #   Internet access to download components.
@@ -102,14 +101,7 @@ ZEOCLUSTER_HOME=zeocluster
 RINSTANCE_HOME=zinstance
 
 INSTALL_LXML=no
-INSTALL_ZLIB=auto
 INSTALL_JPEG=auto
-if [ `uname` = "Darwin" ]; then
-  # Darwin ships with a readtext rather than readline; it doesn't work.
-  INSTALL_READLINE=yes
-else
-  INSTALL_READLINE=auto
-fi
 
 # default user/group ids for root installs; ignored in non-root.
 DAEMON_USER=plone_daemon
@@ -133,8 +125,6 @@ readonly PYTHON_TB=Python-2.7.10.tgz
 readonly PYTHON_DIR=Python-2.7.10
 readonly JPEG_TB=jpegsrc.v9b.tar.bz2
 readonly JPEG_DIR=jpeg-9b
-readonly READLINE_TB=readline-6.3.tar.bz2
-readonly READLINE_DIR=readline-6.3
 readonly VIRTUALENV_TB=virtualenv-14.0.5.tar.bz2
 readonly VIRTUALENV_DIR=virtualenv-14.0.5
 
@@ -344,14 +334,6 @@ do
             fi
             ;;
 
-        --readline=* | --libreadline=* )
-            if [ "$optarg" ]; then
-                INSTALL_READLINE="$optarg"
-            else
-                usage
-            fi
-            ;;
-
         --template=* )
             if [ "$optarg" ]; then
                 TEMPLATE="$optarg"
@@ -476,26 +458,6 @@ umask 022
 unset CDPATH
 
 
-# set up the common build environment unless already existing
-if [ "x$CFLAGS" = 'x' ]; then
-    export CFLAGS='-fPIC'
-    if [ `uname` = "Darwin" ]; then
-        # try to undo Apple's attempt to prevent the use of their Python
-        # for open-source development
-        export CFLAGS='-fPIC -Qunused-arguments'
-        export CPPFLAGS=$CFLAGS
-        export ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
-        if [ -d /opt/local ]; then
-            # include MacPorts directories, which typically have additional
-            # and later libraries
-            export CFLAGS='-fPIC -Qunused-arguments -I/opt/local/include'
-            export CPPFLAGS=$CFLAGS
-            export LDFLAGS='-L/opt/local/lib'
-        fi
-    fi
-fi
-
-
 if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if this script is not run from within it's parent folder
     if [ ! -x "$PACKAGES_DIR" ] || [ ! -x "$HSCRIPTS_DIR" ]; then
@@ -559,34 +521,6 @@ else
         exit 1
     }
 
-    # check to see if we've what we need to build a suitable python
-    # Abort install if no libz
-    if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
-        echo
-        echo "Unable to find libz library and headers. These are required to build Python."
-        echo "Please use your system package or port manager to install libz dev."
-        echo "(Debian/Ubuntu zlibg-dev)"
-        echo "Exiting now."
-        exit 1
-    fi
-
-    if [ "X$WITHOUT_SSL" != "Xyes" ]; then
-        if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
-            echo
-            echo "Unable to find libssl or openssl/ssl.h."
-            echo "libssl and its development headers are required for Plone."
-            echo "Please install your platform's openssl-dev package"
-            echo "and try again."
-            echo "(If your system is using an SSL other than openssl or is"
-            echo "putting the libraries/headers in an unconventional place,"
-            echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
-            echo "to specify the locations.)"
-            echo "If you want to install Plone without SSL support, specify"
-            echo "--without-ssl on the installer command line."
-            exit 1
-        fi
-    fi
-
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         # if OpenBSD, apologize and surrender
         if [ `uname` = "OpenBSD" ]; then
@@ -595,6 +529,34 @@ else
             echo "There are way too many platform-specific patches required."
             echo "Please consider installing the Python ${WANT_PYTHON} port and re-run installer."
             exit 1
+        fi
+
+        # check to see if we've what we need to build a suitable python
+        # Abort install if no libz
+        if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
+            echo
+            echo "Unable to find libz library and headers. These are required to build Python."
+            echo "Please use your system package or port manager to install libz dev."
+            echo "(Debian/Ubuntu zlibg-dev)"
+            echo "Exiting now."
+            exit 1
+        fi
+
+        if [ "X$WITHOUT_SSL" != "Xyes" ]; then
+            if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
+                echo
+                echo "Unable to find libssl or openssl/ssl.h."
+                echo "libssl and its development headers are required for Plone."
+                echo "Please install your platform's openssl-dev package"
+                echo "and try again."
+                echo "(If your system is using an SSL other than openssl or is"
+                echo "putting the libraries/headers in an unconventional place,"
+                echo "you may need to set CFLAGS/CPPFLAGS/LDFLAGS environment variables"
+                echo "to specify the locations.)"
+                echo "If you want to install Plone without SSL support, specify"
+                echo "--without-ssl on the installer command line."
+                exit 1
+            fi
         fi
     else
         if [ "X$WITH_PYTHON" = "X" ]; then
@@ -612,8 +574,6 @@ else
                 echo "$WITH_PYTHON looks OK. We'll try to use it."
                 echo
                 # if the supplied Python is adequate, we don't need to build libraries
-                INSTALL_ZLIB=no
-                INSTALL_READLINE=no
                 WITHOUT_SSL="yes"
             else
                 echo
@@ -734,14 +694,6 @@ if [ "X$INSTALL_JPEG" = "Xauto" ] ; then
     fi
 fi
 
-if [ "X$INSTALL_READLINE" = "Xauto" ] ; then
-    if [ "X$HAVE_LIBREADLINE" = "Xyes" ] ; then
-        INSTALL_READLINE=no
-    else
-        INSTALL_READLINE=yes
-    fi
-fi
-
 
 ######################################
 # Pre-install messages
@@ -763,9 +715,7 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "ZEOCLUSTER_HOME=$ZEOCLUSTER_HOME"
     echo "RINSTANCE_HOME=$RINSTANCE_HOME"
     echo "INSTALL_LXML=$INSTALL_LXML"
-    echo "INSTALL_ZLIB=$INSTALL_ZLIB"
     echo "INSTALL_JPEG=$INSTALL_JPEG"
-    echo "INSTALL_READLINE=$INSTALL_READLINE"
     echo "DAEMON_USER=$DAEMON_USER"
     echo "BUILDOUT_USER=$BUILDOUT_USER"
     echo "PLONE_GROUP=$PLONE_GROUP"
@@ -800,7 +750,6 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "HAVE_LIBJPEG=$HAVE_LIBJPEG"
     echo "HAVE_LIBSSL=$HAVE_LIBSSL"
     echo "HAVE_SSL2=$HAVE_SSL2"
-    echo "HAVE_LIBREADLINE=$HAVE_LIBREADLINE"
     echo "FOUND_XML2=$FOUND_XML2"
     echo "FOUND_XSLT=$FOUND_XSLT"
     echo ""
@@ -903,10 +852,7 @@ fi
 
 cd "$CWD"
 
-if  [ "X$INSTALL_ZLIB" = "Xyes" ] || \
-    [ "X$INSTALL_JPEG" = "Xyes" ] || \
-    [ "X$INSTALL_READLINE" = "Xyes" ]
-then
+if  [ "X$INSTALL_JPEG" = "Xyes" ]; then
     NEED_LOCAL=1
 else
     NEED_LOCAL=0
@@ -945,10 +891,6 @@ if [ "X$WITH_PYTHON" != "X" ] && [ "X$HAVE_PYTHON" = "Xno" ]; then
 else # use already-placed python or build one
     PY_HOME=$PLONE_HOME/Python-2.7
     PY=$PY_HOME/bin/python
-    if [ -x "$PY" ]; then
-        # no point in installing zlib -- too late!
-        INSTALL_ZLIB=no
-    fi
 fi
 
 
@@ -969,8 +911,6 @@ fi
 . helper_scripts/build_libjpeg.sh
 
 if [ ! -x "$PY" ]; then
-    . helper_scripts/build_readline.sh
-
     if [ `uname` = "Darwin" ]; then
         # Remove dylib files that will prevent static linking,
         # which we need for relocatability
@@ -1001,16 +941,6 @@ if [ ! -x "$PY" ]; then
     fi
 fi
 
-
-# From here on, we don't want any ad-hoc cflags or ldflags, as
-# they will foul the modules built via distutils.
-# Latest OS X is the exception, since their Mavericks Python
-# supplies bad flags. How did they build that Python? Probably
-# not with the latest XCode.
-if [ `uname` != "Darwin" ]; then
-    unset CFLAGS
-    unset LDFLAGS
-fi
 
 if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     if [ -x "$BUILDOUT_CACHE" ]; then

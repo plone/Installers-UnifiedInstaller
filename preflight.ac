@@ -24,9 +24,6 @@ AC_PATH_PROG(have_xslt_config, xslt-config)
 
 AC_CHECK_HEADER([openssl/ssl.h], AC_SUBST(have_ssl_h, yes), AC_SUBST(have_ssl_h, no))
 
-AC_SUBST(have_readline, no)
-AC_CHECK_LIB(readline, main, AC_CHECK_HEADER([readline/readline.h], AC_SUBST(have_readline, yes)))
-
 AC_SUBST(have_libz, no)
 AC_CHECK_LIB(z, gzread, AC_CHECK_HEADER([zlib.h], AC_SUBST(have_libz, yes)))
 
@@ -38,8 +35,6 @@ AC_CHECK_LIB(ssl, SSL_accept,
     AC_CHECK_HEADER([ssl.h], AC_SUBST(have_ssl, yes))
     AC_CHECK_HEADER([openssl/ssl.h], AC_SUBST(have_ssl, yes))
 )
-
-AC_CHECK_LIB(ssl, ssl2_accept, AC_SUBST(have_ssl2, yes), AC_SUBST(have_ssl2, no))
 
 AC_CONFIG_FILES([buildenv.sh])
 AC_OUTPUT

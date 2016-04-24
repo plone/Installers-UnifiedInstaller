@@ -12,5 +12,4 @@ XSLT_CONFIG='@have_xslt_config@'
 HAVE_LIBZ=@have_libz@
 HAVE_LIBJPEG=@have_libjpeg@
 HAVE_LIBSSL=@have_ssl@
-HAVE_SSL2=@have_ssl2@
 HAVE_LIBREADLINE=@have_readline@

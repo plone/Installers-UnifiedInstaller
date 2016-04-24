@@ -1,8 +1,16 @@
 4.3.9r1 - unreleased
 
+- Add note on XCode build problems to platform notes.
+
+- Expunge readline build. The only place it was ever needed was old Macs.
+
+- Development libs for SSL only needed if building Python.
+
+- Remove test for SSLv2, which was unused.
+
 - Include 20160419 hotfix
 
-- Revert Pillow to 3.1.0. 3.1.1 doesn't build on OS X El Capitan.
+- Revert Pillow to 3.1.0.
 
 4.3.9 - 2016-04-06
 
