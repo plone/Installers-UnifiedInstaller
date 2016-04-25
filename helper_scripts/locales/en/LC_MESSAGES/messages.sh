@@ -182,7 +182,7 @@ If you want to install Plone without SSL support, specify
 --without-ssl on the installer command line.
 "
 
-SORRY_OPENSSL='
+SORRY_OPENBSD='
 ***Aborting***
 Sorry, but the Unified Installer cannot build a Python ${WANT_PYTHON} for OpenBSD.
 There are too many platform-specific patches required.

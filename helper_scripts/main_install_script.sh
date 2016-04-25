@@ -399,26 +399,6 @@ umask 022
 unset CDPATH
 
 
-# set up the common build environment unless already existing
-if [ "x$CFLAGS" = 'x' ]; then
-    export CFLAGS='-fPIC'
-    if [ `uname` = "Darwin" ]; then
-        # try to undo Apple's attempt to prevent the use of their Python
-        # for open-source development
-        export CFLAGS='-fPIC -Qunused-arguments'
-        export CPPFLAGS=$CFLAGS
-        export ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
-        if [ -d /opt/local ]; then
-            # include MacPorts directories, which typically have additional
-            # and later libraries
-            export CFLAGS='-fPIC -Qunused-arguments -I/opt/local/include'
-            export CPPFLAGS=$CFLAGS
-            export LDFLAGS='-L/opt/local/lib'
-        fi
-    fi
-fi
-
-
 if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if this script is not run from within it's parent folder
     if [ ! -x "$PACKAGES_DIR" ] || [ ! -x "$HSCRIPTS_DIR" ]; then
@@ -477,7 +457,7 @@ python_usage () {
 if [ "X$BUILD_PYTHON" = "Xyes" ]; then
     # if OpenBSD, apologize and surrender
     if [ `uname` = "OpenBSD" ]; then
-        eval "echo\"$SORRY_OPENSSL\""
+        eval "echo\"$SORRY_OPENBSD\""
         exit 1
     fi
 
@@ -834,17 +814,6 @@ if [ $? -gt 0 ]; then
     echo $INSTALLING_BUILDOUT_FAILED
     seelog
     exit 1
-fi
-
-
-# From here on, we don't want any ad-hoc cflags or ldflags, as
-# they will foul the modules built via distutils.
-# Latest OS X is the exception, since their Mavericks Python
-# supplies bad flags. How did they build that Python? Probably
-# not with the latest XCode.
-if [ `uname` != "Darwin" ]; then
-    unset CFLAGS
-    unset LDFLAGS
 fi
 
 

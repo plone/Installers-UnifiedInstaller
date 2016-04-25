@@ -603,7 +603,6 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-have_ssl2
 have_ssl
 have_libjpeg
 have_libz
@@ -3981,51 +3980,6 @@ if test "x$ac_cv_header_openssl_ssl_h" = xyes; then :
 fi
 
 
-
-fi
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ssl2_accept in -lssl" >&5
-$as_echo_n "checking for ssl2_accept in -lssl... " >&6; }
-if ${ac_cv_lib_ssl_ssl2_accept+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lssl  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char ssl2_accept ();
-int
-main ()
-{
-return ssl2_accept ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ssl_ssl2_accept=yes
-else
-  ac_cv_lib_ssl_ssl2_accept=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_ssl2_accept" >&5
-$as_echo "$ac_cv_lib_ssl_ssl2_accept" >&6; }
-if test "x$ac_cv_lib_ssl_ssl2_accept" = xyes; then :
-  have_ssl2=yes
-
-else
-  have_ssl2=no
 
 fi
 
