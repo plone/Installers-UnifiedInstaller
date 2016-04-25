@@ -399,6 +399,20 @@ umask 022
 unset CDPATH
 
 
+# set up the OS X build environment unless already existing
+if [ "x$CFLAGS" = 'x' ]; then
+    if [ `uname` = "Darwin" ]; then
+        if [ -d /opt/local ]; then
+            # include MacPorts directories, which typically have additional
+            # and later libraries
+            export CFLAGS='-I/opt/local/include'
+            export CPPFLAGS=$CFLAGS
+            export LDFLAGS='-L/opt/local/lib'
+        fi
+    fi
+fi
+
+
 if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # Abort install if this script is not run from within it's parent folder
     if [ ! -x "$PACKAGES_DIR" ] || [ ! -x "$HSCRIPTS_DIR" ]; then

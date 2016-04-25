@@ -62,6 +62,11 @@ These are the RPM equivalents for the Debian/Ubuntu packages listed above:
 - make
 - which
 
+OS X (El Capitan)
+-----------------
+
+The XCode command-line tools provides everything except libjpeg. Install that via MacPorts or Homebrew.
+
 Optional
 --------
 

@@ -1,4 +1,8 @@
-5.0.4-r1 unreleased
+5.0.4-r1 20160425
+
+- Adjust CFLAGS for OS X to do less. Works better for El Capitan, may foul up earlier versions.
+
+- Add 20160419 Hotfix.
 
 - Remove unused test for SSLv2.
 

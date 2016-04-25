@@ -49,14 +49,6 @@ Options
 --password=InstancePassword
   If not specified, a random password will be generated.
 
---libjpeg=<auto|yes|no>
-  Overrides the automatic determination of whether and where to
-  install the libjpeg JPEG library.
-
---readline=<auto|yes|no>
-  Optional. Installs a local readline library. Only necessary
-  on platforms with odd libraries (like OS X Leopard).
-
 --without-ssl
   Optional. Allows the build to proceed without ssl dependency tests.
 
