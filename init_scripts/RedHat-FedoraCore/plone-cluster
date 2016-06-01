@@ -46,6 +46,12 @@ stop() {
     return $?
 }
 
+status() {
+    echo "ZEO Server:"
+    ${clusterpath}/bin/plonectl status
+    return $?
+}
+
 restart() {
    stop
    start
@@ -59,9 +65,7 @@ case "$1" in
     stop
     ;;
   status)
-    echo "ZEO Server:"
-    ${clusterpath}/bin/plonectl status
-    return $?
+    status
     ;;
   restart)
     restart
