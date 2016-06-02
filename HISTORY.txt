@@ -1,3 +1,7 @@
+5.0.5 undefinded
+
+- Bugfix for status comand getting error message for init script by RedHat-FedoraCore [terapyon]
+
 5.0.4-r1 20160425
 
 - Adjust CFLAGS for OS X to do less. Works better for El Capitan, may foul up earlier versions.
