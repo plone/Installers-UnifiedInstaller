@@ -1,3 +1,7 @@
+4.3.x - unreleased
+
+- Add -fPIC when trying to build libjpeg.
+
 4.3.9r1 - 2016-04-25
 
 - Add note on XCode build problems to platform notes.

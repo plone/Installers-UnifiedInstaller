@@ -308,7 +308,7 @@ Test building Python and dependencies
     First, clean out prior work
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
 
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --build-python --static-lxml --libjpeg=yes --readline=yes' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --build-python --static-lxml --libjpeg=yes' % testTarget)
     >>> returncode and (stdout + stderr)
     0
 

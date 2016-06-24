@@ -90,6 +90,16 @@ if [ `uname` = "Darwin" ]; then
 else
     PLONE_HOME=/usr/local/Plone
 fi
+# set up the FreeBSD build environments unless already existing
+if [ "x$CFLAGS" = 'x' ]; then
+    if [ `uname` = "FreeBSD" ]; then
+        export CFLAGS='-I/usr/local/include'
+        export CPPFLAGS=$CFLAGS
+        export LDFLAGS='-L/usr/local/lib'
+    fi
+fi
+
+
 # Path options for Non-Root install
 #
 # Path for install of Python/Zope/Plone

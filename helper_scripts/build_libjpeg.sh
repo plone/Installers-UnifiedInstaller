@@ -11,7 +11,12 @@ then
     mkdir "$LOCAL_HOME/include" >> "$INSTALL_LOG" 2>&1
     mkdir "$LOCAL_HOME/man" >> "$INSTALL_LOG" 2>&1
     mkdir "$LOCAL_HOME/man/man1" >> "$INSTALL_LOG" 2>&1
-    
+
+    if [ "X$CFLAGS" = "X" ]; then
+        CFLAGS="-fPIC"
+        NEED_UNSET="yes"
+    fi
+
     cd "$PKG"
     untar "$JPEG_TB"
     chmod -R 755 "$JPEG_DIR"
@@ -31,6 +36,10 @@ then
     if [ -d "$JPEG_DIR" ]
     then
             rm -rf "$JPEG_DIR"
+    fi
+
+    if [ "X$NEED_UNSET" = "Xyes" ]; then
+        unset CFLAGS
     fi
 else
     echo "Skipping libjpeg build"
