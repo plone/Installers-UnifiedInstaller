@@ -1,5 +1,7 @@
 5.0.x (unreleased)
 
+- Bugfix for status comand getting error message for init script by RedHat-FedoraCore [terapyon]
+
 - Set C, CPP and LD flags on FreeBSD to include /usr/local.
 
 5.0.4-r1 20160425
