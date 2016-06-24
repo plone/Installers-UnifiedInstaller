@@ -399,7 +399,7 @@ umask 022
 unset CDPATH
 
 
-# set up the OS X build environment unless already existing
+# set up the OS X / FreeBSD build environments unless already existing
 if [ "x$CFLAGS" = 'x' ]; then
     if [ `uname` = "Darwin" ]; then
         if [ -d /opt/local ]; then
@@ -409,6 +409,11 @@ if [ "x$CFLAGS" = 'x' ]; then
             export CPPFLAGS=$CFLAGS
             export LDFLAGS='-L/opt/local/lib'
         fi
+    fi
+    if [ `uname` = "FreeBSD" ]; then
+        export CFLAGS='-I/usr/local/include'
+        export CPPFLAGS=$CFLAGS
+        export LDFLAGS='-L/usr/local/lib'
     fi
 fi
 
