@@ -1,5 +1,5 @@
 # Unified Plone installer build script
-# Copyright (c) 2008-2015 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2016 Plone Foundation. Licensed under GPL v 2.
 #
 
 # Path for Root install
@@ -31,7 +31,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0.4
+readonly FOR_PLONE=5.0.5
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages

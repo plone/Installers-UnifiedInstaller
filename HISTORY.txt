@@ -1,4 +1,6 @@
-5.0.x (unreleased)
+5.0.5 2016-07-05
+
+- Update to Plone 5.0.5
 
 - Bugfix for status comand getting error message for init script by RedHat-FedoraCore [terapyon]
 
