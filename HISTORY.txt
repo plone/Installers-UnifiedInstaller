@@ -1,4 +1,6 @@
-4.3.x - unreleased
+4.3.10 - 2016-07-05
+
+- Update to 4.3.10.
 
 - Set C, CPP and LD flags to include /usr/local on FreeBSD.
 
