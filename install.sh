@@ -51,6 +51,7 @@
 #   If you do not have a suitable Python available, the installer will
 #   build one for you if you set this option. Requires Internet access
 #   to download Python source.
+#   Make sure that you have enough memory and swap.
 #
 # --without-ssl
 #   Optional. Allows the build to proceed without ssl dependency tests.
@@ -73,8 +74,9 @@
 # Library build control options:
 #
 # --static-lxml
-#   Forces a static build of libxml2 and libxslt dependencies. Requires
-#   Internet access to download components.
+#   Forces a static build of libxml2 and libxslt dependencies.
+#   Make sure that you have enough memory and swap.
+#   Requires Internet access to download components.
 
 # This script is actually just a wrapper to detect bash, and,
 # if available, use it.
