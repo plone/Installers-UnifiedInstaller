@@ -121,7 +121,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=4.3.11
+readonly FOR_PLONE=4.3.12
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -129,14 +129,15 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
-readonly PYTHON_MD5=88d61f82e3616a4be952828b3694109d
-readonly PYTHON_TB=Python-2.7.12.tgz
-readonly PYTHON_DIR=Python-2.7.12
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz
+readonly PYTHON_MD5=17add4bf0ad0ec2f08e0cae6d205c700
+readonly GET_PIP_URL=https://bootstrap.pypa.io/get-pip.py
+readonly PYTHON_TB=Python-2.7.13.tgz
+readonly PYTHON_DIR=Python-2.7.13
 readonly JPEG_TB=jpegsrc.v9b.tar.bz2
 readonly JPEG_DIR=jpeg-9b
-readonly VIRTUALENV_TB=virtualenv-15.0.3.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-15.0.3
+readonly VIRTUALENV_TB=virtualenv-15.1.0.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-15.1.0
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"

@@ -28,7 +28,7 @@ else
   TAR='tar'
 fi
 
-BASE_VER=4.3.11
+BASE_VER=4.3.12
 NEWVER=${BASE_VER}
 
 SDIR=`pwd`
@@ -57,7 +57,7 @@ mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
 
 echo "Getting docs"
-$WGET --no-check-certificate https://pypi.python.org/packages/6c/03/d1ce7a69b17b3124d24dd7c6be5f9e2c73c86cba686b6d78af6fc3ca4d99/Plone-4.3.11.tar.gz
+$WGET --no-check-certificate https://pypi.python.org/packages/6c/03/d1ce7a69b17b3124d24dd7c6be5f9e2c73c86cba686b6d78af6fc3ca4d99/Plone-4.3.12.tar.gz
 tar xf Plone-${BASE_VER}.tar.gz
 rm Plone-${BASE_VER}.tar.gz
 mv Plone-${BASE_VER}/docs Plone-docs
