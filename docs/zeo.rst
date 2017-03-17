@@ -21,7 +21,7 @@ directory, Plone subdirectory). You will need to start Zope using
 the user identity used for the build, and it will run with the
 privileges of that user.
 
-To install Plone 5.0.6 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 5.0.7 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command::
 
@@ -77,7 +77,7 @@ Two Plone users will be created: plone_daemon and plone_buildout. You will
 need to start Plone as plone_daemon and run buildout as plone_buildout. The
 install will also create a plone_group group that includes both plone users.
 
-To install Plone 5.0.6 in a ZEO Cluster (ZEO server, 2 clients) configuration:
+To install Plone 5.0.7 in a ZEO Cluster (ZEO server, 2 clients) configuration:
 
 * cd to the installer directory and issue the following command:
 
