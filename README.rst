@@ -21,7 +21,7 @@ Features
 - create system user and group for running plone
 - and more
 
-For a full list of features, please check http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer.
+For a full list of features, please check `the documentation <http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer>`_.
 
 Installation
 ============
@@ -60,14 +60,18 @@ For a full list of options, many of which are not available via the dialog quest
 
 
 
-.. note::
+**Note:**
 
-   For certain production install options you will have to run the installer with sudo or as root. This is generally not necessary when building development or evaluation systems.
+   For certain production install options you will have to run the installer with ``sudo`` or as root.
+
+   This is generally not necessary when building development or evaluation systems.
 
 Documentation
 =============
 
-Full documentation for end users can be found in the ``/docs`` directory of this repository, and is also available at http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer.
+Full documentation for end users can be found in the */docs* directory of this repository.
+
+It is also available as part of our `documentation <http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer>`_.
 
 
 Contribute
@@ -81,7 +85,8 @@ Support
 =======
 
 If you are having issues, please let us know.
-We have our community space at: https://community.plone.org/c/installer
+
+We have our community space at: https://community.plone.org/c/development/installer
 
 
 License
