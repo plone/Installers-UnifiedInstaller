@@ -157,7 +157,7 @@ NEED_INSTALL_LIBZ_MSG="
 
 Unable to find libz library and headers. These are required to build Python.
 Please use your system package or port manager to install libz dev.
-(Debian/Ubuntu zlibg-dev)
+(Debian/Ubuntu zlib1g-dev)
 Exiting now.
 "
 
