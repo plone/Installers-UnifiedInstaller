@@ -1,5 +1,5 @@
 # Unified Plone installer build script
-# Copyright (c) 2008-2016 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2017 Plone Foundation. Licensed under GPL v 2.
 #
 
 # Path for Root install
@@ -31,7 +31,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0.8
+readonly FOR_PLONE=5.0.9
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
@@ -39,10 +39,10 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
-readonly PYTHON_MD5=88d61f82e3616a4be952828b3694109d
-readonly PYTHON_TB=Python-2.7.12.tgz
-readonly PYTHON_DIR=Python-2.7.12
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
+readonly PYTHON_MD5=cee2e4b33ad3750da77b2e85f2f8b724
+readonly PYTHON_TB=Python-2.7.14.tgz
+readonly PYTHON_DIR=Python-2.7.14
 readonly VIRTUALENV_TB=virtualenv-15.1.0.tar.gz
 readonly VIRTUALENV_DIR=virtualenv-15.1.0
 
@@ -458,12 +458,12 @@ if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
     HAVE_PYTHON=yes
     if [ "X$WITH_PYTHON" != "X" ]; then
         echo "$IGNORING_WITH_PYTHON"
-        WITH_PYTHON="$PLONE_HOME/Python-${WANT_PYTHON}/bin/python"
     fi
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
+    WITH_PYTHON="$PLONE_HOME/Python-${WANT_PYTHON}/bin/python"
 fi
 
 # shared message for need python
@@ -523,6 +523,16 @@ else
         python_usage
     fi
 fi
+
+
+# Normalize WITH_PYTHON to a full pathname
+PY_DIR=`dirname "$WITH_PYTHON"`
+PY_BASE=`basename "$WITH_PYTHON"`
+cd "$PY_DIR"
+PY_DIR=`pwd`
+WITH_PYTHON="${PY_DIR}/${PY_BASE}"
+echo "$WITH_PYTHON"
+
 
 #############################
 # Preflight dependency checks

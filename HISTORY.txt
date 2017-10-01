@@ -1,4 +1,10 @@
-5.0.7 2017-06-09
+5.1rc1 2017-10-01
+
+- Update to Plone 5.1rc1.
+
+- Fix problems with installation of a second instance to a home directory using a built Python.
+
+5.0.8 2017-06-09
 
 - Update to Plone 5.0.8.
 
