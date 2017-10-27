@@ -1,4 +1,8 @@
-5.0.7 2017-06-09
+5.0.8 - r1 2017-10-27
+
+- Update zc.buildout to 2.9.5 to fix problem with http connections to pypi.
+
+5.0.8 2017-06-09
 
 - Update to Plone 5.0.8.
 
