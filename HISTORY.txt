@@ -1,3 +1,7 @@
+5.1rc1-r1 2017-10-28
+
+- Update zc.buildout to 2.9.5 to resolve problem with PyPI https.
+
 5.1rc1 2017-10-01
 
 - Update to Plone 5.1rc1.
