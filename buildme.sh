@@ -30,36 +30,41 @@ fi
 
 BASE_VER=4.3.15
 NEWVER=${BASE_VER}
+INSTALLER_REVISION="-r1"
 
 SDIR=`pwd`
 
+TARGET=Plone-${NEWVER}-UnifiedInstaller${INSTALLER_REVISION}
+
 cd $WORK_DIR
-rm -r Plone-${NEWVER}-UnifiedInstaller Plone-${NEWVER}-UnifiedInstaller.tgz
+rm -r ${TARGET} ${TARGET}.tgz
+
+TARGET_DIR=${WORK_DIR}/${TARGET}
 
 cd $SDIR
-cp -R ${SDIR}/ $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/
-rm -rf $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/.git
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/.gitignore
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/buildme.sh
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/preflight.ac
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/update_packages.py
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/to-do.txt
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/install.log
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/config.status
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/config.log
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/buildenv.sh
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/tests/testout.txt
-rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/Plone-docs
-rm -r $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/autom4te.cache
-rm $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller/packages/Python*
+cp -R ${SDIR}/ ${TARGET_DIR}/
+rm -rf ${TARGET_DIR}/.git
+rm ${TARGET_DIR}/.gitignore
+rm ${TARGET_DIR}/buildme.sh
+rm ${TARGET_DIR}/preflight.ac
+rm ${TARGET_DIR}/update_packages.py
+rm ${TARGET_DIR}/to-do.txt
+rm ${TARGET_DIR}/install.log
+rm ${TARGET_DIR}/config.status
+rm ${TARGET_DIR}/config.log
+rm ${TARGET_DIR}/buildenv.sh
+rm ${TARGET_DIR}/tests/testout.txt
+rm -r ${TARGET_DIR}/Plone-docs
+rm -r ${TARGET_DIR}/autom4te.cache
+rm ${TARGET_DIR}/packages/Python*
 
-mkdir $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
-cd $WORK_DIR/Plone-${NEWVER}-UnifiedInstaller
+mkdir ${TARGET_DIR}
+cd ${TARGET_DIR}
 
 echo "Getting docs"
-$WGET --no-check-certificate https://pypi.python.org/packages/6c/03/d1ce7a69b17b3124d24dd7c6be5f9e2c73c86cba686b6d78af6fc3ca4d99/Plone-4.3.12.tar.gz
-tar xf Plone-${BASE_VER}.tar.gz
-rm Plone-${BASE_VER}.tar.gz
+$WGET --no-check-certificate https://github.com/plone/Plone/archive/${BASE_VER}.zip
+unzip ${BASE_VER}.zip
+rm ${BASE_VER}.zip
 mv Plone-${BASE_VER}/docs Plone-docs
 rm -r Plone-${BASE_VER}
 
@@ -67,13 +72,13 @@ find . -name "._*" -exec rm {} \;
 find . -name ".DS_Store" -exec rm {} \;
 find . -name "*.py[co]" -exec rm -f {} \;
 find . -type f -exec chmod 644 {} \;
-chmod 755 install.sh base_skeleton/bin/*
+chmod 755 install.sh
 find . -type d -exec chmod 755 {} \;
 
 cd $WORK_DIR
 echo Making tarball
-$TAR --owner 0 --group 0 -zcf Plone-${NEWVER}-UnifiedInstaller.tgz Plone-${NEWVER}-UnifiedInstaller
-rm -r Plone-${NEWVER}-UnifiedInstaller
+$TAR --owner 0 --group 0 -zcf ${TARGET}.tgz ${TARGET}
+rm -r ${TARGET}
 echo Test unpack of tarball
-$TAR zxf Plone-${NEWVER}-UnifiedInstaller.tgz
-cd Plone-${NEWVER}-UnifiedInstaller
+$TAR zxf ${TARGET}.tgz
+cd ${TARGET}
