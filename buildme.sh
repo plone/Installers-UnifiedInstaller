@@ -30,7 +30,7 @@ fi
 
 BASE_VER=4.3.15
 NEWVER=${BASE_VER}
-INSTALLER_REVISION="-r1"
+INSTALLER_REVISION="-r2"
 
 SDIR=`pwd`
 
@@ -73,6 +73,7 @@ find . -name ".DS_Store" -exec rm {} \;
 find . -name "*.py[co]" -exec rm -f {} \;
 find . -type f -exec chmod 644 {} \;
 chmod 755 install.sh
+chmod 755 base_skeleton/bin/buildout
 find . -type d -exec chmod 755 {} \;
 
 cd $WORK_DIR
