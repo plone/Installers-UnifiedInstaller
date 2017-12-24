@@ -119,7 +119,7 @@ print
 
 print "Removing dist packages without binary components. Remaining:"
 for fn in os.listdir(dist):
-    basename = BINARY_SIG_RE.sub('', fn).replace('.tar.gz', '').replace('.zip', '')
+    basename = BINARY_SIG_RE.sub('', fn).replace('.tar.gz', '').replace('.zip', '').replace('.whl', '')
     if basename in binaries:
         del binaries[basename]
         print basename,
@@ -127,7 +127,8 @@ for fn in os.listdir(dist):
         os.unlink(os.path.join(dist, fn))
 print
 if binaries:
-    print "Ooops: %s" % binaries.keys()
+    print "\nOoops: %s\nThese are probably wheels that need to be replaced with
+    tarballs.\n" % binaries.keys()
 
 
 print "zap *.py[c|o] files from installed eggs"
