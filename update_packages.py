@@ -127,8 +127,7 @@ for fn in os.listdir(dist):
         os.unlink(os.path.join(dist, fn))
 print
 if binaries:
-    print "\nOoops: %s\nThese are probably wheels that need to be replaced with
-    tarballs.\n" % binaries.keys()
+    print "\nOoops: %s\nThese are probably wheels that need to be replaced with tarballs.\n" % binaries.keys()
 
 
 print "zap *.py[c|o] files from installed eggs"
@@ -168,7 +167,7 @@ else:
 if not has_gnutar:
     raise RuntimeError("GNU tar is required to complete this packaging.")
 
-#print "generate new archive"
+# print "generate new archive"
 doCommand("%s --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (tar_command, desttar))
 
 # cleanup

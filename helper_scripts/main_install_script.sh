@@ -31,7 +31,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.1rc2
+readonly FOR_PLONE=5.1.0
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR=packages
