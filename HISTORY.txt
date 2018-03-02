@@ -1,5 +1,7 @@
 5.1.0 unreleased
 
+- Add to update_packages.py a mechanism to replace binary wheels with source tarballs.
+
 - Update to 5.1.0.
 
 5.1rc2 2017-12-24
