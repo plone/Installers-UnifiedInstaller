@@ -1,3 +1,10 @@
+5.1.0r2 2018-03-18
+
+- The version of setuptools contained in virtualenv-15.1.01 (setuptools 38.8.1) is not compatible with zc.buildout-2.11.1, producing an error "AttributeError: ‘module’ object has no attribute ‘SetuptoolsVersion’" while running buildout.
+  Since we want the new zc.buildout for wheel-ability and the setuptools in the previous version of virtualenv is too old for it, we need to install a setuptools version (38.7.0).
+  Fixes #71. Thanks, ronchi.
+  [smcmahon]
+
 5.1.0r1 2018-03-06
 
 - For good reason, a recent change in sudo does not allow overwriting PWD.
