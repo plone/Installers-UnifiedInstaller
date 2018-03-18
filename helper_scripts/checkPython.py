@@ -11,8 +11,8 @@ passed = True
 
 # check version
 vi = sys.version_info[:3]
-if vi < (2, 7, 0) or vi >= (2, 8, 0):
-    print _("Failed: Python version must be 2.7.x.")
+if vi < (2, 7, 9) or vi >= (2, 8, 0):
+    print _("Failed: Python version must be 2.7.9+.")
     # not much point in further testing.
     sys.exit(1)
 

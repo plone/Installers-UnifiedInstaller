@@ -65,7 +65,7 @@ Test a ZEO install
     >>> print stdout
     <BLANKLINE>
     -etc-
-    Installing Plone 5.0.8 at -etc-
+    Installing Plone 5.1.0 at -etc-
     #####################################################################
     <BLANKLINE>
     ######################  Installation Complete  ######################
@@ -76,7 +76,7 @@ Test a ZEO install
 
     target should have basic kit
     >>> sorted(os.listdir(testTarget))
-    ['buildout-cache', 'zeocluster']
+    ['Plone-docs', 'buildout-cache', 'zeocluster']
 
     There should now be a buildout skeleton in zeocluster
     >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg']
@@ -99,7 +99,7 @@ Test a ZEO install
     admin:{SHA}-etc-
 
     Check bin contents
-    >>> expected = ['backup', 'buildout', 'client1', 'client2', 'fullbackup', 'pilconvert.py', 'plonectl', 'pip', 'python', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
+    >>> expected = ['backup', 'buildout', 'client1', 'client2', 'pilconvert.py', 'plonectl', 'pip', 'python', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
     >>> found = os.listdir('%s/zeocluster/bin' % testTarget)
     >>> [s for s in expected if s not in found]
     []
@@ -204,9 +204,10 @@ Test building Python and dependencies
 
     >>> print stdout
     <BLANKLINE>
+    ...
     Rootless install method chosen. Will install for use by system user -etc-
     -etc-
-    Installing Python-2.7.10. This takes a while...
+    Installing Python-2.7.14. This takes a while...
     Python build looks OK.
     -etc-
     Plone successfully installed at -etc-

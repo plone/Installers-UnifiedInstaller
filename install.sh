@@ -84,8 +84,8 @@
 ORIGIN_PATH=`pwd`
 export ORIGIN_PATH
 # change to directory with script
-PWD=`dirname $0`
-cd $PWD
+INSTALLER_PWD=`dirname $0`
+cd "$INSTALLER_PWD"
 if which bash > /dev/null; then
     bash helper_scripts/main_install_script.sh "$@"
 else

@@ -1,6 +1,8 @@
 # Unified Plone installer build script
-# Copyright (c) 2008-2016 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2017 Plone Foundation. Licensed under GPL v 2.
 #
+
+INSTALLER_PWD=`pwd`
 
 # Path for Root install
 #
@@ -31,20 +33,21 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.0.8
+readonly FOR_PLONE=5.1.0
 readonly WANT_PYTHON=2.7
 
-readonly PACKAGES_DIR=packages
+readonly PACKAGES_DIR="${INSTALLER_PWD}/packages"
 readonly ONLINE_PACKAGES_DIR=opackages
-readonly HSCRIPTS_DIR=helper_scripts
-readonly TEMPLATE_DIR=buildout_templates
+readonly HSCRIPTS_DIR="${INSTALLER_PWD}/helper_scripts"
+readonly TEMPLATE_DIR="${INSTALLER_PWD}/buildout_templates"
 
-readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
-readonly PYTHON_MD5=88d61f82e3616a4be952828b3694109d
-readonly PYTHON_TB=Python-2.7.12.tgz
-readonly PYTHON_DIR=Python-2.7.12
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
+readonly PYTHON_MD5=cee2e4b33ad3750da77b2e85f2f8b724
+readonly PYTHON_TB=Python-2.7.14.tgz
+readonly PYTHON_DIR=Python-2.7.14
 readonly VIRTUALENV_TB=virtualenv-15.1.0.tar.gz
 readonly VIRTUALENV_DIR=virtualenv-15.1.0
+readonly NEED_CUSTOM_SETUPTOOLS=yes
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
@@ -58,7 +61,7 @@ case $LANG in
     #     ;;
     *)
         # default to English
-        . helper_scripts/locales/en/LC_MESSAGES/messages.sh
+        . "${HSCRIPTS_DIR}/locales/en/LC_MESSAGES/messages.sh"
         ;;
 esac
 
@@ -73,12 +76,9 @@ else
 fi
 
 
-# normalize
-PWD=`pwd`
-CWD="$PWD"
-PKG="$CWD/$PACKAGES_DIR"
+PKG="$PACKAGES_DIR"
 
-. helper_scripts/shell_utils.sh
+. "${INSTALLER_PWD}/helper_scripts/shell_utils.sh"
 
 usage () {
     eval "echo \"$USAGE_MESSAGE\""
@@ -108,7 +108,7 @@ INSTALL_ZEO=0
 
 USE_WHIPTAIL=0
 if [ "$BASH_VERSION" ] && [ "X$1" == "X" ]; then
-    . helper_scripts/whipdialog.sh
+    . "${INSTALLER_PWD}/helper_scripts/whipdialog.sh"
     USE_WHIPTAIL=1
 fi
 
@@ -458,12 +458,12 @@ if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
     HAVE_PYTHON=yes
     if [ "X$WITH_PYTHON" != "X" ]; then
         echo "$IGNORING_WITH_PYTHON"
-        WITH_PYTHON="$PLONE_HOME/Python-${WANT_PYTHON}/bin/python"
     fi
     if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
+    WITH_PYTHON="$PLONE_HOME/Python-${WANT_PYTHON}/bin/python"
 fi
 
 # shared message for need python
@@ -523,6 +523,16 @@ else
         python_usage
     fi
 fi
+
+
+# Normalize WITH_PYTHON to a full pathname
+PY_DIR=`dirname "$WITH_PYTHON"`
+PY_BASE=`basename "$WITH_PYTHON"`
+cd "$PY_DIR"
+PY_DIR=`pwd`
+cd "$INSTALLER_PWD"
+WITH_PYTHON="${PY_DIR}/${PY_BASE}"
+
 
 #############################
 # Preflight dependency checks
@@ -656,7 +666,7 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "DAEMON_USER=$DAEMON_USER"
     echo "BUILDOUT_USER=$BUILDOUT_USER"
     echo "ORIGIN_PATH=$ORIGIN_PATH"
-    echo "PWD=$PWD"
+    echo "PWD=$INSTALLER_PWD"
     echo "CWD=$CWD"
     echo "PKG=$PKG"
     echo "WITH_PYTHON=$WITH_PYTHON"
@@ -710,7 +720,7 @@ eval "echo \"$INSTALLING_NOW\""
 # create os users for root-level install
 if [ $ROOT_INSTALL -eq 1 ]; then
     # source user/group utilities
-    . helper_scripts/user_group_utilities.sh
+    . "${INSTALLER_PWD}/helper_scripts/user_group_utilities.sh"
 
     # see if we know how to do this on this platfrom
     check_ug_ability
@@ -788,7 +798,7 @@ if [ "X$BUILD_PYTHON" = "Xyes" ]; then
 
     PY_HOME="$PLONE_HOME/Python-${WANT_PYTHON}"
     WITH_PYTHON="${PY_HOME}/bin/python"
-    . helper_scripts/build_python.sh
+    . "${INSTALLER_PWD}/helper_scripts/build_python.sh"
 
 
     if "$WITH_PYTHON" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
@@ -825,6 +835,15 @@ if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL};
     exit 1
 fi
 
+if [ "X$NEED_CUSTOM_SETUPTOOLS" = "Xyes" ]; then
+    echo $INSTALLING_SETUPTOOLS
+    "${PY_HOME}/bin/pip" install "$PKG"/setuptools* >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ]; then
+        echo $INSTALLING_SETUPTOOLS_FAILED
+        seelog
+        exit 1
+    fi
+fi
 
 # Install zc.buildout in the virtualenv
 echo $INSTALLING_BUILDOUT
@@ -886,9 +905,9 @@ cd "$CWD"
 # we'll need into a tmp directory inside the install destination.
 WORKDIR="${PLONE_HOME}/tmp"
 mkdir "$WORKDIR" > /dev/null 2>&1
-cp -R ./buildout_templates "$WORKDIR"
-cp -R ./base_skeleton "$WORKDIR"
-cp -R ./helper_scripts "$WORKDIR"
+cp -R "${INSTALLER_PWD}/buildout_templates" "$WORKDIR"
+cp -R "${INSTALLER_PWD}/base_skeleton" "$WORKDIR"
+cp -R "${INSTALLER_PWD}/helper_scripts" "$WORKDIR"
 if [ $ROOT_INSTALL -eq 1 ]; then
     chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$WORKDIR"
     find "$WORKDIR" -type d -exec chmod g+s {} \;

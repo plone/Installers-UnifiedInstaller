@@ -288,6 +288,10 @@ INSTALLING_BUILDOUT='Installing zc.buildout in virtual environment.'
 
 INSTALLING_BUILDOUT_FAILED='Unable to install zc.buildout in virtual environment.'
 
+INSTALLING_SETUPTOOLS='Installing setuptools in virtual environment.'
+
+INSTALLING_SETUPTOOLS_FAILED='Unable to install setuptools in virtual environment.'
+
 FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE\; skipping step.'
 
 UNPACKING_BUILDOUT_CACHE='Unpacking buildout cache to $BUILDOUT_CACHE'

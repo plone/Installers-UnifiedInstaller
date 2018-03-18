@@ -1,6 +1,39 @@
-5.0.8 - r1 2017-10-27
+5.1.0r2 2018-03-18
 
-- Update zc.buildout to 2.9.5 to fix problem with http connections to pypi.
+- The version of setuptools contained in virtualenv-15.1.01 (setuptools 38.8.1) is not compatible with zc.buildout-2.11.1, producing an error "AttributeError: ‘module’ object has no attribute ‘SetuptoolsVersion’" while running buildout.
+  Since we want the new zc.buildout for wheel-ability and the setuptools in the previous version of virtualenv is too old for it, we need to install a setuptools version (38.7.0).
+  Fixes #71. Thanks, ronchi.
+  [smcmahon]
+
+5.1.0r1 2018-03-06
+
+- For good reason, a recent change in sudo does not allow overwriting PWD.
+  That fouled up the installer's scheme for keeping track of the installer directory, causing helper scripts to be lost.
+  Fixed.
+  [smcmahon]
+
+- Packages included with the first 5.1.0 installer did not include some recipes used when installing via sudo.
+  [smcmahon]
+
+5.1.0 2018-03-02
+
+- Add to update_packages.py a mechanism to replace binary wheels with source tarballs.
+
+- Update to 5.1.0.
+
+5.1rc2 2017-12-24
+
+- Update to 5.1rc2.
+
+5.1rc1-r1 2017-10-28
+
+- Update zc.buildout to 2.9.5 to resolve problem with PyPI https.
+
+5.1rc1 2017-10-01
+
+- Update to Plone 5.1rc1.
+
+- Fix problems with installation of a second instance to a home directory using a built Python.
 
 5.0.8 2017-06-09
 
