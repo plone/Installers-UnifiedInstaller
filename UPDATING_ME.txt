@@ -1,6 +1,9 @@
 Updating the Unified Installer
 ==============================
 
+This text is for those wishing to build a new version of the Unified Installer.
+It is not meant to help update an installed version of Plone.
+
 If you are working from a git clone you will not have the binary packages. For a good starting point, copy the "packages" subdirectory from a previous installer tarball.
 
 Use a text editor to replace old version with new. Do not auto-replace in HISTORY.txt.
