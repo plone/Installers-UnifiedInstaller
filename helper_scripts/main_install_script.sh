@@ -33,7 +33,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.1.0
+readonly FOR_PLONE=5.1.1
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR="${INSTALLER_PWD}/packages"
@@ -45,8 +45,8 @@ readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
 readonly PYTHON_MD5=cee2e4b33ad3750da77b2e85f2f8b724
 readonly PYTHON_TB=Python-2.7.14.tgz
 readonly PYTHON_DIR=Python-2.7.14
-readonly VIRTUALENV_TB=virtualenv-15.1.0.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-15.1.0
+readonly VIRTUALENV_TB=virtualenv-15.2.0.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-15.2.0
 readonly NEED_CUSTOM_SETUPTOOLS=yes
 
 readonly NEED_XML2="2.7.8"
