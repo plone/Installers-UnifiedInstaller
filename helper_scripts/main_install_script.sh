@@ -43,8 +43,9 @@ readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 readonly PYTHON_MD5=88d61f82e3616a4be952828b3694109d
 readonly PYTHON_TB=Python-2.7.12.tgz
 readonly PYTHON_DIR=Python-2.7.12
-readonly VIRTUALENV_TB=virtualenv-15.1.0.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-15.1.0
+readonly VIRTUALENV_TB=virtualenv-15.2.0.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-15.2.0
+readonly NEED_CUSTOM_SETUPTOOLS=yes
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
@@ -825,6 +826,15 @@ if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL};
     exit 1
 fi
 
+if [ "X$NEED_CUSTOM_SETUPTOOLS" = "Xyes" ]; then
+    echo $INSTALLING_SETUPTOOLS
+    "${PY_HOME}/bin/pip" install "$PKG"/setuptools* >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ]; then
+        echo $INSTALLING_SETUPTOOLS_FAILED
+        seelog
+        exit 1
+    fi
+fi
 
 # Install zc.buildout in the virtualenv
 echo $INSTALLING_BUILDOUT
