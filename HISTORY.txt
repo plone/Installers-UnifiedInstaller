@@ -1,6 +1,11 @@
+5.1.2 2018-05-09
+
+- Update to Plone 5.1.2.
+  [smcmahon]
+
 5.1.1 2018-04-09
 
-- Updated zc.buildout 2.11.2 and to virtualenv-15.2.0. 
+- Updated zc.buildout 2.11.2 and to virtualenv-15.2.0.
   The new zc.buildout resolved its own problem with setuptools, but problems remained in other packages, notably plone.recipe.zope2instance.
   So, we're still installing our own setuptools.
   [smcmahon]
