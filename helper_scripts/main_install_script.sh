@@ -105,6 +105,7 @@ CLIENT_COUNT=2
 TEMPLATE=buildout
 WITHOUT_SSL="no"
 INSTALL_ZEO=0
+OVERWRITE_CACHE="no"
 
 USE_WHIPTAIL=0
 if [ "$BASH_VERSION" ] && [ "X$1" == "X" ]; then
@@ -257,6 +258,10 @@ do
             else
                 usage
             fi
+            ;;
+
+        --overwrite-cache )
+            OVERWRITE_CACHE=yes
             ;;
 
         --debug-options )
@@ -661,6 +666,7 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "PACKAGES_DIR=$PACKAGES_DIR"
     echo "ONLINE_PACKAGES_DIR=$ONLINE_PACKAGES_DIR"
     echo "HSCRIPTS_DIR=$HSCRIPTS_DIR"
+    echo "OVERWRITE_CACHE=$OVERWRITE_CACHE"
     echo "ROOT_INSTALL=$ROOT_INSTALL"
     echo "PLONE_HOME=$PLONE_HOME"
     echo "DAEMON_USER=$DAEMON_USER"
@@ -859,7 +865,7 @@ fi
 BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
 BUILDOUT_DIST="$PLONE_HOME/buildout-cache/downloads/dist"
 if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
-    if [ -x "$BUILDOUT_CACHE" ]; then
+    if [ -x "$BUILDOUT_CACHE" -a "$OVERWRITE_CACHE" = "no" ]; then
         eval "echo \"$FOUND_BUILDOUT_CACHE\""
     else
         eval "echo \"$UNPACKING_BUILDOUT_CACHE\""

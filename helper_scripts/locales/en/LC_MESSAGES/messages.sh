@@ -292,7 +292,8 @@ INSTALLING_SETUPTOOLS='Installing setuptools in virtual environment.'
 
 INSTALLING_SETUPTOOLS_FAILED='Unable to install setuptools in virtual environment.'
 
-FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE\; skipping step.'
+FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE\; skipping step.
+To force extraction, use the --overwrite-cache option.'
 
 UNPACKING_BUILDOUT_CACHE='Unpacking buildout cache to $BUILDOUT_CACHE'
 
