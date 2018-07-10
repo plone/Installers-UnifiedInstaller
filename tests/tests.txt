@@ -99,7 +99,7 @@ Test a ZEO install
     admin:{SHA}-etc-
 
     Check bin contents
-    >>> expected = ['backup', 'buildout', 'client1', 'client2', 'pilconvert.py', 'plonectl', 'pip', 'python', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
+    >>> expected = ['backup', 'buildout', 'client1', 'client2', 'plonectl', 'pip', 'python', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
     >>> found = os.listdir('%s/zeocluster/bin' % testTarget)
     >>> [s for s in expected if s not in found]
     []
@@ -204,7 +204,6 @@ Test building Python and dependencies
 
     >>> print stdout
     <BLANKLINE>
-    ...
     Rootless install method chosen. Will install for use by system user -etc-
     -etc-
     Installing Python-2.7.14. This takes a while...

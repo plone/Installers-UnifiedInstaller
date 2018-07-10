@@ -1,5 +1,9 @@
 5.1.x unreleased
 
+- Updates for new setuptools seem to be complete, so we're dropping install of a custom setuptools.
+  Update to virtualenv-16.0.0, zc.buildout-2.12.1.
+  [smcmahon]
+
 - repozo script source was incorrect in [repozo], resulting in repozo script not being build in standalone installs.
   [smcmahon]
 
