@@ -64,7 +64,7 @@ Test a ZEO install
 
     >>> print stdout
     -etc-
-    Installing Plone 4.3.17 at -etc-
+    Installing Plone 4.3.18 at -etc-
     Plone successfully installed at -etc-
       Username: admin
       Password: admin-etc-
@@ -314,7 +314,7 @@ Test building Python and dependencies
 
     >>> print stdout
     -etc-
-    Installing Plone 4.3.17 at -etc-
+    Installing Plone 4.3.18 at -etc-
     Compiling and installing jpeg local libraries-etc-
     Compiling and installing readline local libraries-etc-
     Installing Python-2.7-etc-
