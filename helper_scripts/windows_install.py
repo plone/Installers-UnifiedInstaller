@@ -13,9 +13,23 @@ from i18n import _
 import argparse
 import os
 import os.path
+import subprocess
+import sys
+
+
+def doCommand(command):
+    po = subprocess.Popen(command,
+                          shell=True,
+                          universal_newlines=True,
+                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout, stderr = po.communicate()
+    sys.stderr.write(stdout)
+    return po.returncode
 
 
 PLONE_HOME = os.path.join(os.environ['HOMEPATH'], 'Plone')
+INSTALLER_HOME = os.getcwd()
+PACKAGES_HOME = os.path.join(INSTALLER_HOME, 'packages')
 
 ##########################################################
 # Get command line arguments
@@ -52,4 +66,16 @@ argparser.add_argument(
 
 opt = argparser.parse_args()
 
-print opt
+if opt.instance is None:
+    if os.itype == 'standalone':
+        opt.instance = 'zinstance'
+    else:
+        opt.instance = 'zeocluster'
+
+# Establish plone home
+if not os.path.exists(os.target):
+    os.mkdir(os.target, 0700)
+
+if not os.path.exists(os.path.join(os.target, 'buildout-cache')):
+    os.chdir(os.target)
+    doCommand('tar xf ' + os.path.join(PACKAGES_HOME, 'buildout-cache.tar.bz2'))
