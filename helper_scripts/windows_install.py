@@ -11,6 +11,7 @@
 from i18n import _
 
 import argparse
+import glob
 import os
 import os.path
 import subprocess
@@ -74,8 +75,20 @@ if opt.instance is None:
 
 # Establish plone home
 if not os.path.exists(opt.target):
+    print _("Creating target directory " + opt.target)
     os.mkdir(opt.target, 0700)
 
+# buildout cache
 if not os.path.exists(os.path.join(opt.target, 'buildout-cache')):
+    print _("Extracting buildout cache to target")
     with tarfile.open(os.path.join(PACKAGES_HOME, 'buildout-cache.tar.bz2')) as tf:
-        tf.extract(opt.target)
+        tf.extractall(opt.target)
+
+# virtualenv
+PY_HOME = os.path.join(opt.target, 'Python-2.7')
+if not os.path.exists(PY_HOME):
+    with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))) as tf:
+        tf.extractall(opt.target)
+    vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))
+    print vepackagedir
+
