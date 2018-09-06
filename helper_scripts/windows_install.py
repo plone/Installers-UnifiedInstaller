@@ -145,6 +145,7 @@ doCommand(
 )
 
 print _("Running buildout. This takes a while the first time.")
+print _("pep424 runtime warnings may be ignored.")
 os.chdir(INSTANCE_HOME)
 returncode = doCommand(os.path.join(PY_SCRIPTS, 'buildout.exe'))
 if returncode:
