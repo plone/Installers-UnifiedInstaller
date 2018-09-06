@@ -138,6 +138,10 @@ if opt.itype == 'standalone':
 else:
     buildout.remove_section('instance')
 
+# Windows cleanup
+if os.name == 'nt':
+    buildout.remove_option('buildout', 'extensions')
+
 # Insert variable number of zeo client specs. This doesn't fit the iniparse
 # model because the clients need to be inserted at particular
 # points without fouling comments or section order.

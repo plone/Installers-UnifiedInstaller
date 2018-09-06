@@ -63,6 +63,13 @@ argparser.add_argument(
          "This will be created inside the target directory. "
          "Default is \"zinstance\" for standalone, \"zeocluster\" for ZEO.",
 )
+argparser.add_argument(
+    "--clients",
+    required=False,
+    type=int,
+    default=2,
+    help='Use with the \"zeo\" install method to specify the number of Zope clients you wish to create. Default is 2.',
+)
 
 
 opt = argparser.parse_args()
@@ -122,6 +129,8 @@ PYTHON_BIN = os.path.join(PY_SCRIPTS, 'python.exe')
 options = ''
 if opt.password is not None:
     options += ' --password="' + opt.password + '"'
+if opt.itype == 'zeo':
+    options += ' --clients=' + opt.clients
 
 print _("Running create_instance.py")
 doCommand(
