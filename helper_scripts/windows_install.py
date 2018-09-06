@@ -15,6 +15,7 @@ import os
 import os.path
 import subprocess
 import sys
+import tarfile
 
 
 def doCommand(command):
@@ -67,15 +68,15 @@ argparser.add_argument(
 opt = argparser.parse_args()
 
 if opt.instance is None:
-    if os.itype == 'standalone':
+    if opt.itype == 'standalone':
         opt.instance = 'zinstance'
     else:
         opt.instance = 'zeocluster'
 
 # Establish plone home
-if not os.path.exists(os.target):
-    os.mkdir(os.target, 0700)
+if not os.path.exists(opt.target):
+    os.mkdir(opt.target, 0700)
 
-if not os.path.exists(os.path.join(os.target, 'buildout-cache')):
-    os.chdir(os.target)
-    doCommand('tar xf ' + os.path.join(PACKAGES_HOME, 'buildout-cache.tar.bz2'))
+if not os.path.exists(os.path.join(opt.target, 'buildout-cache')):
+    with tarfile.open(os.path.join(PACKAGES_HOME, 'buildout-cache.tar.bz2')) as tf:
+        tf.extract(opt.target)
