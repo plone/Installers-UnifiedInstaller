@@ -94,10 +94,22 @@ if not os.path.exists(PY_HOME):
     doCommand('python ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME)
     PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
-    setuptoolspackage = glob.glob(os.path.join(opt.target, 'setuptools*'))
+    setuptoolspackage = glob.glob(os.path.join(PACKAGES_HOME, 'setuptools*'))
     if setuptoolspackage:
         print _("Installing compatible setuptools in virtualenv")
-        doCommand(PIP_BIN + ' ' + setuptoolspackage[0])
+        doCommand(PIP_BIN + ' install ' + setuptoolspackage[0])
     print _("Installing compatible zc.buildout in virtualenv")
-    doCommand(PIP_BIN + ' ' + glob.glob(os.path.join(opt.target, 'zc.buildout*')))
+    doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*')))
+    print _("Installing pywin32 in virtualenv")
+    doCommand(PIP_BIN + ' install pywin32')
 
+INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
+if os.path.exists(INSTANCE_HOME):
+    print _("Instance home ({}) already exists. Delete it if you wish to install a new instance.").format(INSTANCE_HOME)
+    sys.exit(1)
+
+os.mkdir(INSTANCE_HOME)
+INSTANCE_BIN = os.path.join(INSTANCE_HOME, 'bin')
+os.mkdir(INSTANCE_BIN)
+with open(os.path.join(INSTANCE_BIN, 'buildout.bat'), 'w') as f:
+    f.write(os.path.join(PY_SCRIPTS, 'buildout.exe'))
