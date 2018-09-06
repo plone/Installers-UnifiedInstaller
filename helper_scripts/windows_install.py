@@ -70,8 +70,10 @@ opt = argparser.parse_args()
 if opt.instance is None:
     if opt.itype == 'standalone':
         opt.instance = 'zinstance'
+        ITYPE = 'standalone'
     else:
         opt.instance = 'zeocluster'
+        ITYPE = 'cluster'
 
 # Establish plone home
 if not os.path.exists(opt.target):
@@ -127,7 +129,7 @@ doCommand(
     os.path.join(INSTALLER_HOME, 'helper_scripts', 'create_instance.py') + ' ' +
     '--plone_home=' + PLONE_HOME + ' ' +
     '--instance_home=' + INSTANCE_HOME + ' ' +
-    '--itype=' + opt.instance + ' ' +
+    '--itype=' + ITYPE + ' ' +
     '--run_buildout=0' +
     options
 )
