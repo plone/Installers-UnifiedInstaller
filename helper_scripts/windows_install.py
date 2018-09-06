@@ -87,8 +87,8 @@ if not os.path.exists(os.path.join(opt.target, 'buildout-cache')):
 # virtualenv
 PY_HOME = os.path.join(opt.target, 'Python-2.7')
 if not os.path.exists(PY_HOME):
-    with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))) as tf:
+    print _("Preparing python virtualenv")
+    with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
         tf.extractall(opt.target)
-    vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))
-    print vepackagedir
-
+    vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
+    doCommand('python ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME)
