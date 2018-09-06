@@ -112,4 +112,4 @@ os.mkdir(INSTANCE_HOME)
 INSTANCE_BIN = os.path.join(INSTANCE_HOME, 'bin')
 os.mkdir(INSTANCE_BIN)
 with open(os.path.join(INSTANCE_BIN, 'buildout.bat'), 'w') as f:
-    f.write(os.path.join(PY_SCRIPTS, 'buildout.exe'))
+    f.write(os.path.join(PY_HOME, 'Scripts', 'buildout.exe'))
