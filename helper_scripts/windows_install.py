@@ -108,7 +108,7 @@ if not os.path.exists(PY_HOME):
         print _("Installing compatible setuptools in virtualenv")
         doCommand(PIP_BIN + ' install ' + setuptoolspackage[0])
     print _("Installing compatible zc.buildout in virtualenv")
-    doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*')))
+    doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*'))[0])
     print _("Installing pywin32 in virtualenv")
     doCommand(PIP_BIN + ' install pywin32')
 PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
