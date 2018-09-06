@@ -140,5 +140,14 @@ doCommand(
     '--plone_home=' + PLONE_HOME + ' ' +
     '--instance_home=' + INSTANCE_HOME + ' ' +
     '--itype=' + ITYPE + ' ' +
+    '--run_buildout=0' +
     options
 )
+
+print _("Running buildout. This takes a while the first time.")
+os.chdir(INSTANCE_HOME)
+returncode = doCommand(os.path.join(PY_SCRIPTS, 'buildout.exe'))
+if returncode:
+    print _("Buildout returned an error code: %s; Aborting.") % returncode
+    sys.exit(returncode)
+os.chdir(INSTALLER_HOME)
