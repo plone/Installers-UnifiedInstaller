@@ -141,6 +141,9 @@ else:
 # Windows cleanup
 if os.name == 'nt':
     buildout.remove_option('buildout', 'extensions')
+    eggs = buildout.get('buildout', 'eggs')
+    eggs.append('pywin32')
+    eggs.append('nt_svcutils')
 
 # Insert variable number of zeo client specs. This doesn't fit the iniparse
 # model because the clients need to be inserted at particular
