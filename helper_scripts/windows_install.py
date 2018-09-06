@@ -154,4 +154,7 @@ returncode = doCommand(os.path.join(PY_SCRIPTS, 'buildout.exe'))
 if returncode:
     print _("Buildout returned an error code: %s; Aborting.") % returncode
     sys.exit(returncode)
+
+print _("Note: pep425tags runtime warnings may be ignored.")
+
 os.chdir(INSTALLER_HOME)
