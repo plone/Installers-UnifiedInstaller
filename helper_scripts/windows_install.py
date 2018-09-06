@@ -123,7 +123,7 @@ os.mkdir(INSTANCE_HOME)
 INSTANCE_BIN = os.path.join(INSTANCE_HOME, 'bin')
 os.mkdir(INSTANCE_BIN)
 with open(os.path.join(INSTANCE_BIN, 'buildout.bat'), 'w') as f:
-    f.write(os.path.join(PY_SCRIPTS, 'buildout.exe') + '%*')
+    f.write(os.path.join(PY_SCRIPTS, 'buildout.exe') + ' %*')
 PYTHON_BIN = os.path.join(PY_SCRIPTS, 'python.exe')
 
 options = ''
@@ -140,6 +140,5 @@ doCommand(
     '--plone_home=' + PLONE_HOME + ' ' +
     '--instance_home=' + INSTANCE_HOME + ' ' +
     '--itype=' + ITYPE + ' ' +
-    '--run_buildout=0' +
     options
 )
