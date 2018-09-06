@@ -102,14 +102,32 @@ if not os.path.exists(PY_HOME):
     doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*')))
     print _("Installing pywin32 in virtualenv")
     doCommand(PIP_BIN + ' install pywin32')
+PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
     print _("Instance home ({}) already exists. Delete it if you wish to install a new instance.").format(INSTANCE_HOME)
     sys.exit(1)
 
+print _("Creating instance home and buildout batch.")
 os.mkdir(INSTANCE_HOME)
 INSTANCE_BIN = os.path.join(INSTANCE_HOME, 'bin')
 os.mkdir(INSTANCE_BIN)
 with open(os.path.join(INSTANCE_BIN, 'buildout.bat'), 'w') as f:
-    f.write(os.path.join(PY_HOME, 'Scripts', 'buildout.exe'))
+    f.write(os.path.join(PY_SCRIPTS, 'buildout.exe') + '%*')
+PYTHON_BIN = os.path.join(PY_SCRIPTS, 'python.exe')
+
+options = ''
+if opt.password is not None:
+    options += ' --password="' + opt.password + '"'
+
+print _("Running create_instance.py")
+doCommand(
+    PYTHON_BIN + ' ' +
+    os.path.join(INSTALLER_HOME, 'helper_scripts', 'create_instance.py') + ' ' +
+    '--plone_home=' + PLONE_HOME + ' ' +
+    '--instance_home=' + INSTANCE_HOME + ' ' +
+    '--itype=' + opt.instance + ' ' +
+    '--run_buildout=0' +
+    options
+)

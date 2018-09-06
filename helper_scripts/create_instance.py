@@ -86,10 +86,10 @@ copy_tree(
     update=1
     )
 
-# remove OS X and svn detritus (this is mainly helpful for installer development)
-doCommand('find %s -name "._*" -exec rm {} \; > /dev/null' % opt.instance_home)
-doCommand('find %s -name ".svn" | xargs rm -rf' % opt.instance_home)
-
+if os.name != 'nt':
+    # remove OS X and svn detritus (this is mainly helpful for installer development)
+    doCommand('find %s -name "._*" -exec rm {} \; > /dev/null' % opt.instance_home)
+    doCommand('find %s -name ".svn" | xargs rm -rf' % opt.instance_home)
 
 ##########################################################
 # buildout.cfg customizations
