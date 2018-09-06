@@ -38,7 +38,6 @@ PACKAGES_HOME = os.path.join(INSTALLER_HOME, 'packages')
 argparser = argparse.ArgumentParser(description=_("Plone instance creation utility"))
 argparser.add_argument(
     'itype',
-    required=True,
     default='standalone',
     choices=('zeo', 'standalone'),
     help=_("Instance type to create."),
