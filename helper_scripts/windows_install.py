@@ -94,7 +94,10 @@ if not os.path.exists(PY_HOME):
     doCommand('python ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME)
     PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
-    setuptoolspackage = glob.glob(os.path.join(opt.target, 'virtualenv*'))
+    setuptoolspackage = glob.glob(os.path.join(opt.target, 'setuptools*'))
     if setuptoolspackage:
+        print _("Installing compatible setuptools in virtualenv")
         doCommand(PIP_BIN + ' ' + setuptoolspackage[0])
+    print _("Installing compatible zc.buildout in virtualenv")
+    doCommand(PIP_BIN + ' ' + glob.glob(os.path.join(opt.target, 'zc.buildout*')))
 
