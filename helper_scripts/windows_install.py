@@ -23,11 +23,11 @@ PLONE_HOME = os.path.join(os.environ['HOMEPATH'], 'Plone')
 argparser = argparse.ArgumentParser(description=_("Plone instance creation utility"))
 argparser.add_argument(
     'itype',
+    required=True,
     default='standalone',
     choices=('zeo', 'standalone'),
     help=_("Instance type to create."),
 )
-
 argparser.add_argument(
     '--password',
     required=False,
@@ -35,11 +35,21 @@ argparser.add_argument(
 )
 argparser.add_argument(
     "--target",
+    required=False,
     default=PLONE_HOME,
-    help="Use to specify top-level path for installs."
-         "Plone instances will be built inside this directory."
-         "(default is {}).".format(PLONE_HOME),
+    help="Use to specify top-level path for installs. "
+         "Plone instances will be built inside this directory. "
+         "Default is {}.".format(PLONE_HOME),
+)
+argparser.add_argument(
+    "--instance",
+    required=False,
+    help="Use to specify the name of the operating instance to be created. "
+         "This will be created inside the target directory. "
+         "Default is \"zinstance\" for standalone, \"zeocluster\" for ZEO.",
 )
 
 
 opt = argparser.parse_args()
+
+print opt
