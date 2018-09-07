@@ -155,6 +155,19 @@ if returncode:
     print _("Buildout returned an error code: %s; Aborting.") % returncode
     sys.exit(returncode)
 
+print _("Buildout succeeded.")
 print _("Note: pep425tags runtime warnings may be ignored.")
+
+print _('''
+######################  Installation Complete  ######################
+
+Plone successfully installed at {}
+See {}
+for startup instructions.
+''').format(INSTANCE_HOME, os.path.join(INSTALLER_HOME, 'README.html'))
+
+with open(os.path.join(INSTALLER_HOME, 'adminPassword.txt'), 'ra') as f:
+    print f.read()
+
 
 os.chdir(INSTALLER_HOME)
