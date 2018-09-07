@@ -10,7 +10,6 @@ from distutils.dir_util import copy_tree
 from i18n import _
 
 import argparse
-import glob
 import random
 import os
 import os.path
@@ -84,7 +83,7 @@ copy_tree(
     os.path.join(opt.uidir, 'base_skeleton'),
     opt.instance_home,
     update=1
-    )
+)
 
 if os.name != 'nt':
     # remove OS X and svn detritus (this is mainly helpful for installer development)
@@ -96,7 +95,7 @@ if os.name != 'nt':
 #
 CLIENTS = int(opt.clients)
 template = opt.template
-if not '.cfg' in template:
+if '.cfg' not in template:
     template += ".cfg"
 
 buildout = iniparse.RawConfigParser()
@@ -180,7 +179,7 @@ if opt.run_buildout:
         print _("Building lxml with static libxml2/libxslt; this requires Internet access,")
         print _("and takes a while...")
         returncode = doCommand(
-            os.path.join(opt.instance_home, 'bin', 'buildout') + \
+            os.path.join(opt.instance_home, 'bin', 'buildout') +
             " -c lxml_static.cfg")
         if returncode:
             print _("\nlxml build failed.")
@@ -191,8 +190,8 @@ if opt.run_buildout:
         else:
             # test generated lxml via lxmlpy interpreter installed during build
             returncode = doCommand(
-                os.path.join(opt.instance_home, 'bin', 'lxmlpy') + \
-                  ' -c "from lxml import etree"')
+                os.path.join(opt.instance_home, 'bin', 'lxmlpy') +
+                ' -c "from lxml import etree"')
             if returncode:
                 print _("Failed to build working lxml.")
                 print _("lxml built with no errors, but does not have a working etree component.")
@@ -215,8 +214,9 @@ if opt.run_buildout:
     if not returncode:
         print _("Building Zope/Plone; this takes a while...")
         returncode = doCommand(
-            os.path.join(opt.instance_home, 'bin', 'buildout') + \
-            " -NU buildout:install-from-cache=true")
+            os.path.join(opt.instance_home, 'bin', 'buildout') +
+            " -NU buildout:install-from-cache=true"
+        )
 
     if returncode:
         print _("Buildout returned an error code: %s; Aborting.") % returncode
@@ -224,15 +224,15 @@ if opt.run_buildout:
 
     if opt.itype == 'standalone':
         if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'instance')) and
-                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'instance')) and
-                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
+                os.path.exists(os.path.join(opt.instance_home, 'parts', 'instance')) and
+                os.path.exists(os.path.join(opt.instance_home, 'var'))):
             print _("Parts of the install are missing. Buildout must have failed. Aborting.")
             sys.exit(1)
     else:
         if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'zeoserver')) and
-                 os.path.exists(os.path.join(opt.instance_home, 'bin', 'client1')) and
-                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'client1')) and
-                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
+                os.path.exists(os.path.join(opt.instance_home, 'bin', 'client1')) and
+                os.path.exists(os.path.join(opt.instance_home, 'parts', 'client1')) and
+                os.path.exists(os.path.join(opt.instance_home, 'var'))):
             print _("Parts of the install are missing. Buildout must have failed. Aborting.")
             sys.exit(1)
 
