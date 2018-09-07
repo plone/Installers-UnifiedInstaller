@@ -14,6 +14,7 @@ import argparse
 import glob
 import os
 import os.path
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -101,6 +102,7 @@ if not os.path.exists(PY_HOME):
         tf.extractall(opt.target)
     vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
     doCommand('python ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME)
+    shutil.rmtree(vepackagedir)
     PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
     setuptoolspackage = glob.glob(os.path.join(PACKAGES_HOME, 'setuptools*'))
@@ -109,8 +111,6 @@ if not os.path.exists(PY_HOME):
         doCommand(PIP_BIN + ' install ' + setuptoolspackage[0])
     print _("Installing compatible zc.buildout in virtualenv")
     doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*'))[0])
-    print _("Installing pywin32 in virtualenv")
-    doCommand(PIP_BIN + ' install pywin32')
 PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
@@ -164,9 +164,9 @@ print _('''
 Plone successfully installed at {}
 See {}
 for startup instructions.
-''').format(INSTANCE_HOME, os.path.join(INSTALLER_HOME, 'README.html'))
+''').format(INSTANCE_HOME, os.path.join(INSTANCE_HOME, 'README.html'))
 
-with open(os.path.join(INSTALLER_HOME, 'adminPassword.txt'), 'ra') as f:
+with open(os.path.join(INSTANCE_HOME, 'adminPassword.txt'), 'r') as f:
     print f.read()
 
 
