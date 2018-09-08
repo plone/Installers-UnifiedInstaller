@@ -30,7 +30,14 @@ def doCommand(command):
     return po.returncode
 
 
-PLONE_HOME = os.path.join(os.environ['HOMEPATH'], 'Plone')
+if os.name == 'nt':
+    PLONE_HOME = os.path.join(os.environ['HOMEPATH'], 'Plone')
+    SCRIPTS = 'Scripts'
+    BIN_SUFFIX = '.exe'
+else:
+    PLONE_HOME = os.path.join(os.environ['HOME'], 'Plone')
+    SCRIPTS = 'bin'
+    BIN_SUFFIX = ''
 INSTALLER_HOME = os.getcwd()
 PACKAGES_HOME = os.path.join(INSTALLER_HOME, 'packages')
 
@@ -96,6 +103,7 @@ if not os.path.exists(os.path.join(opt.target, 'buildout-cache')):
 
 # virtualenv
 PY_HOME = os.path.join(opt.target, 'Python-2.7')
+PY_SCRIPTS = os.path.join(PY_HOME, SCRIPTS)
 if not os.path.exists(PY_HOME):
     print _("Preparing python virtualenv")
     with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
@@ -103,7 +111,6 @@ if not os.path.exists(PY_HOME):
     vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
     doCommand('python ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME)
     shutil.rmtree(vepackagedir)
-    PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
     setuptoolspackage = glob.glob(os.path.join(PACKAGES_HOME, 'setuptools*'))
     if setuptoolspackage:
@@ -111,20 +118,22 @@ if not os.path.exists(PY_HOME):
         doCommand(PIP_BIN + ' install ' + setuptoolspackage[0])
     print _("Installing compatible zc.buildout in virtualenv")
     doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*'))[0])
-PY_SCRIPTS = os.path.join(PY_HOME, 'Scripts')
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
     print _("Instance home ({}) already exists. Delete it if you wish to install a new instance.").format(INSTANCE_HOME)
     sys.exit(1)
 
-print _("Creating instance home and buildout batch.")
+print _("Creating instance home and buildout command.")
 os.mkdir(INSTANCE_HOME)
 INSTANCE_BIN = os.path.join(INSTANCE_HOME, 'bin')
 os.mkdir(INSTANCE_BIN)
-with open(os.path.join(INSTANCE_BIN, 'buildout.bat'), 'w') as f:
-    f.write(os.path.join(PY_SCRIPTS, 'buildout.exe') + ' %*')
-PYTHON_BIN = os.path.join(PY_SCRIPTS, 'python.exe')
+if os.name == 'nt':
+    with open(os.path.join(INSTANCE_BIN, 'buildout.bat'), 'w') as f:
+        f.write(os.path.join(PY_SCRIPTS, 'buildout' + BIN_SUFFIX) + ' %*')
+else:
+    os.symlink(os.path.join(PY_SCRIPTS, 'buildout' + BIN_SUFFIX), os.path.join(INSTANCE_BIN, 'buildout'))
+PYTHON_BIN = os.path.join(PY_SCRIPTS, 'python' + BIN_SUFFIX)
 
 options = ''
 if opt.password is not None:
@@ -140,7 +149,7 @@ doCommand(
     '--plone_home=' + PLONE_HOME + ' ' +
     '--instance_home=' + INSTANCE_HOME + ' ' +
     '--itype=' + ITYPE + ' ' +
-    '--run_buildout=0' +
+    '--force_build_from_cache=False' +
     options
 )
 
@@ -148,12 +157,12 @@ doCommand(
 # We need to run buildout without the install-from-cache option orginarily used by
 # create_instance.py, as the buildout cache probably does not have the windows-specific
 # eggs, and we'll need to be able to download them.
-print _("Running buildout. This takes a while the first time.")
-os.chdir(INSTANCE_HOME)
-returncode = doCommand(os.path.join(PY_SCRIPTS, 'buildout.exe'))
-if returncode:
-    print _("Buildout returned an error code: %s; Aborting.") % returncode
-    sys.exit(returncode)
+# print _("Running buildout. This takes a while the first time.")
+# os.chdir(INSTANCE_HOME)
+# returncode = doCommand(os.path.join(PY_SCRIPTS, 'buildout.exe'))
+# if returncode:
+#     print _("Buildout returned an error code: %s; Aborting.") % returncode
+#     sys.exit(returncode)
 
 print _("Buildout succeeded.")
 print _("Note: pep425tags runtime warnings may be ignored.")
