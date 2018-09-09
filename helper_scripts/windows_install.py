@@ -139,7 +139,7 @@ options = ''
 if opt.password is not None:
     options += ' --password="' + opt.password + '"'
 if opt.itype == 'zeo':
-    options += ' --clients=' + opt.clients
+    options += ' --clients=' + str(opt.clients)
 
 print _("Running create_instance.py")
 doCommand(
