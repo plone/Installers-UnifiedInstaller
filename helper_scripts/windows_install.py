@@ -100,6 +100,12 @@ if not os.path.exists(os.path.join(opt.target, 'buildout-cache')):
     print _("Extracting buildout cache to target")
     with tarfile.open(os.path.join(PACKAGES_HOME, 'buildout-cache.tar.bz2')) as tf:
         tf.extractall(opt.target)
+    # Remove download dist contents. We want to fetch wheels rather than build from tarballs
+    # that have binary components.
+    print _("Removing cache source packages that need binary builds. We want to fetch wheels from PyPI.")
+    dist_files = glob.glob(os.path.join(opt.target, 'buildout-cache', 'downloads', 'dist', '*'))
+    for fn in dist_files:
+        os.remove(fn)
 
 # virtualenv
 PY_HOME = os.path.join(opt.target, 'Python-2.7')
@@ -118,6 +124,7 @@ if not os.path.exists(PY_HOME):
         doCommand(PIP_BIN + ' install ' + setuptoolspackage[0])
     print _("Installing compatible zc.buildout in virtualenv")
     doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*'))[0])
+    doCommand(PIP_BIN + ' install pypiwin32')
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
@@ -149,7 +156,7 @@ doCommand(
     '--plone_home=' + PLONE_HOME + ' ' +
     '--instance_home=' + INSTANCE_HOME + ' ' +
     '--itype=' + ITYPE + ' ' +
-    '--force_build_from_cache=False' +
+    '--force_build_from_cache=no' +
     options
 )
 

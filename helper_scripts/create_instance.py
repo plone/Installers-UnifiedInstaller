@@ -69,7 +69,7 @@ argparser.add_argument('--run_buildout', required=False, default='1', choices='0
 argparser.add_argument('--install_lxml', required=False, default='auto', choices=('yes', 'no', 'auto'))
 argparser.add_argument('--itype', default='standalone', choices=('cluster', 'standalone'))
 argparser.add_argument('--clients', required=False, default='2')
-argparser.add_argument('--force_build_from_cache', required=False, default=True, type=bool)
+argparser.add_argument('--force_build_from_cache', required=False, default='yes')
 opt = argparser.parse_args()
 if not opt.password:
     opt.password = createPassword()
@@ -215,7 +215,7 @@ if opt.run_buildout:
     if not returncode:
         print _("Building Zope/Plone; this takes a while...")
         options = ''
-        if opt.force_build_from_cache:
+        if opt.force_build_from_cache == 'yes':
             options += ' -NU buildout:install-from-cache=true'
         returncode = doCommand(
             os.path.join(opt.instance_home, 'bin', 'buildout') + options
