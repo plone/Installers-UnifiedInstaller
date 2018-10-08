@@ -5,8 +5,8 @@ Windows
 Introduction
 ============
 
-The Plone Unified Installer may be used to install Plone on Windows 10 for development, evaluation or testing purposes.
-Windows is an uncommon choice for production (live, Internet-connected) purposes; it's possible to do so, but requires Windows integration experience that's not common in the Plone Community.
+Plone's Unified Installer may be used to install Plone on Windows 10 for development, evaluation or testing purposes.
+Windows is an uncommon choice for production (live, Internet-connected) purposes; it's possible to do it, but requires Windows integration experience that's not common in the Plone Community. Using Windows for development, evaluation, testing and training, though, is no problem.
 
 Prerequisites
 =============
@@ -73,7 +73,7 @@ Change your current directory to the unpacked archive's directory and execute th
 .. code-block:: bat
 
     cd Plone-5.1.x-UnifiedInstaller
-    windows_install.bat standalone --password admin
+    windows_install.bat standalone --password=admin
 
 Options
 .......
@@ -109,6 +109,9 @@ Run ``windows-install.bat`` with a "--help" argument to get an options listing:
 Results
 -------
 
+Expect the installer to take a considerable amount of time to run, with very few messages after the build begins.
+At the end of the install, expect a message like:
+
 .. code-block:: bat
 
     ######################  Installation Complete  ######################
@@ -128,3 +131,9 @@ Results
 
     Use this account only to create Plone sites and initial users. Do not use it
     for routine login or maintenance.
+
+If you see anything different, look for error messages.
+You may need to read the install log on disk.
+
+Once installed, expect Plone (and buildout if you're doing development) to work as generally documented.
+You will, of course, need to use Windows pathnames (substitute "\" for "/") rather than Unix forms.

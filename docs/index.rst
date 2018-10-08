@@ -4,7 +4,8 @@ Plone Unified Installer
 
 .. admonition:: Description
 
-	The Unified Installer is a source-distribution kit that includes nearly everything necessary to build Plone on Linux, OS X, BSD and most Unix workalikes
+	The Unified Installer is a source-distribution kit that includes nearly everything necessary to build Plone on Linux, OS X, BSD and most Unix workalikes.
+    It will also build Plone on Windows 10.
 
 The Unified Installer is a source installation kit for installing Python, Zope, Plone and their dependencies on Unix-like platforms. It has two major components:
 
@@ -17,8 +18,11 @@ The Unified Installer is a source installation kit for installing Python, Zope, 
 
 	We strongly advise against installing Plone via OS packages or ports. There is no .rpm, .deb, or BSD port that is supported by the Plone community. Plone dependencies can and should be installed via package or port -- but not Plone itself.
 
+
 Root or User Install?
 ---------------------
+
+The "root" vs "user" installation options only apply to Linux and Unix-like systems; there is no such option for Windows.
 
 Why Choose root or normal?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,6 +48,7 @@ The stand-alone Zope instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Is simpler to understand, integrate and control, and is probably the best choice for a simple or test environment.
+It's also nearly certainly the best choice if you're installing on Windows, as a Windows installation is unlikely to be used for live, production purposes.
 
 The ZEO Client/Server configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +65,9 @@ Has several advantages for production or development use:
 
 Installing Plone
 ----------------
+
+`Windows installation instructions <./windows>`_ are in a separate document.
+The remainder of this page applies only to Linux and Unix-like systems.
 
 Preparations
 ~~~~~~~~~~~~
