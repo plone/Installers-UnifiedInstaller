@@ -3,7 +3,7 @@ Plone 5.1: Unified Installer
 ==========================
 
 The Plone Unified Installer is a source-installation kit that installs Plone
-and its dependencies from source on most Unix-like platforms.
+and its dependencies from source on most Unix-like platforms and Windows 10.
 
 The kit includes Plone and Zope and will download components like Python if needed.
 
@@ -25,6 +25,8 @@ For a full list of features, please check `the documentation <http://docs.plone.
 
 Installation
 ============
+
+Windows users: please see the separate `Windows Instructions <docs\windows>`+.
 
 Download the Installer:
 
