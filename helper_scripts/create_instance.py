@@ -116,6 +116,10 @@ else:
 if not opt.root_install:
     parts.remove('setpermissions')
     parts.remove('precompiler')
+if os.name == 'nt':
+    # no hard links and rsync, no backup
+    parts.remove('backup')
+
 buildout.set('buildout', 'parts', '\n'.join(parts))
 
 # set password

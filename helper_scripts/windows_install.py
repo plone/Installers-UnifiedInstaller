@@ -161,7 +161,7 @@ returncode = doCommand(
 )
 
 if returncode:
-    print _("Buildout returned an error code: %s; Aborting.") % returncode
+    print _("Failed Windows build with error code: %s; Aborting.") % returncode
     sys.exit(returncode)
 
 print _("Buildout succeeded.")
