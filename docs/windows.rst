@@ -78,9 +78,7 @@ Change your current directory to the unpacked archive's directory and execute th
 Options
 .......
 
-Run ``windows-install.bat`` with a "--help" argument to get an options listing:
-
-.. code-block:: bat
+Run ``windows-install.bat`` with a "--help" argument to get an options listing::
 
     windows_install.bat --help
     usage: windows_install.py [-h] [--password PASSWORD] [--target TARGET]
