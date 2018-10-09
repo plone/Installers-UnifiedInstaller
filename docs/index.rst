@@ -66,7 +66,7 @@ Has several advantages for production or development use:
 Installing Plone
 ----------------
 
-`Windows installation instructions <./windows>`_ are in a separate document.
+`Windows installation instructions <./windows.rst>`_ are in a separate document.
 The remainder of this page applies only to Linux and Unix-like systems.
 
 Preparations

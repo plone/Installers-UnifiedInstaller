@@ -26,7 +26,7 @@ For a full list of features, please check `the documentation <http://docs.plone.
 Installation
 ============
 
-Windows users: please see the separate `Windows Instructions <docs\windows>`+.
+Windows users: please see the separate `Windows Instructions <docs/windows.rst>`_.
 
 Download the Installer:
 

@@ -110,9 +110,7 @@ Results
 -------
 
 Expect the installer to take a considerable amount of time to run, with very few messages after the build begins.
-At the end of the install, expect a message like:
-
-.. code-block:: bat
+At the end of the install, expect a message like::
 
     ######################  Installation Complete  ######################
 
