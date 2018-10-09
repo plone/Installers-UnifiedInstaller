@@ -149,7 +149,7 @@ if opt.itype == 'zeo':
     options += ' --clients=' + str(opt.clients)
 
 print _("Running create_instance.py")
-doCommand(
+returncode = doCommand(
     PYTHON_BIN + ' ' +
     os.path.join(INSTALLER_HOME, 'helper_scripts', 'create_instance.py') + ' ' +
     '--uidir=' + INSTALLER_HOME + ' ' +
@@ -160,16 +160,9 @@ doCommand(
     options
 )
 
-
-# We need to run buildout without the install-from-cache option orginarily used by
-# create_instance.py, as the buildout cache probably does not have the windows-specific
-# eggs, and we'll need to be able to download them.
-# print _("Running buildout. This takes a while the first time.")
-# os.chdir(INSTANCE_HOME)
-# returncode = doCommand(os.path.join(PY_SCRIPTS, 'buildout.exe'))
-# if returncode:
-#     print _("Buildout returned an error code: %s; Aborting.") % returncode
-#     sys.exit(returncode)
+if returncode:
+    print _("Buildout returned an error code: %s; Aborting.") % returncode
+    sys.exit(returncode)
 
 print _("Buildout succeeded.")
 print _("Note: pep425tags runtime warnings may be ignored.")
