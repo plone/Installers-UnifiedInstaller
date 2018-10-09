@@ -229,14 +229,19 @@ if opt.run_buildout:
         print _("Buildout returned an error code: %s; Aborting.") % returncode
         sys.exit(returncode)
 
+    if os.name == 'nt':
+        ext = '.exe'
+    else:
+        ext = ''
+
     if opt.itype == 'standalone':
-        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'instance')) and
+        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'instance' + ext)) and
                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'instance')) and
                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
             print _("Parts of the install are missing. Buildout must have failed. Aborting.")
             sys.exit(1)
     else:
-        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'zeoserver')) and
+        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'zeoserver' + ext)) and
                 os.path.exists(os.path.join(opt.instance_home, 'bin', 'client1')) and
                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'client1')) and
                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
@@ -244,14 +249,14 @@ if opt.run_buildout:
             sys.exit(1)
 
     # sanity check PIL and lxml with our zopepy
-    my_python = os.path.join(opt.instance_home, 'bin', 'zopepy')
-    if doCommand(my_python + " -c 'from PIL._imaging import jpeg_decoder'"):
+    my_python = os.path.join(opt.instance_home, 'bin', 'zopepy' + ext)
+    if doCommand(my_python + ' -c "from PIL._imaging import jpeg_decoder"'):
         print _("Failed: JPEG support is not available.")
         print
         print _("Try preinstalling up-to-date libjpeg development libraries, then run")
         print _("the installer again.")
         sys.exit(1)
-    if doCommand(my_python + " -c 'from lxml import etree'"):
+    if doCommand(my_python + ' -c "from lxml import etree"'):
         print _("Failed: lxml does not have a working etree component.")
         sys.exit(1)
 
