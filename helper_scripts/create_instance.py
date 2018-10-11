@@ -250,6 +250,8 @@ if opt.run_buildout:
 
     # sanity check PIL and lxml with our zopepy
     my_python = os.path.join(opt.instance_home, 'bin', 'zopepy' + ext)
+    # Note that the nt shell is finicky about quoting; it doesn't like
+    # single quotes.
     if doCommand(my_python + ' -c "from PIL._imaging import jpeg_decoder"'):
         print _("Failed: JPEG support is not available.")
         print
