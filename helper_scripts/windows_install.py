@@ -115,16 +115,16 @@ if not os.path.exists(PY_HOME):
     with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
         tf.extractall(opt.target)
     vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
-    doCommand('python ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME)
+    doCommand(['python', os.path.join(vepackagedir, 'virtualenv.py'), PY_HOME])
     shutil.rmtree(vepackagedir)
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
     setuptoolspackage = glob.glob(os.path.join(PACKAGES_HOME, 'setuptools*'))
     if setuptoolspackage:
         print _("Installing compatible setuptools in virtualenv")
-        doCommand(PIP_BIN + ' install ' + setuptoolspackage[0])
+        doCommand([PIP_BIN, 'install', setuptoolspackage[0]])
     print _("Installing compatible zc.buildout in virtualenv")
-    doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*'))[0])
-    doCommand(PIP_BIN + ' install pypiwin32')
+    doCommand([PIP_BIN, 'install', glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*'))[0]])
+    doCommand([PIP_BIN, 'install', 'pypiwin32'])
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
@@ -142,23 +142,22 @@ else:
     os.symlink(os.path.join(PY_SCRIPTS, 'buildout' + BIN_SUFFIX), os.path.join(INSTANCE_BIN, 'buildout'))
 PYTHON_BIN = os.path.join(PY_SCRIPTS, 'python' + BIN_SUFFIX)
 
-options = ''
+options = []
 if opt.password is not None:
-    options += ' --password="' + opt.password + '"'
+    options.extend(['--password', opt.password])
 if opt.itype == 'zeo':
-    options += ' --clients=' + str(opt.clients)
+    options.extend('--clients', str(opt.clients)])
 
 print _("Running create_instance.py")
-returncode = doCommand(
-    PYTHON_BIN + ' ' +
-    os.path.join(INSTALLER_HOME, 'helper_scripts', 'create_instance.py') + ' ' +
-    '--uidir=' + INSTALLER_HOME + ' ' +
-    '--plone_home=' + PLONE_HOME + ' ' +
-    '--instance_home=' + INSTANCE_HOME + ' ' +
-    '--itype=' + ITYPE + ' ' +
-    '--force_build_from_cache=no' +
-    options
-)
+returncode = doCommand([
+    PYTHON_BIN,
+    os.path.join(INSTALLER_HOME, 'helper_scripts', 'create_instance.py'),
+    '--uidir', INSTALLER_HOME,
+    '--plone_home', PLONE_HOME,
+    '--instance_home', INSTANCE_HOME,
+    '--itype', + ITYPE,
+    '--force_build_from_cache=no',
+] + options)
 
 if returncode:
     print _("Failed Windows build with error code: %s; Aborting.") % returncode
