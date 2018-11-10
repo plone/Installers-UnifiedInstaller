@@ -115,7 +115,7 @@ if not os.path.exists(PY_HOME):
     with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
         tf.extractall(opt.target)
     vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
-    doCommand(['python', os.path.join(vepackagedir, 'virtualenv.py'), PY_HOME])
+    doCommand([sys.executable, os.path.join(vepackagedir, 'virtualenv.py'), PY_HOME])
     shutil.rmtree(vepackagedir)
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
     setuptoolspackage = glob.glob(os.path.join(PACKAGES_HOME, 'setuptools*'))
