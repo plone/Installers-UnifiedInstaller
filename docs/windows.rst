@@ -1,4 +1,4 @@
-=======
+======
 Windows
 =======
 
@@ -130,6 +130,10 @@ At the end of the install, expect a message like::
 
 If you see anything different, look for error messages.
 You may need to read the install log on disk.
+
+You will probably also get a [dialog from Windows Defender](images/Plone-Windows-Firewall.png),
+prompting you to allow network access for Python. 
+For development purposes, access to private networks is sufficient.
 
 Once installed, expect Plone (and buildout if you're doing development) to work as generally documented.
 You will, of course, need to use Windows pathnames (substitute "\" for "/") rather than Unix forms.
