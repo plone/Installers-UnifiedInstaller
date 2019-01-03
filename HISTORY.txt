@@ -1,3 +1,8 @@
+5.1.4r1 2018-11-10
+
+- The precompiler and command recipes were missing from the buildout cache. Fixed.
+  [smcmahon]
+
 5.1.4 2018-10-11
 
 - Update to Plone 5.1.4.
