@@ -65,7 +65,7 @@ Test a ZEO install
     >>> print stdout
     <BLANKLINE>
     -etc-
-    Installing Plone 5.1.4 at -etc-
+    Installing Plone 5.1.5 at -etc-
     #####################################################################
     <BLANKLINE>
     ######################  Installation Complete  ######################
@@ -206,7 +206,7 @@ Test building Python and dependencies
     <BLANKLINE>
     Rootless install method chosen. Will install for use by system user -etc-
     -etc-
-    Installing Python-2.7.14. This takes a while...
+    Installing Python-2.7.15. This takes a while...
     Python build looks OK.
     -etc-
     Plone successfully installed at -etc-
