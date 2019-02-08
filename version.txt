@@ -1,2 +1,2 @@
-Plone version: 5.0.8 (with Zope 2.13.x, Python 2.7.x, zc.buildout 2.9.5)
-Installer version: Unified Installer 5.0.8 r2
+Plone version: 5.0.10 (with Zope 2.13.x, Python 2.7.x, zc.buildout 2.9.5)
+Installer version: Unified Installer 5.0.10
