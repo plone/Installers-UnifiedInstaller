@@ -1,47 +1,49 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import os.path
+# Download Plone version files, following extends as necessary.
+# e.g.,
+# fetch_versions.py 5.2.0
+
 import re
 import sys
-import urllib2
-import urlparse
+
+from six.moves import urllib
 
 try:
     version = sys.argv[1]
 except IndexError:
-    print "Usage: fetch_versions version_#"
+    print("Usage: fetch_versions version_#")
     sys.exit(1)
 
-extends_pattern = re.compile(r"(^extends\s*?=\s*http.+?^\S)", re.MULTILINE + re.DOTALL)
-url_pattern = re.compile(r"(http\S+)")
+extends_pattern = re.compile(r"^extends\s*?=\W*(.+?)\s*$", re.MULTILINE + re.DOTALL)
 
 
 def getURL(url):
 
-    def ureplace(mo):
-        found = mo.group(0)
-        getURL(found)
-        path = urlparse.urlparse(found).path
-        return os.path.basename(path)
+    def fn_fix(s):
+        return u'-'.join(s.split(u'/')[1:])
 
     def ereplace(mo):
-        found = mo.group(0)
-        return url_pattern.sub(ureplace, found)
+        found = mo.group(1)
+        new_url = urllib.parse.urljoin(url, found)
+        getURL(new_url)
+        path = urllib.parse.urlparse(new_url).path
+        return u'\nextends = {}\n'.format(fn_fix(path))
 
     # https only
-    url = re.sub(r"^http:", "https:", url)
+    url = re.sub(r"^http:", u"https:", url)
 
-    fh = urllib2.urlopen(url)
-    content = fh.read()
+    fh = urllib.request.urlopen(url)
+    content = fh.read().decode('utf-8')
     fh.close()
 
     content = extends_pattern.sub(ereplace, content)
-    fn = os.path.basename(urlparse.urlparse(url).path)
+    fn = fn_fix(urllib.parse.urlparse(url).path)
     with open(fn, 'w') as file:
         file.write(content)
-    print fn
+    print(fn)
 
 
-starting_url = 'https://dist.plone.org/release/{0}/versions.cfg'.format(version)
+starting_url = u'https://dist.plone.org/release/{0}/versions.cfg'.format(version)
 getURL(starting_url)
