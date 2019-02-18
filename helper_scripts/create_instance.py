@@ -8,17 +8,17 @@
 
 from distutils.dir_util import copy_tree
 from i18n import _
+from i18n import _print
 
 import argparse
-import random
 import os
 import os.path
+import random
+import re
 import subprocess
 import shutil
 import stat
 import sys
-
-import iniparse
 
 BASE_ADDRESS = 8080
 ADD_CLIENTS_MARKER = "# __ZEO_CLIENTS_HERE__\n"
@@ -79,7 +79,7 @@ opt.run_buildout = bool(int(opt.run_buildout))
 ##########################################################
 # Copy the buildout skeleton into place, clean up a bit
 #
-print _("Copying buildout skeleton")
+_print("Copying buildout skeleton")
 copy_tree(
     os.path.join(opt.uidir, 'base_skeleton'),
     opt.instance_home,
@@ -99,11 +99,13 @@ template = opt.template
 if '.cfg' not in template:
     template += ".cfg"
 
-buildout = iniparse.RawConfigParser()
-buildout.read(os.path.join(opt.uidir, 'buildout_templates', template))
+with open(os.path.join(opt.uidir, 'buildout_templates', template), 'r') as fd:
+    buildout = fd.read()
 
-# set the parts list
-parts = buildout.get('buildout', 'parts').split('\n')
+# get the list of parts
+parts = re.search(r"^parts =\n(.+?)\n\n", buildout, re.MULTILINE + re.DOTALL).group(1)
+parts = re.split(r"\W+", parts)[1:]
+
 if opt.itype == 'standalone':
     parts.remove('client1')
     parts.remove('zeoserver')
@@ -120,39 +122,38 @@ if os.name == 'nt':
     # no hard links and rsync, no backup
     parts.remove('backup')
 
-buildout.set('buildout', 'parts', '\n'.join(parts))
+parts = 'parts =\n    {0}\n'.format('\n    '.join(parts))
+buildout = re.sub(r"^parts =\n.+?\n\n", parts, buildout, flags=re.MULTILINE + re.DOTALL)
 
 # set password
-buildout.set('buildout', 'user', "admin:%s" % opt.password)
+buildout = buildout.replace('__PASSWORD__', opt.password)
 
 # set effective users
-buildout.set('buildout', 'effective-user', opt.daemon_user)
-buildout.set('buildout', 'buildout-user', opt.buildout_user)
+buildout = buildout.replace('plone_daemon', opt.daemon_user)
+buildout = buildout.replace('plone_buildout', opt.buildout_user)
 if not opt.root_install:
-    buildout.set('buildout', 'need-sudo', "no")
+    buildout = buildout.replace('need-sudo = yes', "need-sudo = no")
 
 if opt.instance_var:
-    buildout.set('buildout', 'var-dir', opt.instance_var)
+    buildout = buildout.replace('var-dir=${buildout:directory}/var', "var-dir={0}".format(opt.instance_var))
 if opt.backup_dir:
-    buildout.set('buildout', 'backups-dir', opt.backup_dir)
+    buildout = buildout.replace('backups-dir=${buildout:var-dir}', 'backups-dir={0}'.format(opt.backup_dir))
 
 # remove unneeded sections
 if opt.itype == 'standalone':
-    buildout.remove_section('zeoserver')
+    buildout = re.sub(r"\[zeoserver\].+?\n\n", '\n\n', buildout, flags=re.DOTALL)
 else:
-    buildout.remove_section('instance')
+    buildout = re.sub(r"\[instance\].+?\n\n", '\n\n', buildout, flags=re.DOTALL)
 
 # Windows cleanup
 if os.name == 'nt':
-    buildout.remove_option('buildout', 'extensions')
-    eggs = buildout.get('buildout', 'eggs')
-    buildout.set('buildout', 'eggs', eggs + '\npywin32\nnt_svcutils')
+    buildout = re.sub(r"extensions =.+?\n\n", '\n\n', buildout, flags=re.DOTALL)
+    buildout = buildout.replace('eggs =', 'eggs =\n    pywin32\n    nt_svcutils\n')
 
 # Insert variable number of zeo client specs. This doesn't fit the iniparse
 # model because the clients need to be inserted at particular
 # points without fouling comments or section order.
-iniparse.tidy(buildout)
-buildout = str(buildout.data)
+# iniparse.tidy(buildout)
 if opt.itype == 'standalone':
     # remove extra clients marker
     buildout = buildout.replace(ADD_CLIENTS_MARKER, '')
@@ -169,11 +170,9 @@ else:
 
 # write out buildout.cfg
 fn = os.path.join(opt.instance_home, 'buildout.cfg')
-fd = file(fn, 'w')
-fd.write(buildout)
-fd.close()
+with open(fn, 'w') as fd:
+    fd.write(buildout)
 os.chmod(fn, stat.S_IRUSR | stat.S_IWUSR)
-
 
 ################
 # Start the fun!
@@ -181,29 +180,29 @@ if opt.run_buildout:
     os.chdir(opt.instance_home)
 
     if opt.install_lxml == 'yes':
-        print _("Building lxml with static libxml2/libxslt; this requires Internet access,")
-        print _("and takes a while...")
+        _print("Building lxml with static libxml2/libxslt; this requires Internet access,")
+        _print("and takes a while...")
         returncode = doCommand(
             os.path.join(opt.instance_home, 'bin', 'buildout') +
             " -c lxml_static.cfg")
         if returncode:
-            print _("\nlxml build failed.")
-            print _("See log file for details.")
+            _print("\nlxml build failed.")
+            _print("See log file for details.")
             print
-            print _("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
-            print _("the installer again.")
+            _print("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
+            _print("the installer again.")
         else:
             # test generated lxml via lxmlpy interpreter installed during build
             returncode = doCommand(
                 os.path.join(opt.instance_home, 'bin', 'lxmlpy') +
                 ' -c "from lxml import etree"')
             if returncode:
-                print _("Failed to build working lxml.")
-                print _("lxml built with no errors, but does not have a working etree component.")
-                print _("See log file for details.")
+                _print("Failed to build working lxml.")
+                _print("lxml built with no errors, but does not have a working etree component.")
+                _print("See log file for details.")
                 print
-                print _("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
-                print _("the installer again.")
+                _print("Try preinstalling up-to-date libxml2/libxslt development libraries, then run")
+                _print("the installer again.")
             else:
                 # cleanup; if we leave around .installed.cfg, it will give
                 # us a cascade of misleading messages and under some circumstances
@@ -217,7 +216,7 @@ if opt.run_buildout:
         returncode = 0
 
     if not returncode:
-        print _("Building Zope/Plone; this takes a while...")
+        _print("Building Zope/Plone; this takes a while...")
         options = ''
         if opt.force_build_from_cache == 'yes':
             options += ' -NU buildout:install-from-cache=true'
@@ -226,7 +225,7 @@ if opt.run_buildout:
         )
 
     if returncode:
-        print _("Buildout returned an error code: %s; Aborting.") % returncode
+        _print("Buildout returned an error code: %s; Aborting.") % returncode
         sys.exit(returncode)
 
     if os.name == 'nt':
@@ -238,14 +237,14 @@ if opt.run_buildout:
         if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'instance' + ext)) and
                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'instance')) and
                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
-            print _("Parts of the install are missing. Buildout must have failed. Aborting.")
+            _print("Parts of the install are missing. Buildout must have failed. Aborting.")
             sys.exit(1)
     else:
         if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'zeoserver' + ext)) and
                 os.path.exists(os.path.join(opt.instance_home, 'bin', 'client1')) and
                 os.path.exists(os.path.join(opt.instance_home, 'parts', 'client1')) and
                 os.path.exists(os.path.join(opt.instance_home, 'var'))):
-            print _("Parts of the install are missing. Buildout must have failed. Aborting.")
+            _print("Parts of the install are missing. Buildout must have failed. Aborting.")
             sys.exit(1)
 
     # sanity check PIL and lxml with our zopepy
@@ -253,14 +252,14 @@ if opt.run_buildout:
     # Note that the nt shell is finicky about quoting; it doesn't like
     # single quotes.
     if doCommand(my_python + ' -c "from PIL._imaging import jpeg_decoder"'):
-        print _("Failed: JPEG support is not available.")
+        _print("Failed: JPEG support is not available.")
         print
-        print _("Try preinstalling up-to-date libjpeg development libraries, then run")
-        print _("the installer again.")
+        _print("Try preinstalling up-to-date libjpeg development libraries, then run")
+        _print("the installer again.")
         sys.exit(1)
     if doCommand(my_python + ' -c "from lxml import etree"'):
-        print _("Failed: lxml does not have a working etree component.")
+        _print("Failed: lxml does not have a working etree component.")
         sys.exit(1)
 
 else:
-    print _("Skipping bin/buildout at your request.")
+    _print("Skipping bin/buildout at your request.")

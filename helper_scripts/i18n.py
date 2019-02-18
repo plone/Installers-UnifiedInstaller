@@ -13,4 +13,8 @@ languages = os.environ.get('LANG', '').split(':') + [DEFAULT_LANGUAGE]
 
 language = gettext.translation(APP_NAME, LOCALE_DIR, languages=languages, fallback=True, codeset='UTF-8')
 
-_ = language.ugettext
+_ = language.gettext
+
+
+def _print(s):
+    print(_(s))
