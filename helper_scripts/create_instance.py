@@ -225,7 +225,7 @@ if opt.run_buildout:
         )
 
     if returncode:
-        _print("Buildout returned an error code: %s; Aborting.") % returncode
+        _print("Buildout returned an error code: {0}; Aborting.".format(returncode))
         sys.exit(returncode)
 
     if os.name == 'nt':

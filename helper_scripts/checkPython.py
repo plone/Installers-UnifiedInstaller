@@ -16,7 +16,9 @@ if vi[0] == 2 and vi < (2, 7, 9) or vi[0] == 3 and vi < (3, 5, 0):
     # not much point in further testing.
     sys.exit(1)
 
-if not os.path.isfile(os.path.join(sys.prefix, 'include', 'python2.7', 'Python.h')):
+pythonv = 'python{0}.{1}'.format(*vi[:2])
+
+if not os.path.isfile(os.path.join(sys.prefix, 'include', pythonv, 'Python.h')):
     _print("Failed: We need to be able to use Python.h, which is missing.")
     _print("You may be able to resolve this by installing the python-dev package.")
     passed = False

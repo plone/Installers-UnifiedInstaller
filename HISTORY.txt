@@ -1,3 +1,14 @@
+5.2b1 (unreleased)
+
+- Python 3 compatability for build and support scripts.
+  [smcmahon]
+
+- Change cache strategy to avoid pre-cooked eggs, which are Python-version independent.
+  [smcmahon]
+
+- Change Plone/Zope version.cfg strategy to avoid name collisions, follow relative URLs.
+  [smcmahon]
+
 5.1.5 2019-01-08
 
 - Update to Plone 5.1.5.

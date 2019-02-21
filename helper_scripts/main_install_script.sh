@@ -45,8 +45,8 @@ readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz
 readonly PYTHON_MD5=045fb3440219a1f6923fefdabde63342
 readonly PYTHON_TB=Python-2.7.15.tgz
 readonly PYTHON_DIR=Python-2.7.15
-readonly VIRTUALENV_TB=virtualenv-16.2.0.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-16.2.0
+readonly VIRTUALENV_TB=virtualenv-16.4.0.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-16.4.0
 readonly NEED_CUSTOM_SETUPTOOLS=no
 
 readonly NEED_XML2="2.7.8"
