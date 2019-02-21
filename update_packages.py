@@ -9,22 +9,20 @@ Strategy:
 
   * copy the buildout-cache directory from the working install
 
-  * eliminate older versions from both eggs and download/dist
+  * remove eggs
 
-  * delete all the eggs with binary signatures from the eggs
-    directory, keeping a list of what we've done
+  * eliminate older versions from download/dist
 
-  * delete all the .py[c|o] files from the installed eggs
-    directory. those will be recompiled on install.
-
-  * Delete all but the packages which have binary build
-    components from download/dist
+  * delete all the binary and one-python wheels from the dist
+    directory, replace them with tarballs
 
   * bundle it all up.
 
 Created by Steve McMahon on 2008-11-06.
-Copyright (c) 2008-12, Plone Foundation. Licensed under GPL v 2.
+Copyright (c) 2008-19, Plone Foundation. Licensed under GPL v 2.
 """
+
+from __future__ import print_function
 
 import os.path
 import re
@@ -34,11 +32,11 @@ import subprocess
 import sys
 
 
-BINARY_SIG_RE = re.compile(r'-py2.[7]-.+(?=.egg)')
-PY_SIG = '-.py2.7'
+BINARY_SIG_RE = re.compile(r'-py[23]\.\d-.+(?=.egg)')
+PY_SIG = re.compile(r'-\.py[23]\.\d')
 
 if len(sys.argv) != 2:
-    print 'usage: update_packages.py path/to/work/target'
+    print('usage: update_packages.py path/to/work/target')
     exit(1)
 
 # source directory for packages
@@ -61,7 +59,8 @@ class PackageList:
 
         for pathname in pathnames:
             for fn in os.listdir(pathname):
-                basename = BINARY_SIG_RE.sub('', fn).replace(PY_SIG, '')
+                basename = BINARY_SIG_RE.sub('', fn)
+                basename = PY_SIG.sub('', basename)
                 mo = self.pkgpat.match(basename)
                 if mo:
                     name, version = mo.groups()[0:2]
@@ -88,78 +87,48 @@ class PackageList:
 workDir = "./packages/buildout-cache"
 desttar = "./packages/buildout-cache.tar.bz2"
 
-
 if os.path.exists(workDir):
-    print "remove existing work dir"
+    print("remove existing work dir")
     shutil.rmtree(workDir)
 
-print "Copying to work directory"
+print("Copying to work directory")
 shutil.copytree(os.path.join(target, 'buildout-cache'), workDir)
 
+# removing eggs
 eggs = os.path.join(workDir, 'eggs')
+shutil.rmtree(eggs)
+os.mkdir(eggs)
+
 downloads = os.path.join(workDir, 'downloads')
 dist = os.path.join(downloads, 'dist')
 
-print "clean older packages"
+print("clean older packages")
 packages = PackageList((dist, ))
 packages.cleanOlder()
-packages = PackageList((eggs, ))
-packages.cleanOlder()
+# packages = PackageList((eggs, ))
+# packages.cleanOlder()
 
-binaries = {}
-
-print "Removing installed eggs with binary components:"
-for fn in os.listdir(eggs):
-    if BINARY_SIG_RE.search(fn) is not None:
-        basename = BINARY_SIG_RE.sub('', fn).replace('.egg', '')
-        binaries[basename] = 1
-        shutil.rmtree(os.path.join(eggs, fn))
-        print basename,
-print
-
-print "Removing dist packages without binary components. Remaining:"
-for fn in os.listdir(dist):
-    basename = BINARY_SIG_RE.sub('', fn)
-    basename = basename.replace('.tar.gz', '').replace('.zip', '')
-    basename = basename.replace('-py2.py3-none-any.whl', '').replace('-py2-none-any.whl', '')
-    if basename in binaries:
-        del binaries[basename]
-        print basename,
-    else:
-        os.unlink(os.path.join(dist, fn))
-print
-# deal with leftover binaries, which should be binary wheels
+# deal with binary wheels
 cwd = os.getcwd()
-os.chdir(dist)
-for basename in binaries.keys():
-    spec = basename.replace('-', '==')
-    print "Replacing binary wheel for {}".format(spec)
-    doCommand("pip download --no-binary :all: --no-deps {}".format(spec))
-    del binaries[basename]
-os.chdir(cwd)
-print
-
-if binaries:
-    print "\nOoops: odd binaries %s\n" % binaries.keys()
-
-
-print "zap *.py[c|o] files from installed eggs"
-doCommand("find %s -name '*.py[co]' -exec rm {} \\;" % eggs)
-print "zap *.mo files from installed eggs"
-doCommand("find %s -name '*.mo' -exec rm {} \\;" % eggs)
-
-print "Removing .registration.cache files"
-doCommand("find %s -name '.registration.cache' -exec rm {} \\;" % eggs)
+for fn in os.listdir(dist):
+    if fn.endswith('whl') and not fn.endswith('-py2.py3-none-any.whl'):
+        # presumably a binary wheel
+        spec = '=='.join(re.search(r'^(.+?)-(.+?)-', fn).groups())
+        print("Replacing binary wheel for {}".format(spec))
+        os.unlink(os.path.join(dist, fn))
+        os.chdir(dist)
+        doCommand("pip download --no-binary :all: --no-deps {}".format(spec))
+        os.chdir(cwd)
 
 # clean mac crapola
 doCommand('find %s -name ".DS_Store" -exec rm {} \;' % workDir)
 
-print "permission fixups"
+print("permission fixups")
 doCommand("find %s -type d -exec chmod 755 {} \;" % workDir)
 doCommand("find %s -type f -exec chmod 644 {} \;" % workDir)
 
 if os.path.exists(desttar):
-    print "remove existing buildout cache archive"
+    print("remove existing buildout cache archive")
     os.unlink(desttar)
 
 # GNU tar is required for this task...
@@ -168,7 +137,7 @@ if os.path.exists(desttar):
 p = subprocess.Popen(['tar', '--version'], stdout=subprocess.PIPE)
 stdout = p.communicate()[0]
 has_gnutar = False
-if stdout.find('GNU') >= 0:
+if stdout.find(b'GNU') >= 0:
     has_gnutar = True
     tar_command = 'tar'
 else:
@@ -180,7 +149,7 @@ else:
 if not has_gnutar:
     raise RuntimeError("GNU tar is required to complete this packaging.")
 
-# print "generate new archive"
+# print("generate new archive")
 doCommand("%s --owner 0 --group 0 --exclude=.DS_Store -jcf %s -C packages buildout-cache" % (tar_command, desttar))
 
 # cleanup
