@@ -129,7 +129,10 @@ buildout = re.sub(r"^parts =\n.+?\n\n", parts, buildout, flags=re.MULTILINE + re
 buildout = buildout.replace('__PASSWORD__', opt.password)
 
 # set effective users
-buildout = buildout.replace('plone_daemon', opt.daemon_user)
+if sys.version_info[0] == 2:
+    buildout = buildout.replace('plone_daemon', opt.daemon_user)
+else:
+    buildout = buildout.replace('plone_daemon', '')
 buildout = buildout.replace('plone_buildout', opt.buildout_user)
 if not opt.root_install:
     buildout = buildout.replace('need-sudo = yes', "need-sudo = no")
