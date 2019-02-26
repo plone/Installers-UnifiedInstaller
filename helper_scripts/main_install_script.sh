@@ -107,7 +107,7 @@ WITHOUT_SSL="no"
 INSTALL_ZEO=0
 
 USE_WHIPTAIL=0
-if [ "$BASH_VERSION" ] && [ "X$1" == "X" ]; then
+if [ "$BASH_VERSION" ]; then
     . "${INSTALLER_PWD}/helper_scripts/whipdialog.sh"
     USE_WHIPTAIL=1
 fi
@@ -139,6 +139,7 @@ do
         --target=* | -target=* )
             if [ "$optarg" ]; then
                 PLONE_HOME="$optarg"
+                USE_WHIPTAIL=0
             else
                 usage
             fi
@@ -227,6 +228,7 @@ do
         --password=* | -password=* )
             if [ "$optarg" ]; then
                 PASSWORD="$optarg"
+                USE_WHIPTAIL=0
             else
                 usage
             fi
@@ -254,6 +256,7 @@ do
         --clients=* | --client=* )
             if [ "$optarg" ]; then
                 CLIENT_COUNT="$optarg"
+                USE_WHIPTAIL=0
             else
                 usage
             fi
@@ -265,15 +268,18 @@ do
 
         --help | -h )
             usage
+            USE_WHIPTAIL=0
             ;;
 
         *)
             case $option in
                 zeo* | cluster )
                     INSTALL_ZEO=1
+                    USE_WHIPTAIL=0
                     ;;
                 standalone* | nozeo | stand-alone | sa )
                     INSTALL_STANDALONE=1
+                    USE_WHIPTAIL=0
                     ;;
                 none )
                     echo "$NO_METHOD_SELECTED"
