@@ -34,7 +34,7 @@ Options
   buildout users. Default is 'plone_group'.
   Ignored for non-server-mode installs.
 
---with-python=</full/path/to/python2.7>
+--with-python=</full/path/to/python2.7 or /full/path/to/python3.5+>
   If you have an already built Python that's adequate to run
   Zope / Plone, you may specify it here.
   virtualenv will be used to isolate the copy used for the install.
