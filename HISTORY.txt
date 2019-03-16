@@ -8,6 +8,9 @@
 
 - Change Plone/Zope version.cfg strategy to avoid name collisions, follow relative URLs.
   [smcmahon]
+  
+- change where to get help to our forum
+  [tkimnguyen]
 
 5.1.5 2019-01-08
 
