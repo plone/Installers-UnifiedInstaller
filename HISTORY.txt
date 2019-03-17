@@ -1,4 +1,10 @@
-5.2rc1 (unreleased)
+5.2rc1-r1 (installer revision) (unreleased)
+
+- Bypass libz, libssl and libxml tool tests if we don't need to build a Python.
+  Since we are no longer necessarily building Pillow and lxml (optimistically assuming availability of binary eggs for popular platforms), we no longer need to check for headers in advance.
+  [smcmahon]
+
+5.2rc1 2019-03-13
 
 - Update docs to highlight --with-python option to designate desired Python.
   [smcmahon]
