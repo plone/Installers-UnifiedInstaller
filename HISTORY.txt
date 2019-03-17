@@ -1,5 +1,9 @@
 5.2rc1-r1 (installer revision) (unreleased)
 
+- Remove DocFinderTab from develop.cfg.
+  It's not Python-3 compatible.
+  [smcmahon]
+
 - Bypass libz, libssl and libxml tool tests if we don't need to build a Python.
   Since we are no longer necessarily building Pillow and lxml (optimistically assuming availability of binary eggs for popular platforms), we no longer need to check for headers in advance.
   [smcmahon]
