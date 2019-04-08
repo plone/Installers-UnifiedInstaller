@@ -3,6 +3,7 @@
 #
 
 INSTALLER_PWD=`pwd`
+CWD="$INSTALLER_PWD"
 
 # Path for Root install
 #
@@ -33,7 +34,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.2b1
+readonly FOR_PLONE=5.2rc1
 readonly WANT_PYTHON=2.7
 
 readonly PACKAGES_DIR="${INSTALLER_PWD}/packages"
@@ -458,7 +459,7 @@ fi
 # Begin the process of finding a viable Python or creating one
 # if it can't be found.
 
-if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
+if [ -x "$PLONE_HOME/Python-*/bin/python" ] ; then
     # There is a Python that was probably built by the installer;
     # use it.
     HAVE_PYTHON=yes
@@ -469,7 +470,10 @@ if [ -x "$PLONE_HOME/Python-${WANT_PYTHON}/bin/python" ] ; then
         echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
-    WITH_PYTHON="$PLONE_HOME/Python-${WANT_PYTHON}/bin/python"
+    cd "$PLONE_HOME/Python-*"
+    PY_HOME=`pwd`
+    cd "$CWD"
+    WITH_PYTHON="$PY_HOME/bin/python"
 fi
 
 # shared message for need python
@@ -596,17 +600,17 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         exit 1
     fi
 
-    if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
+    if [ "X$HAVE_LIBZ" != "Xyes" && "X$BUILD_PYTHON" = "Xyes" ] ; then
         echo $NEED_INSTALL_LIBZ_MSG
         exit 1
     fi
 
-    if [ "X$HAVE_LIBJPEG" != "Xyes" ] ; then
+    if [ "X$HAVE_LIBJPEG" != "Xyes" && "X$BUILD_PYTHON" = "Xyes" ] ; then
         echo $NEED_INSTALL_LIBJPEG_MSG
         exit 1
     fi
 
-    if [ "$INSTALL_LXML" = "no" ]; then
+    if [ "$INSTALL_LXML" = "no" && "X$BUILD_PYTHON" = "Xyes" ]; then
         # check for libxml2 / libxslt
 
         XSLT_XML_MSG () {
@@ -824,7 +828,7 @@ cd "$PKG"
 untar $VIRTUALENV_TB
 cd $VIRTUALENV_DIR
 echo $CREATING_VIRTUALENV
-"$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
+$SUDO "$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
 if [ $ROOT_INSTALL -eq 1 ]; then
     chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PY_HOME"
 fi
@@ -841,9 +845,10 @@ if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL};
     exit 1
 fi
 
-if [ "X$NEED_CUSTOM_SETUPTOOLS" = "Xyes" ]; then
+# Install setuptools in the virtualenv if there is one in the packages directory
+if [ -f "${PKG}/setuptools*" ]; then
     echo $INSTALLING_SETUPTOOLS
-    "${PY_HOME}/bin/pip" install "$PKG"/setuptools* >> "$INSTALL_LOG" 2>&1
+    $SUDO "${PY_HOME}/bin/pip" install "$PKG"/setuptools* >> "$INSTALL_LOG" 2>&1
     if [ $? -gt 0 ]; then
         echo $INSTALLING_SETUPTOOLS_FAILED
         seelog
@@ -851,15 +856,26 @@ if [ "X$NEED_CUSTOM_SETUPTOOLS" = "Xyes" ]; then
     fi
 fi
 
-# Install zc.buildout in the virtualenv
-echo $INSTALLING_BUILDOUT
-"${PY_HOME}/bin/pip" install "$PKG"/zc.buildout* >> "$INSTALL_LOG" 2>&1
-if [ $? -gt 0 ]; then
-    echo $INSTALLING_BUILDOUT_FAILED
-    seelog
-    exit 1
+# Install zc.buildout in the virtualenv if there is one in the packages directory
+if [ -f "${PKG}/zc.buildout*" ]; then
+    echo $INSTALLING_BUILDOUT
+    $SUDO "${PY_HOME}/bin/pip" install "$PKG"/zc.buildout* >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ]; then
+        echo $INSTALLING_BUILDOUT_FAILED
+        seelog
+        exit 1
+    fi
 fi
 
+if [ -f "${INSTALLER_PWD}/base_skeleton/requirements.txt" ]; then
+    echo $INSTALLING_REQUIREMENTS
+    $SUDO "${PY_HOME}/bin/pip" install -r "${INSTALLER_PWD}/base_skeleton/requirements.txt" >> "$INSTALL_LOG" 2>&1
+    if [ $? -gt 0 ]; then
+        echo $INSTALLING_REQUIREMENTS_FAILED
+        seelog
+        exit 1
+    fi
+fi
 
 # Create the buildout cache
 BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
@@ -883,6 +899,7 @@ if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     if [ $ROOT_INSTALL -eq 1 ]; then
         chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
     fi
+    FORCE_BUILD_FROM_CACHE=yes
 else
     mkdir "$BUILDOUT_CACHE"
     mkdir "$BUILDOUT_CACHE"/eggs
@@ -891,6 +908,7 @@ else
     if [ $ROOT_INSTALL -eq 1 ]; then
         chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
     fi
+    FORCE_BUILD_FROM_CACHE=no
 fi
 
 
@@ -949,6 +967,7 @@ $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--instance_var=$INSTANCE_VAR" \
     "--backup_dir=$BACKUP_DIR" \
     "--template=$TEMPLATE" \
+    "--force_build_from_cache=$FORCE_BUILD_FROM_CACHE" \
     "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
 if [ $? -gt 0 ]; then
     echo $BUILDOUT_FAILED

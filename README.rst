@@ -2,7 +2,7 @@
 Plone 5.1: Unified Installer
 ==========================
 
-The Plone Unified Installer is a source-installation kit that installs Plone
+The Plone Unified Installer installs Plone
 and its dependencies from source on most Unix-like platforms and Windows 10.
 
 The kit includes Plone and Zope and will download components like Python if needed.
@@ -32,19 +32,19 @@ Download the Installer:
 
 .. code-block:: shell
 
-  $ wget --no-check-certificate https://launchpad.net/plone/5.2/5.2b1/+download/Plone-5.2b1-UnifiedInstaller.tgz
+  $ wget --no-check-certificate https://launchpad.net/plone/5.2/5.2rc1/+download/Plone-5.2rc1-UnifiedInstaller.tgz
 
 Extract the downloaded file:
 
 .. code-block:: shell
 
-  $ tar -xf Plone-5.2b1-UnifiedInstaller.tgz
+  $ tar -xf Plone-5.2rc1-UnifiedInstaller.tgz
 
 Go the folder containing installer script:
 
 .. code-block:: shell
 
-  $ cd Plone-5.2b1-UnifiedInstaller
+  $ cd Plone-5.2rc1-UnifiedInstaller
 
 Run script:
 
@@ -53,6 +53,14 @@ Run script:
    ./install.sh $OPTION
 
 If you run the installer with no option arguments, it will ask a series of questions about basic options.
+
+By default, the installer will look for Python 2.7.x. If you wish to use Python 3, use:
+
+.. code-block:: shell
+
+   ./install.sh --with-python/usr/bin/python3 [other options]
+
+Substituting the path to your Python 3.5+.
 
 For a full list of options, many of which are not available via the dialog questions, use:
 

@@ -42,10 +42,11 @@
 #   buildout users. Default is 'plone_group'.
 #   Ignored for non-server-mode installs.
 #
-# --with-python=/fullpathtopython2.7.x
+# --with-python=/fullpathtopython2.7.x or python3.5+
 #   If you have an already built Python that's adequate to run
 #   Zope / Plone, you may specify it here.
 #   virtualenv will be used to isolate the copy used for the install.
+#   Note: the Python specified by --with-python should not itself be a virtualenv.
 #
 # --build-python
 #   If you do not have a suitable Python available, the installer will

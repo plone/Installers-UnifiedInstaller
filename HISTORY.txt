@@ -1,3 +1,29 @@
+5.2rc1-r1 (installer revision) (unreleased)
+
+- Remove DocFinderTab from develop.cfg.
+  It's not Python-3 compatible.
+  [smcmahon]
+
+- Bypass libz, libssl and libxml tool tests if we don't need to build a Python.
+  Since we are no longer necessarily building Pillow and lxml (optimistically assuming availability of binary eggs for popular platforms), we no longer need to check for headers in advance.
+  [smcmahon]
+
+5.2rc1 2019-03-13
+
+- Update docs to highlight --with-python option to designate desired Python.
+  [smcmahon]
+
+- Update docs to note that the installer no longer runs offline.
+  [smcmahon]
+
+- Update to 5.2rc1.
+  [smcmahon]
+
+- Remove pre-built buildout cache.
+  With a need to support multiple Pythons, the pre-cooked eggs were no longer practical.
+  Tests indicated that providing an uncooked source cache provided no significant build performance over download/build with good connections.
+  [smcmahon]
+
 5.2b1 (unreleased)
 
 - Python 3 compatability for build and support scripts.

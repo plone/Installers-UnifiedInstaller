@@ -4,19 +4,25 @@ Plone Unified Installer
 
 .. admonition:: Description
 
-	The Unified Installer is a source-distribution kit that includes nearly everything necessary to build Plone on Linux, OS X, BSD and most Unix workalikes.
+	The Unified Installer is an installation kit that includes nearly everything necessary to build Plone on Linux, OS X, BSD and most Unix workalikes.
     It will also build Plone on Windows 10.
 
-The Unified Installer is a source installation kit for installing Python, Zope, Plone and their dependencies on Unix-like platforms. It has two major components:
+The Unified Installer is an installation kit for installing Python, Zope, Plone and their dependencies on Unix-like platforms. It has two major components:
 
-- The source packages for Python, Zope, Plone, a couple of system libraries and some Python libraries;
-  An installation script that uses the packages to create a ready-to-run, relatively self-contained, Python/Zope/Plone install that meets the Plone community's best-practices standards.
+- An installation script that downloads the packages to create a ready-to-run, relatively self-contained, Python/Zope/Plone install that meets the Plone community's best-practices standards.
 
-- The new Zope/Plone install will use its own copy of Python, and the Python installed by the Unified Installer will not replace your system's copy of Python. You may optionally use your system (or some other) Python, and the Unified Installer will use it without modifying it or your site libraries.
+- The new Zope/Plone install will use its own virtualenv copy of Python, and the Python installed by the Unified Installer will not replace your system's copy of Python. You may optionally use your system (or some other) Python, and the Unified Installer will use it without modifying it or your site libraries.
 
 .. warning::
 
-	We strongly advise against installing Plone via OS packages or ports. There is no .rpm, .deb, or BSD port that is supported by the Plone community. Plone dependencies can and should be installed via package or port -- but not Plone itself.
+    Previous versions of the Unified Installer included a cache of all the required Python libraries not included with Python itself.
+    This allowed the installer to build Plone offline.
+    This is no longer the case.
+    The installer now requires Internet access adequate to download Python packages from the Python Package Index, PyPI.
+
+.. warning::
+
+    We strongly advise against installing Plone via OS packages or ports. There is no .rpm, .deb, or BSD port that is supported by the Plone community. Plone dependencies can and should be installed via package or port -- but not Plone itself.
 
 
 Root or User Install?

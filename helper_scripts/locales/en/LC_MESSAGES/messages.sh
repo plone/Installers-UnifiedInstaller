@@ -292,6 +292,10 @@ INSTALLING_SETUPTOOLS='Installing setuptools in virtual environment.'
 
 INSTALLING_SETUPTOOLS_FAILED='Unable to install setuptools in virtual environment.'
 
+INSTALLING_REQUIREMENTS='Installing Python requirements in virtual environment.'
+
+INSTALLING_REQUIREMENTS_FAILED='Unable to install Python requirements in virtual environment.'
+
 FOUND_BUILDOUT_CACHE='Found existing buildout cache at $BUILDOUT_CACHE\; skipping step.'
 
 UNPACKING_BUILDOUT_CACHE='Unpacking buildout cache to $BUILDOUT_CACHE'
