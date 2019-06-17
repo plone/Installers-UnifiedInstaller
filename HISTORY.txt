@@ -1,3 +1,9 @@
+5.2rc3 (unreleased)
+
+- When the --instance command line option is used on a Windows install, "NameError: name 'ITYPE' is not defined" results.
+  Fixes #88.
+  [smcmahon]
+
 5.2rc1-r1 (installer revision) (unreleased)
 
 - Remove DocFinderTab from develop.cfg.
@@ -34,7 +40,7 @@
 
 - Change Plone/Zope version.cfg strategy to avoid name collisions, follow relative URLs.
   [smcmahon]
-  
+
 - change where to get help to our forum
   [tkimnguyen]
 
