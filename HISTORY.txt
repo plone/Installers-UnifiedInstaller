@@ -1,3 +1,9 @@
+5.1.x unreleased
+
+- When the --instance command line option is used on a Windows install, "NameError: name 'ITYPE' is not defined" results.
+  Fixes #88.
+  [smcmahon]
+
 5.1.5 2019-01-08
 
 - Update to Plone 5.1.5.

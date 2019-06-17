@@ -82,13 +82,15 @@ argparser.add_argument(
 
 opt = argparser.parse_args()
 
+if opt.itype == 'standalone':
+    ITYPE = 'standalone'
+else:
+    ITYPE = 'cluster'
 if opt.instance is None:
     if opt.itype == 'standalone':
         opt.instance = 'zinstance'
-        ITYPE = 'standalone'
     else:
         opt.instance = 'zeocluster'
-        ITYPE = 'cluster'
 
 # Establish plone home
 if not os.path.exists(opt.target):
