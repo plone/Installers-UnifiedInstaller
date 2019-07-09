@@ -1,3 +1,11 @@
+5.2rc5 (unreleased)
+
+- Update for 5.2rc5.
+  [smcmahon]
+
+- Fix "]" warnings for main_install.sh.
+  [smcmahon]
+
 5.2rc3 (unreleased)
 
 - When the --instance command line option is used on a Windows install, "NameError: name 'ITYPE' is not defined" results.

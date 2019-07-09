@@ -1,4 +1,4 @@
 #!/bin/sh
 
-VERSION=5.2rc1
+VERSION=5.2rc5
 scp -oHostKeyAlgorithms=+ssh-dss packages/buildout-cache.tar.bz2 stevem@74.203.223.202:/srv/dist.plone.org/http/root/release/${VERSION}/
