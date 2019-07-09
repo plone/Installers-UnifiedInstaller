@@ -600,17 +600,17 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         exit 1
     fi
 
-    if [ "X$HAVE_LIBZ" != "Xyes" && "X$BUILD_PYTHON" = "Xyes" ] ; then
+    if [ "X$HAVE_LIBZ" != "Xyes" ] && [ "X$BUILD_PYTHON" = "Xyes" ] ; then
         echo $NEED_INSTALL_LIBZ_MSG
         exit 1
     fi
 
-    if [ "X$HAVE_LIBJPEG" != "Xyes" && "X$BUILD_PYTHON" = "Xyes" ] ; then
+    if [ "X$HAVE_LIBJPEG" != "Xyes" ] && [ "X$BUILD_PYTHON" = "Xyes" ] ; then
         echo $NEED_INSTALL_LIBJPEG_MSG
         exit 1
     fi
 
-    if [ "$INSTALL_LXML" = "no" && "X$BUILD_PYTHON" = "Xyes" ]; then
+    if [ "$INSTALL_LXML" = "no" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
         # check for libxml2 / libxslt
 
         XSLT_XML_MSG () {
