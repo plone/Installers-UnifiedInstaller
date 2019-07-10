@@ -139,6 +139,12 @@ Aborting installation.
 IGNORING_WITH_PYTHON="We already have a Python environment for this target; ignoring --with-python."
 IGNORING_BUILD_PYTHON="We already have a Python environment for this target; ignoring --build-python."
 
+CHOOSE_PYTHON_TITLE="Pick a Python"
+CHOOSE_PYTHON_EXPLANATION="
+Choose the Python executable you wish to use for building and running Plone.
+If you don't want one of these, cancel and use the --with-python command-line argument.
+"
+
 SUDO_REQUIRED_MSG="sudo utility is required to do a server-mode install."
 
 MISSING_PARTS_MSG='

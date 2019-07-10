@@ -1,5 +1,8 @@
 5.2rc5 (unreleased)
 
+- Add dialog choice for --with-python if not specified on command line.
+  [smcmahon]
+
 - Update for 5.2rc5.
   [smcmahon]
 

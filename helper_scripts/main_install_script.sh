@@ -36,6 +36,7 @@ PLONE_GROUP=plone_group
 
 readonly FOR_PLONE=5.2rc5
 readonly WANT_PYTHON=2.7
+readonly ELIGIBLE_PYTHONS='2.7 3.5 3.6 3.7 3.8'
 
 readonly PACKAGES_DIR="${INSTALLER_PWD}/packages"
 readonly ONLINE_PACKAGES_DIR=opackages
@@ -313,6 +314,33 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
         whiptail_goodbye
     fi
 
+
+    if [ "X$WITH_PYTHON" == "X" ] && [ "X$BUILD_PYTHON" != "Xyes" ]; then
+        CANDIDATE_PYTHONS=""
+        PYTHONS_FOUND=0
+        for A_PYTHON in $ELIGIBLE_PYTHONS; do
+            CANDIDATE=`which python$A_PYTHON`
+            if [ $? -eq 0 ]; then
+                PYTHONS_FOUND=$(( PYTHONS_FOUND + 1 ))
+                if [ "X$CANDIDATE_PYTHONS" != "X" ]; then
+                    CANDIDATE_PYTHONS="$CANDIDATE_PYTHONS#$CANDIDATE"
+                else
+                    CANDIDATE_PYTHONS="$CANDIDATE"
+                fi
+            fi
+        done
+
+        if [ $PYTHONS_FOUND -eq 1 ]; then
+            WITH_PYTHON="$CANDIDATE_PYTHONS"
+        fi
+        if [ $PYTHONS_FOUND -gt 1 ]; then
+            if ! WHIPTAIL --title="$CHOOSE_PYTHON_TITLE" --menu "$CHOOSE_PYTHON_EXPLANATION" --choices="$CANDIDATE_PYTHONS"; then
+                exit 0
+            fi
+            WITH_PYTHON="$WHIPTAIL_RESULT"
+        fi
+    fi
+
     if ! WHIPTAIL \
         --title="$INSTALL_TYPE_MSG" \
         --menu \
@@ -341,7 +369,7 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
         fi
         CLIENT_COUNT=$WHIPTAIL_RESULT
         if [ "X$CLIENT_COUNT" != "X" ]; then
-            CCHOICE="--clients=$CLIENT_COUNT"
+            CCHOICE="\\\n    --clients=$CLIENT_COUNT"
         fi
     fi
 
@@ -357,7 +385,6 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
         PLONE_HOME="$WHIPTAIL_RESULT"
     fi
 
-
     if ! WHIPTAIL \
         --title="$PASSWORD_TITLE" \
         --passwordbox \
@@ -366,7 +393,7 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
     fi
     PASSWORD="$WHIPTAIL_RESULT"
     if [ "X$PASSWORD" != "X" ]; then
-        PCHOICE="--password=\"*****...\""
+        PCHOICE="\\\n    --password=\"*****...\""
     fi
 
     WHIPTAIL \
@@ -374,7 +401,8 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
         --yesno \
         "$CONTINUE_PROMPT
 install.sh $METHOD \\
-    --target=\"$PLONE_HOME\" $PCHOICE $CCHOICE"
+    --target=\"$PLONE_HOME\" \\
+    --with-python=$WITH_PYTHON $PCHOICE $CCHOICE"
     if [ $? -gt 0 ]; then
         whiptail_goodbye
     fi
