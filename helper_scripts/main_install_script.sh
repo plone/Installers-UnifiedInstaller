@@ -34,7 +34,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.2rc5
+readonly FOR_PLONE=5.2.0
 readonly WANT_PYTHON=2.7
 readonly ELIGIBLE_PYTHONS='2.7 3.5 3.6 3.7 3.8'
 
@@ -929,10 +929,10 @@ if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     fi
     FORCE_BUILD_FROM_CACHE=yes
 else
-    mkdir "$BUILDOUT_CACHE"
-    mkdir "$BUILDOUT_CACHE"/eggs
-    mkdir "$BUILDOUT_CACHE"/extends
-    mkdir "$BUILDOUT_CACHE"/downloads
+    mkdir "$BUILDOUT_CACHE" > /dev/null 2>&1
+    mkdir "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
+    mkdir "$BUILDOUT_CACHE"/extends > /dev/null 2>&1
+    mkdir "$BUILDOUT_CACHE"/downloads > /dev/null 2>&1
     if [ $ROOT_INSTALL -eq 1 ]; then
         chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
     fi
@@ -997,6 +997,7 @@ $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--template=$TEMPLATE" \
     "--force_build_from_cache=$FORCE_BUILD_FROM_CACHE" \
     "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
+
 if [ $? -gt 0 ]; then
     echo $BUILDOUT_FAILED
     seelog

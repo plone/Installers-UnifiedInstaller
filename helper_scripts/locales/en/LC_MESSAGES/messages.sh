@@ -92,7 +92,7 @@ WELCOME='Welcome'
 DIALOG_WELCOME='
 Welcome to the Plone Unified Installer.
 
-This kit installs Plone from source in many Linux/BSD/Unix environments.
+This kit installs Plone from source in many Linux/BSD/OS X/Windows 10 environments.
 You may use the installer via command-line arguments, or by having us
 ask you questions about major options.
 

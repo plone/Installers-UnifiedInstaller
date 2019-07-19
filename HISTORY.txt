@@ -1,4 +1,9 @@
-5.2rc5 (unreleased)
+5.2.0 2019-07-18
+
+- Advance Plone to 5.2.0.
+  [smcmahon]
+
+5.2rc5 2019-07-12
 
 - Advance collective.recipe.backup to 4.1.0.
   [smcmahon]
