@@ -1,6 +1,6 @@
-==========================
-Plone 5.1: Unified Installer
-==========================
+============================
+Plone 5.2: Unified Installer
+============================
 
 The Plone Unified Installer installs Plone
 and its dependencies from source on most Unix-like platforms and Windows 10.
@@ -15,11 +15,10 @@ or running buildout to update.**
 Features
 ========
 
-- checks for needed dependencies
-- choose between zeo and standalone install
-- choose between user and root install
-- create system user and group for running plone
-- and more
+- Checks for needed dependencies
+- Choose between zeo and standalone install
+- Choose between user and root install
+- Create system user and group for running plone
 
 For a full list of features, please check `the documentation <http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer>`_.
 
@@ -32,19 +31,19 @@ Download the Installer:
 
 .. code-block:: shell
 
-  $ wget --no-check-certificate https://launchpad.net/plone/5.2/5.2.0/+download/Plone-5.2.0-UnifiedInstaller.tgz
+  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2.0/+download/Plone-5.2.0-UnifiedInstaller.tgz
 
 Extract the downloaded file:
 
 .. code-block:: shell
 
-  $ tar -xf Plone-5.2.0-UnifiedInstaller.tgz
+  tar -xf Plone-5.2.0-UnifiedInstaller.tgz
 
 Go the folder containing installer script:
 
 .. code-block:: shell
 
-  $ cd Plone-5.2.0-UnifiedInstaller
+  cd Plone-5.2.0-UnifiedInstaller
 
 Run script:
 
@@ -54,7 +53,9 @@ Run script:
 
 If you run the installer with no option arguments, it will ask a series of questions about basic options.
 
-By default, the installer will look for Python 2.7.x. If you wish to use Python 3, use:
+By default, the installer will look for Python 2.7.x.
+
+If you wish to use Python 3, use:
 
 .. code-block:: shell
 
@@ -67,8 +68,6 @@ For a full list of options, many of which are not available via the dialog quest
 .. code-block:: shell
 
    ./install.sh --help
-
-
 
 **Note:**
 
