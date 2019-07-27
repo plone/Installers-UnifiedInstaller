@@ -19,7 +19,7 @@ except IndexError:
 extends_pattern = re.compile(r"^extends\s*?=\W*(.+?)\s*$", re.MULTILINE + re.DOTALL)
 
 
-def getURL(url):
+def getURL(url, munge=True):
 
     def fn_fix(s):
         return u'-'.join(s.split(u'/')[1:])
@@ -38,12 +38,15 @@ def getURL(url):
     content = fh.read().decode('utf-8')
     fh.close()
 
-    content = extends_pattern.sub(ereplace, content)
-    fn = fn_fix(urllib.parse.urlparse(url).path)
+    if munge:
+        content = extends_pattern.sub(ereplace, content)
+        fn = fn_fix(urllib.parse.urlparse(url).path)
+    else:
+        fn = urllib.parse.urlparse(url).path.split(u'/')[-1]
     with open(fn, 'w') as file:
         file.write(content)
     print(fn)
 
 
-starting_url = u'https://dist.plone.org/release/{0}/versions.cfg'.format(version)
-getURL(starting_url)
+getURL(u'https://dist.plone.org/release/{0}/requirements.txt'.format(version), False)
+getURL(u'https://dist.plone.org/release/{0}/versions.cfg'.format(version))

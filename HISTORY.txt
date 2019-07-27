@@ -1,5 +1,8 @@
 5.2.0-r1 unreleased
 
+- Make fetch_versions.py pick up requirements.txt as well as versions.
+  [smcmahon]
+
 - Remove code to unpack buildout_cache from windows_install.py.
   Fixes #90.
   [smcmahon]
