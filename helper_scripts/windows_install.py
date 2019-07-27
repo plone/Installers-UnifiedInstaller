@@ -97,18 +97,6 @@ if not os.path.exists(opt.target):
     print _("Creating target directory " + opt.target)
     os.mkdir(opt.target, 0700)
 
-# buildout cache
-if not os.path.exists(os.path.join(opt.target, 'buildout-cache')):
-    print _("Extracting buildout cache to target")
-    with tarfile.open(os.path.join(PACKAGES_HOME, 'buildout-cache.tar.bz2')) as tf:
-        tf.extractall(opt.target)
-    # Remove download dist contents. We want to fetch wheels rather than build from tarballs
-    # that have binary components.
-    print _("Removing cache source packages that need binary builds. We want to fetch wheels from PyPI.")
-    dist_files = glob.glob(os.path.join(opt.target, 'buildout-cache', 'downloads', 'dist', '*'))
-    for fn in dist_files:
-        os.remove(fn)
-
 # virtualenv
 PY_HOME = os.path.join(opt.target, 'Python-2.7')
 PY_SCRIPTS = os.path.join(PY_HOME, SCRIPTS)

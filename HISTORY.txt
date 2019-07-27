@@ -1,3 +1,9 @@
+5.2.0-r1 unreleased
+
+- Remove code to unpack buildout_cache from windows_install.py.
+  Fixes #90.
+  [smcmahon]
+
 5.2.0 2019-07-18
 
 - Advance Plone to 5.2.0.
