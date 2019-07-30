@@ -36,6 +36,7 @@ PLONE_GROUP=plone_group
 
 readonly FOR_PLONE=5.2.0
 readonly WANT_PYTHON=2.7
+readonly WANT_PYTHON3=3.6
 readonly ELIGIBLE_PYTHONS='2.7 3.5 3.6 3.7 3.8'
 
 readonly PACKAGES_DIR="${INSTALLER_PWD}/packages"
@@ -47,6 +48,10 @@ readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz
 readonly PYTHON_MD5=045fb3440219a1f6923fefdabde63342
 readonly PYTHON_TB=Python-2.7.15.tgz
 readonly PYTHON_DIR=Python-2.7.15
+readonly PYTHON3_URL=https://www.python.org/ftp/python/3.6.9/Python-3.6.9.tgz
+readonly PYTHON3_MD5=ff7cdaef4846c89c1ec0d7b709bbd54d
+readonly PYTHON3_TB=Python-3.6.9.tgz
+readonly PYTHON3_DIR=Python-3.6.9
 readonly VIRTUALENV_TB=virtualenv-16.6.0.tar.gz
 readonly VIRTUALENV_DIR=virtualenv-16.6.0
 readonly NEED_CUSTOM_SETUPTOOLS=no
@@ -130,8 +135,11 @@ do
         --build-python | --build-python=* )
             if [ "$optarg" ]; then
                 BUILD_PYTHON="$optarg"
-                if [ $BUILD_PYTHON != 'yes' ] && [ $BUILD_PYTHON != 'no' ]; then
+                if [ $BUILD_PYTHON != 'yes' ] && [ $BUILD_PYTHON != '3' ] && [ $BUILD_PYTHON != 'no' ]; then
                     usage $BAD_BUILD_PYTHON
+                fi
+                if [ "$BUILD_PYTHON" = '2' ]; then
+                    BUILD_PYTHON=yes
                 fi
             else
                 BUILD_PYTHON="yes"
@@ -296,7 +304,7 @@ do
     esac
 done
 
-if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
+if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" != "Xno" ]; then
     echo "$CONTRADICTORY_PYTHON_COMMANDS"
 fi
 
@@ -487,21 +495,23 @@ fi
 # Begin the process of finding a viable Python or creating one
 # if it can't be found.
 
-if [ -x "$PLONE_HOME/Python-*/bin/python" ] ; then
+CANDIDATE_PYTHON=`ls $PLONE_HOME/Python-*/bin/python[23] > /dev/null`
+if [ $? -eq 0 ] ; then
+    echo found exiting py
     # There is a Python that was probably built by the installer;
     # use it.
     HAVE_PYTHON=yes
     if [ "X$WITH_PYTHON" != "X" ]; then
         echo "$IGNORING_WITH_PYTHON"
     fi
-    if [ "X$BUILD_PYTHON" = "Xyes" ]; then
+    if [ "X$BUILD_PYTHON" != "Xno" ]; then
         echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
-    cd "$PLONE_HOME/Python-*"
+    cd `ls -d $PLONE_HOME/Python-*`
     PY_HOME=`pwd`
     cd "$CWD"
-    WITH_PYTHON="$PY_HOME/bin/python"
+    WITH_PYTHON=`ls $PY_HOME/bin/python[23]`
 fi
 
 # shared message for need python
@@ -511,7 +521,7 @@ python_usage () {
 }
 
 
-if [ "X$BUILD_PYTHON" = "Xyes" ]; then
+if [ "X$BUILD_PYTHON" != "Xno" ]; then
     # if OpenBSD, apologize and surrender
     if [ `uname` = "OpenBSD" ]; then
         eval "echo\"$SORRY_OPENBSD\""
@@ -628,17 +638,17 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
         exit 1
     fi
 
-    if [ "X$HAVE_LIBZ" != "Xyes" ] && [ "X$BUILD_PYTHON" = "Xyes" ] ; then
+    if [ "X$HAVE_LIBZ" != "Xyes" ] && [ "X$BUILD_PYTHON" != "Xno" ] ; then
         echo $NEED_INSTALL_LIBZ_MSG
         exit 1
     fi
 
-    if [ "X$HAVE_LIBJPEG" != "Xyes" ] && [ "X$BUILD_PYTHON" = "Xyes" ] ; then
+    if [ "X$HAVE_LIBJPEG" != "Xyes" ] && [ "X$BUILD_PYTHON" != "Xno" ] ; then
         echo $NEED_INSTALL_LIBJPEG_MSG
         exit 1
     fi
 
-    if [ "$INSTALL_LXML" = "no" ] && [ "X$BUILD_PYTHON" = "Xyes" ]; then
+    if [ "$INSTALL_LXML" = "no" ] && [ "X$BUILD_PYTHON" != "Xno" ]; then
         # check for libxml2 / libxslt
 
         XSLT_XML_MSG () {
@@ -696,6 +706,7 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "PLONE_GROUP=$PLONE_GROUP"
     echo "FOR_PLONE=$FOR_PLONE"
     echo "WANT_PYTHON=$WANT_PYTHON"
+    echo "WANT_PYTHON3=$WANT_PYTHON3"
     echo "PACKAGES_DIR=$PACKAGES_DIR"
     echo "ONLINE_PACKAGES_DIR=$ONLINE_PACKAGES_DIR"
     echo "HSCRIPTS_DIR=$HSCRIPTS_DIR"
@@ -839,7 +850,29 @@ if [ "X$BUILD_PYTHON" = "Xyes" ]; then
     . "${INSTALLER_PWD}/helper_scripts/build_python.sh"
 
 
-    if "$WITH_PYTHON" "$CWD/$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
+    if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
+        echo $PYTHON_BUILD_OK
+    else
+        echo $PYTHON_BUILD_BAD
+        exit 1
+    fi
+
+fi
+if [ "X$BUILD_PYTHON" = "X3" ]; then
+    # download python tarball if necessary
+    cd "$PKG"
+    if [ ! -f $PYTHON3_TB ]; then
+        eval "echo \"$DOWNLOADING_PYTHON3\""
+        download $PYTHON3_URL $PYTHON3_TB $PYTHON3_MD5
+    fi
+    cd "$CWD"
+
+    PY_HOME="$PLONE_HOME/Python-${WANT_PYTHON3}"
+    WITH_PYTHON="${PY_HOME}/bin/python3"
+    . "${INSTALLER_PWD}/helper_scripts/build_python3.sh"
+
+
+    if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo $PYTHON_BUILD_OK
     else
         echo $PYTHON_BUILD_BAD

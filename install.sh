@@ -53,6 +53,7 @@
 #   build one for you if you set this option. Requires Internet access
 #   to download Python source.
 #   Make sure that you have enough memory and swap.
+#   Use '--build-python=3' to build Python 3. Otherwise, we'll build 2.7.
 #
 # --without-ssl
 #   Optional. Allows the build to proceed without ssl dependency tests.

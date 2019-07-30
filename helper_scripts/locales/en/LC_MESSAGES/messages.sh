@@ -68,7 +68,7 @@ Read the top of install.sh for more install options.
 '
 
 BAD_BUILD_PYTHON=\
-'Bad argument for --build-python'
+'Bad argument for --build-python; "yes", "no" or "3" are valid.'
 
 BAD_USER_OPTION=\
 'Did you want "--daemon-user" instead of "--user"?'
@@ -154,9 +154,10 @@ $PACKAGES_DIR and $HSCRIPTS_DIR subdirectories.
 
 NEED_INSTALL_PYTHON_MSG='
 Please do one of the following:
-1) Install python${WANT_PYTHON} as a system "dev" package\;
+1) Install python${WANT_PYTHON} or python3.6+ as a system "dev" package\;
 2) Use --with-python=... option to point the installer to a useable python\; or
-3) Use the --build-python option to tell the installer to build Python.
+3) Only if no system package is available, use the --build-python option
+   to tell the installer to build Python 2.7 or --build-python=3 to build Python 3.x.
 '
 
 NEED_INSTALL_LIBZ_MSG="
@@ -279,6 +280,7 @@ You may need to use --build-python and let the Unified Installer
 build its own Python.'
 
 DOWNLOADING_PYTHON='Downloading Python source from $PYTHON_URL'
+DOWNLOADING_PYTHON3='Downloading Python source from $PYTHON3_URL'
 
 PYTHON_BUILD_OK="Python build looks OK."
 
@@ -343,12 +345,14 @@ To report errors with the installer, visit https://github.com/plone/Installers-U
 # build_python.sh
 
 INSTALLING_PYTHON='Installing ${PYTHON_DIR}. This takes a while...'
+INSTALLING_PYTHON3='Installing ${PYTHON3_DIR}. This takes a while...'
 
 UNABLE_TO_CONFIGURE_PY="Unable to configure Python build."
 
 PY_BUILD_FAILED="Python build has failed."
 
 INSTALL_PY_FAILED='Install of ${PYTHON_DIR} has failed.'
+INSTALL_PY3_FAILED='Install of ${PYTHON3_DIR} has failed.'
 
 # user_group_utilities.sh
 
