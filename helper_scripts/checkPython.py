@@ -2,6 +2,7 @@
 # for running Zope 2.12.x / Plone 4.2.x.
 #
 
+from distutils.sysconfig import get_python_inc
 from i18n import _print
 
 import sys
@@ -16,9 +17,8 @@ if vi[0] == 2 and vi < (2, 7, 9) or vi[0] == 3 and vi < (3, 5, 0):
     # not much point in further testing.
     sys.exit(1)
 
-pythonv = 'python{0}.{1}'.format(*vi[:2])
-
-if not os.path.isfile(os.path.join(sys.prefix, 'include', pythonv, 'Python.h')):
+include_dir = os.path.join(get_python_inc(plat_specific=1))
+if not os.path.isfile(os.path.join(include_dir, 'Python.h')):
     _print("Failed: We need to be able to use Python.h, which is missing.")
     _print("You may be able to resolve this by installing the python-dev package.")
     passed = False

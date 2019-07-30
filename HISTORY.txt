@@ -1,5 +1,8 @@
 5.2.0-r1 unreleased
 
+- Make check for python.h more robust to deal with non-standard installs.
+  [smcmahon]
+
 - Make fetch_versions.py pick up requirements.txt as well as versions.
   [smcmahon]
 
