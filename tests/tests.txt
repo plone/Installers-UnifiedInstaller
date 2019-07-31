@@ -65,7 +65,7 @@ Test a ZEO install
     >>> print stdout
     <BLANKLINE>
     -etc-
-    Installing Plone 5.2b1 at -etc-
+    Installing Plone 5.2-etc-
     #####################################################################
     <BLANKLINE>
     ######################  Installation Complete  ######################
@@ -79,7 +79,7 @@ Test a ZEO install
     ['Plone-docs', 'buildout-cache', 'zeocluster']
 
     There should now be a buildout skeleton in zeocluster
-    >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'versions.cfg']
+    >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'requirements.txt']
     >>> found = os.listdir('%s/zeocluster' % testTarget)
     >>> [s for s in expected if s not in found]
     []
@@ -180,7 +180,7 @@ Test a ZEO install
 
     Check Banner
     >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
-    Zope/(2.13-etc-, python 2.7-etc-) ZServer/1.1
+    waitress
 
     Stop it
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl stop' % testTarget)
@@ -245,3 +245,114 @@ Test building Python and dependencies
     This Python should not be a virtualenv.
     >>> os.path.exists(os.path.join(testTarget, 'Python-2.7', 'bin', 'activate'))
     False
+
+
+----------------------
+Test building Python 3
+----------------------
+
+    First, clean out prior work
+    >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
+
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --build-python=3' % testTarget)
+    >>> returncode and (stdout + stderr)
+    0
+
+    >>> print stdout
+    <BLANKLINE>
+    Rootless install method chosen. Will install for use by system user -etc-
+    -etc-
+    Installing Python-3.6.-etc- This takes a while...
+    -etc-
+    Python build looks OK.
+    -etc-
+    Plone successfully installed at -etc-
+    -etc-
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import readline"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import zlib"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import zip_decoder"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from lxml import etree"' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    This Python should not be a virtualenv.
+    >>> os.path.exists(os.path.join(testTarget, 'Python-3.6', 'bin', 'activate'))
+    False
+
+
+    Run it
+    ------
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zeoserver start' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client1 start' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client2 start' % testTarget)
+    >>> returncode
+    0
+    >>> stderr
+    ''
+
+    >>> time.sleep(30)
+
+    Status check
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
+
+    >>> returncode
+    0
+
+    >>> stderr
+    ''
+
+    Fetch root page via client1
+    >>> urllib2.urlopen('http://localhost:8080/').read()
+    '-etc-Plone is up and running-etc-'
+
+    Fetch root page via client2
+    >>> urllib2.urlopen('http://localhost:8081/').read()
+    '-etc-Plone is up and running-etc-'
+
+    Check Banner
+    >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
+    waitress
+
+    Stop it
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl stop' % testTarget)
+
+    >>> returncode
+    0
+
+    >>> stderr
+    ''
