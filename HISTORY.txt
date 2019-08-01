@@ -1,5 +1,8 @@
 5.2.0-r1 unreleased
 
+- Add option to build Python 3.6.x via --build-python=3.
+  [smcmahon]
+
 - Make check for python.h more robust to deal with non-standard installs.
   [smcmahon]
 
