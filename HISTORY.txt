@@ -1,4 +1,4 @@
-5.2.0-r1 unreleased
+5.2.0-r1 2019-08-01
 
 - Add option to build Python 3.6.x via --build-python=3.
   [smcmahon]
