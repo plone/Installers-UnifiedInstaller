@@ -495,7 +495,7 @@ fi
 # Begin the process of finding a viable Python or creating one
 # if it can't be found.
 
-CANDIDATE_PYTHON=`ls $PLONE_HOME/Python-*/bin/python[23] > /dev/null`
+CANDIDATE_PYTHON=`ls $PLONE_HOME/Python-*/bin/python[23] 2> /dev/null`
 if [ $? -eq 0 ] ; then
     echo found exiting py
     # There is a Python that was probably built by the installer;
