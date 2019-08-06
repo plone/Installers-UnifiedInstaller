@@ -10,20 +10,17 @@ for vb in $TARGETS; do
     echo "Testing $vb"
     cd $vb
     ln ../*.tgz .
-    ln ../test_install.sh .
-    rm install.log
-    rm instance.log
-    rm results.log
-    echo $vb > results.log
+    cp ../test_install.sh .
     vagrant up
-    if [ -x provision.sh ] && [ ! -e provisioned ]; then
+    if [ -x provision.sh ]; then
     	echo "Provisioning"
-    	vagrant ssh -c "sudo /vagrant/provision.sh" > provisioned
+    	vagrant ssh -c "sudo /vagrant/provision.sh"
     fi
     vagrant ssh -c /vagrant/test_install.sh
+    vagrant ssh -c "cat ~/results.log" > results.log
+    vagrant ssh -c "cat ~/install.log" > install.log
+    vagrant ssh -c "cat ~/instance.log" > instance.log
     vagrant halt
-    rm *.tgz
-    rm test_install.sh
     cd $CWD
 done
 cat vb_*/results.log > results.log

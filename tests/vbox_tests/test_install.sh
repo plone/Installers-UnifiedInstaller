@@ -1,24 +1,27 @@
 #!/bin/sh
 
+cd ~
 rm -rf Plone*
-date >> /vagrant/results.log
+date > ~/results.log
 tar xf /vagrant/*.tgz
 cd Plone*Unified*
-. /vagrant/install > install
+. /vagrant/install >> ~/results.log
 if [ $? -gt 0 ]; then
-    echo "Install failed." >> /vagrant/results.log
-    cp install.log /vagrant
+    echo "Install failed." >> ~/results.log
+    cp ~/Plone*Unified*/install.log ~/install.log
     exit 0
 fi
-cd ../Plone/zinstance
+cp ~/Plone*Unified*/install.log ~/install.log
+cd ~/Plone/zinstance
 bin/instance start
 if [ $? -gt 0 ]; then
-    echo "Start failed." >> /vagrant/results.log
-    cp var/log/instance.log /vagrant
+    echo "Start failed." >> ~/results.log
+    cp var/log/instance.log ~
     exit 0
 fi
+cp var/log/instance.log ~
 sleep 10
 bin/instance stop
 cd ~
-echo "Completed" >> /vagrant/results.log
-date >> /vagrant/results.log
+echo "Completed" >> ~/results.log
+date >> ~/results.log

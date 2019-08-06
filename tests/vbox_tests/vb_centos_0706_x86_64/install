@@ -1,1 +1,1 @@
-./install.sh standalone --build-python=3 --static-lxml=yes
+./install.sh standalone --build-python=3
