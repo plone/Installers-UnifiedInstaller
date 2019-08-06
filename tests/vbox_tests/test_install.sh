@@ -1,8 +1,9 @@
 #!/bin/sh
 
+date > ~/results.log
+
 cd ~
 rm -rf Plone*
-date > ~/results.log
 tar xf /vagrant/*.tgz
 cd Plone*Unified*
 . /vagrant/install >> ~/results.log
@@ -19,9 +20,10 @@ if [ $? -gt 0 ]; then
     cp var/log/instance.log ~
     exit 0
 fi
-cp var/log/instance.log ~
-sleep 10
 bin/instance stop
+sleep 30
+cp var/log/instance.log ~
 cd ~
 echo "Completed" >> ~/results.log
+
 date >> ~/results.log

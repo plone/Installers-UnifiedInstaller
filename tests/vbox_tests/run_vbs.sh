@@ -7,7 +7,10 @@ fi
 
 CWD=`pwd`
 for vb in $TARGETS; do
-    echo "Testing $vb"
+    echo
+    echo
+    echo "*************** Testing box: $vb ***************"
+    echo
     cd $vb
     ln ../*.tgz .
     cp ../test_install.sh .
