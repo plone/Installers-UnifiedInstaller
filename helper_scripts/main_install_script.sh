@@ -428,7 +428,7 @@ if [ $ROOT_INSTALL -eq 1 ]; then
 	echo
         exit 1
     fi
-    SUDO="sudo -u $BUILDOUT_USER -E"
+    SUDO="sudo -H -u $BUILDOUT_USER -E"
 else
     SUDO=""
 fi

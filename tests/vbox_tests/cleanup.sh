@@ -1,8 +1,9 @@
 #!/bin/bash
 
-find vb* -name *.tgz -delete
-find vb* -name "*.log" -delete
-find vb* -name test_install.sh -delete
+rm vb*/*.tgz
+rm vb*/*.log
+rm vb*/test_install.sh
+rm -rf vb*/.vagrant
 find . -name "._*" -delete
 for vb in vb_*; do
     cd $vb

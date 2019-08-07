@@ -1,3 +1,8 @@
+5.2.x unreleased
+
+- Add "-H" flag to sudo command in main_install.sh. Fixes #84.
+  [smcmahon]
+
 5.2.0-r1 2019-08-01
 
 - Add option to build Python 3.6.x via --build-python=3.
