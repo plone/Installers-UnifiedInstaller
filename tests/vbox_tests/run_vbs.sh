@@ -7,11 +7,11 @@ fi
 
 CWD=`pwd`
 for vb in $TARGETS; do
-    echo
-    echo
-    echo "*************** Testing box: $vb ***************"
-    echo
     cd $vb
+    echo > results.log
+    echo >> results.log
+    echo "*************** Testing box: $vb ***************" >> results.log
+    echo >> results.log
     ln ../*.tgz .
     cp ../test_install.sh .
     vagrant up
@@ -20,7 +20,7 @@ for vb in $TARGETS; do
     	vagrant ssh -c "sudo /vagrant/provision.sh"
     fi
     vagrant ssh -c /vagrant/test_install.sh
-    vagrant ssh -c "cat ~/results.log" > results.log
+    vagrant ssh -c "cat ~/results.log" >> results.log
     vagrant ssh -c "cat ~/install.log" > install.log
     vagrant ssh -c "cat ~/instance.log" > instance.log
     vagrant halt

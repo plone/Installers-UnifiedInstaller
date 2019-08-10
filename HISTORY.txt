@@ -1,6 +1,6 @@
-5.2.0-r2 unreleased
+5.2.0-r2 2019-08-10
 
-- Fixes for problems with pip in root installs.
+- Fixes for problems with building python and using pip in sudo installs.
   [smcmahon]
 
 - Add "-H" flag to sudo command in main_install.sh. Fixes #84.
