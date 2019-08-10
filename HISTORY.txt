@@ -1,4 +1,7 @@
-5.2.x unreleased
+5.2.0-r2 unreleased
+
+- Fixes for problems with pip in root installs.
+  [smcmahon]
 
 - Add "-H" flag to sudo command in main_install.sh. Fixes #84.
   [smcmahon]

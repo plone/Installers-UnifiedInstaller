@@ -39,7 +39,7 @@ readonly WANT_PYTHON=2.7
 readonly WANT_PYTHON3=3.6
 readonly ELIGIBLE_PYTHONS='2.7 3.5 3.6 3.7 3.8'
 
-readonly PACKAGES_DIR="${INSTALLER_PWD}/packages"
+PACKAGES_DIR="${INSTALLER_PWD}/packages"
 readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR="${INSTALLER_PWD}/helper_scripts"
 readonly TEMPLATE_DIR="${INSTALLER_PWD}/buildout_templates"
@@ -327,7 +327,7 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
         CANDIDATE_PYTHONS=""
         PYTHONS_FOUND=0
         for A_PYTHON in $ELIGIBLE_PYTHONS; do
-            CANDIDATE=`which python$A_PYTHON`
+            CANDIDATE=`which python$A_PYTHON  2> /dev/null`
             if [ $? -eq 0 ]; then
                 PYTHONS_FOUND=$(( PYTHONS_FOUND + 1 ))
                 if [ "X$CANDIDATE_PYTHONS" != "X" ]; then
@@ -804,6 +804,24 @@ fi
 cd "$CWD"
 
 
+# The main install may be done via sudo (if a root install). If it is,
+# our current directory may become unreachable. So, copy the resources
+# we'll need into a tmp directory inside the install destination.
+WORKDIR="${PLONE_HOME}/tmp"
+mkdir "$WORKDIR" > /dev/null 2>&1
+cd "${INSTALLER_PWD}"
+cp -R buildout_templates "$WORKDIR"
+cp -R base_skeleton "$WORKDIR"
+cp -R helper_scripts "$WORKDIR"
+cp -R packages "$WORKDIR"
+PACKAGES_DIR="${WORKDIR}/packages"
+PKG="$PACKAGES_DIR"
+if [ $ROOT_INSTALL -eq 1 ]; then
+    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$WORKDIR"
+    find "$WORKDIR" -type d -exec chmod g+s {} \;
+fi
+
+
 cd "$PLONE_HOME"
 PLONE_HOME=`pwd`
 # More paths
@@ -928,9 +946,9 @@ if [ -f "${PKG}/zc.buildout*" ]; then
     fi
 fi
 
-if [ -f "${INSTALLER_PWD}/base_skeleton/requirements.txt" ]; then
+if [ -f "${WORKDIR}/base_skeleton/requirements.txt" ]; then
     echo $INSTALLING_REQUIREMENTS
-    $SUDO "${PY_HOME}/bin/pip" install -r "${INSTALLER_PWD}/base_skeleton/requirements.txt" >> "$INSTALL_LOG" 2>&1
+    $SUDO "${PY_HOME}/bin/pip" install -r "${WORKDIR}/base_skeleton/requirements.txt" >> "$INSTALL_LOG" 2>&1
     if [ $? -gt 0 ]; then
         echo $INSTALLING_REQUIREMENTS_FAILED
         seelog
@@ -984,20 +1002,6 @@ fi
 
 
 cd "$CWD"
-
-# The main install may be done via sudo (if a root install). If it is,
-# our current directory may become unreachable. So, copy the resources
-# we'll need into a tmp directory inside the install destination.
-WORKDIR="${PLONE_HOME}/tmp"
-mkdir "$WORKDIR" > /dev/null 2>&1
-cp -R "${INSTALLER_PWD}/buildout_templates" "$WORKDIR"
-cp -R "${INSTALLER_PWD}/base_skeleton" "$WORKDIR"
-cp -R "${INSTALLER_PWD}/helper_scripts" "$WORKDIR"
-if [ $ROOT_INSTALL -eq 1 ]; then
-    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$WORKDIR"
-    find "$WORKDIR" -type d -exec chmod g+s {} \;
-fi
-
 
 ########################
 # Instance install steps
