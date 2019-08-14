@@ -31,19 +31,19 @@ Download the Installer:
 
 .. code-block:: shell
 
-  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2.0/+download/Plone-5.2.0-UnifiedInstaller.tgz
+  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2/+download/Plone-5.2.0-UnifiedInstaller-r2.tgz
 
 Extract the downloaded file:
 
 .. code-block:: shell
 
-  tar -xf Plone-5.2.0-UnifiedInstaller.tgz
+  tar -xf Plone-5.2.0-UnifiedInstaller-r2.tgz
 
 Go the folder containing installer script:
 
 .. code-block:: shell
 
-  cd Plone-5.2.0-UnifiedInstaller
+  cd Plone-5.2.0-UnifiedInstaller-r2
 
 Run script:
 
@@ -53,15 +53,14 @@ Run script:
 
 If you run the installer with no option arguments, it will ask a series of questions about basic options.
 
-By default, the installer will look for Python 2.7.x.
-
-If you wish to use Python 3, use:
+The installer will search the system path for Python 2.7 and Python 3.x executables that are candidates for creating your installation.
+If you wish to specify a particular Python executable, use:
 
 .. code-block:: shell
 
    ./install.sh --with-python/usr/bin/python3 [other options]
 
-Substituting the path to your Python 3.5+.
+Substituting the path to your Python 2.7 or 3.5+.
 
 For a full list of options, many of which are not available via the dialog questions, use:
 
