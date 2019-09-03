@@ -13,3 +13,5 @@ Plone-docs
 testout.txt
 tests.out
 packages
+.vscode/
+settings.json
