@@ -2,6 +2,8 @@
 Plone 5.2: Unified Installer
 ============================
 
+Language: `English <README.rst>`_ | `Portuguese(Brazil) <README-pt-br.rst>`_
+
 The Plone Unified Installer installs Plone
 and its dependencies from source on most Unix-like platforms and Windows 10.
 
