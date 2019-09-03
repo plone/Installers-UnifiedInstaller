@@ -27,7 +27,7 @@ Para obter uma lista completa de recursos, consulte a `documentação <http://do
 Instalação
 ============
 
-Usuários do Windows: consulte as `Instruções do Windows <docs/windows-pt-br.rst>`_.
+Usuários do Windows: consulte as `Instruções do Windows <docs/pt-br/windows.rst>`_.
 
 Faça o download do instalador:
 
