@@ -60,7 +60,7 @@ If you wish to specify a particular Python executable, use:
 
 .. code-block:: shell
 
-   ./install.sh --with-python/usr/bin/python3 [other options]
+   ./install.sh --with-python=/usr/bin/python3 [other options]
 
 Substituting the path to your Python 2.7 or 3.5+.
 
