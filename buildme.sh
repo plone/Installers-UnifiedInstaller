@@ -28,7 +28,7 @@ else
   TAR='tar'
 fi
 
-BASE_VER=5.1.5
+BASE_VER=5.1.6
 NEWVER=${BASE_VER}
 INSTALLER_REVISION=""
 
