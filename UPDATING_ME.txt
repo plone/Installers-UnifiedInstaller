@@ -4,45 +4,42 @@ Updating the Unified Installer
 This text is for those wishing to build a new version of the Unified Installer.
 It is not meant to help update an installed version of Plone.
 
-If you are working from a git clone you will not have the binary packages. For a good starting point, copy the "packages" subdirectory from a previous installer tarball.
+If you are working from a git clone you will not have the binary packages.
+For a good starting point, copy the "packages" subdirectory from a previous installer tarball.
 
-Use a text editor to replace old version with new. Do not auto-replace in HISTORY.txt.
+Note that 5.2+ does not have a buildout_cache.
+This saves steps from previous installers.
+
+Use a text editor to replace old version with new in all text/documentation files and in:
+
+    helper_scripts/main_install_script.sh
+    buildout_templates/buildout.cfg
+
+In buildout.cfg, make sure to update version numbers in both extends and find-links sections.
+
+Do not auto-replace in HISTORY.txt.
+Instead, add a new section at the top.
 
 Update the version files:
 
     cd base_skeleton
     rm *versions.cfg
-    ../fetch_versions.py
+    ../fetch_versions.py 5.2.x
 
-Run preliminary installs:
+Note that fetch_versions updates both buildout version files and the requirements.txt.
+
+Look for the most recent update of virtualenv that is thought to be roughly compatible with the new release.
+If the copy in ./packages is out-of-date, download the new one to ./packages and remove the old.
+Note that setuptools, etc. will be updated based on the requirements.txt file downloaded by fetch_versions.py -- so you don't necessarily need a virtualenv that matches.
+
+Run preliminary sanity-check installs:
 
     rm ~/Plone
     ./install.sh zeo
     ./install.sh standalone
-
-Expect these builds to fail, as the buildout cache is outdated.
-
-Buildout to update buildout cache:
-
-    cd ~/Plone/zeocluster
-    bin/buildout -c develop.cfg
-    cd ~/Plone/zinstance
-    bin/buildout -c develop.cfg
 
 Make sure these builds succeed.
-
-Update the buildout cache from the new builds:
-
-    cd ~/nui5.0 # or to your installer location
-    ./update_packages.py
-
-Sanity check installs:
-
-    rm ~/Plone
-    ./install.sh zeo
-    ./install.sh standalone
-
-If that fails, there is probably a version regression. Notify the release manager.
+If they don't, debug.
 
 Run the tests:
 
@@ -57,6 +54,5 @@ Build a new installer:
 
 Upload to Launchpad.
 Update release page to link to new installer.
-Upload buildout cache to dist.plone.org.
 
 Tag and push.
