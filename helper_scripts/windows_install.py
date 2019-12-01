@@ -26,12 +26,15 @@ def doCommand(command, check=False):
         command,
         shell=True,
         universal_newlines=True,
-        stdout=subprocess.PIPE, 
+        stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        check
     )
     stdout, stderr = po.communicate()
     sys.stderr.write(stdout)
+    if check and po.returncode != 0:
+        raise AssertionError(
+            '"{}" Failed with error code: {}'.format(command, po.returncode)
+        )
     return po.returncode
 
 
@@ -115,7 +118,12 @@ if not os.path.exists(PY_HOME):
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
     # _print(PIP_BIN)
     _print("Installing requirements in virtualenv")
-    doCommand(PIP_BIN + ' install -r ' + os.path.join(INSTALLER_HOME, 'base_skeleton', 'requirements.txt') + ' --no-warn-script-location', check=True)
+    doCommand(
+        PIP_BIN + ' install -r ' +
+        os.path.join(INSTALLER_HOME, 'base_skeleton', 'requirements.txt') +
+        ' --no-warn-script-location',
+        check=True
+    )
     # doCommand(PIP_BIN + ' install pypiwin32')
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
@@ -158,14 +166,13 @@ if returncode:
 
 _print("Buildout succeeded.")
 _print("Note: pep425tags runtime warnings may be ignored.")
-
 _print('''
 ######################  Installation Complete  ######################
 
 Plone successfully installed at {}
 See {}
 for startup instructions.
-''').format(INSTANCE_HOME, os.path.join(INSTANCE_HOME, 'README.html'))
+'''.format(INSTANCE_HOME, os.path.join(INSTANCE_HOME, 'README.html')))
 
 with open(os.path.join(INSTANCE_HOME, 'adminPassword.txt'), 'r') as f:
     print(f.read())
