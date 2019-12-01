@@ -9,6 +9,7 @@
 
 
 from i18n import _
+from i18n import _print
 
 import argparse
 import glob
@@ -20,11 +21,15 @@ import sys
 import tarfile
 
 
-def doCommand(command):
-    po = subprocess.Popen(command,
-                          shell=True,
-                          universal_newlines=True,
-                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+def doCommand(command, check=False):
+    po = subprocess.Popen(
+        command,
+        shell=True,
+        universal_newlines=True,
+        stdout=subprocess.PIPE, 
+        stderr=subprocess.STDOUT,
+        check
+    )
     stdout, stderr = po.communicate()
     sys.stderr.write(stdout)
     return po.returncode
@@ -94,34 +99,31 @@ if opt.instance is None:
 
 # Establish plone home
 if not os.path.exists(opt.target):
-    print _("Creating target directory " + opt.target)
-    os.mkdir(opt.target, 0700)
+    _print("Creating target directory " + opt.target)
+    os.mkdir(opt.target, 0o700)
 
 # virtualenv
-PY_HOME = os.path.join(opt.target, 'Python-2.7')
+PY_HOME = os.path.join(opt.target, os.path.split(sys.executable)[-1])
 PY_SCRIPTS = os.path.join(PY_HOME, SCRIPTS)
 if not os.path.exists(PY_HOME):
-    print _("Preparing python virtualenv")
+    _print("Preparing python virtualenv")
     with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
         tf.extractall(opt.target)
     vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
-    doCommand('python ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME)
+    doCommand(sys.executable + ' ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME, check=True)
     shutil.rmtree(vepackagedir)
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
-    setuptoolspackage = glob.glob(os.path.join(PACKAGES_HOME, 'setuptools*'))
-    if setuptoolspackage:
-        print _("Installing compatible setuptools in virtualenv")
-        doCommand(PIP_BIN + ' install ' + setuptoolspackage[0])
-    print _("Installing compatible zc.buildout in virtualenv")
-    doCommand(PIP_BIN + ' install ' + glob.glob(os.path.join(PACKAGES_HOME, 'zc.buildout*'))[0])
-    doCommand(PIP_BIN + ' install pypiwin32')
+    # _print(PIP_BIN)
+    _print("Installing requirements in virtualenv")
+    doCommand(PIP_BIN + ' install -r ' + os.path.join(INSTALLER_HOME, 'base_skeleton', 'requirements.txt') + ' --no-warn-script-location', check=True)
+    # doCommand(PIP_BIN + ' install pypiwin32')
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
-    print _("Instance home ({}) already exists. Delete it if you wish to install a new instance.").format(INSTANCE_HOME)
+    _print("Instance home ({}) already exists. Delete it if you wish to install a new instance.").format(INSTANCE_HOME)
     sys.exit(1)
 
-print _("Creating instance home and buildout command.")
+_print("Creating instance home and buildout command.")
 os.mkdir(INSTANCE_HOME)
 INSTANCE_BIN = os.path.join(INSTANCE_HOME, 'bin')
 os.mkdir(INSTANCE_BIN)
@@ -138,7 +140,7 @@ if opt.password is not None:
 if opt.itype == 'zeo':
     options += ' --clients=' + str(opt.clients)
 
-print _("Running create_instance.py")
+_print("Running create_instance.py; this takes a while.")
 returncode = doCommand(
     PYTHON_BIN + ' ' +
     os.path.join(INSTALLER_HOME, 'helper_scripts', 'create_instance.py') + ' ' +
@@ -151,13 +153,13 @@ returncode = doCommand(
 )
 
 if returncode:
-    print _("Failed Windows build with error code: %s; Aborting.") % returncode
+    _print("Failed Windows build with error code: %s; Aborting.") % returncode
     sys.exit(returncode)
 
-print _("Buildout succeeded.")
-print _("Note: pep425tags runtime warnings may be ignored.")
+_print("Buildout succeeded.")
+_print("Note: pep425tags runtime warnings may be ignored.")
 
-print _('''
+_print('''
 ######################  Installation Complete  ######################
 
 Plone successfully installed at {}
@@ -166,7 +168,7 @@ for startup instructions.
 ''').format(INSTANCE_HOME, os.path.join(INSTANCE_HOME, 'README.html'))
 
 with open(os.path.join(INSTANCE_HOME, 'adminPassword.txt'), 'r') as f:
-    print f.read()
+    print(f.read())
 
 
 os.chdir(INSTALLER_HOME)
