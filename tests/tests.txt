@@ -4,6 +4,8 @@ Unified Installer Tests
 
 Note that we are using "-etc-" for the doctest.ELLIPSIS
 
+These tests assume that you have a "plonetest" directory in your $HOME directory.
+
 -----------
 Setup stuff
 -----------
@@ -14,7 +16,7 @@ Setup stuff
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/home/steve/plonetest'
+    >>> testTarget = "$HOME/plonetest"
     >>> withPython = '/usr/bin/python2.7'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
@@ -76,7 +78,7 @@ Test a ZEO install
 
     target should have basic kit
     >>> sorted(os.listdir(testTarget))
-    ['Plone-docs', 'buildout-cache', 'zeocluster']
+    ['buildout-cache', 'zeocluster']
 
     There should now be a buildout skeleton in zeocluster
     >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'requirements.txt']
@@ -84,7 +86,7 @@ Test a ZEO install
     >>> [s for s in expected if s not in found]
     []
 
-    Parts should look contain the needed components
+    Parts should contain the needed components
     >>> expected = ['README.txt', 'client1', 'client2', 'zeoserver']
     >>> found = os.listdir('%s/zeocluster/parts' % testTarget)
     >>> [s for s in expected if s not in found]

@@ -41,6 +41,17 @@ Run preliminary sanity-check installs:
 Make sure these builds succeed.
 If they don't, debug.
 
+To run the tests on macOS, use Homebrew (https://brew.sh) to install Python dependencies:
+
+    brew install libxml2 libxslt zlib openssl
+
+Set LDFLAGS and CPPFLAGS environment variables so that Python will build correctly from source (your paths may vary; check the output of your `brew install` commands:
+
+    export LDFLAGS="-L/usr/local/opt/libxml2/lib -L/usr/local/opt/libxslt/lib -L/usr/local/opt/zlib/lib -L/usr/local/opt/openssl/lib"
+    export CPPFLAGS="-I/usr/local/opt/libxml2/include -I/usr/local/opt/libxslt/include -I/usr/local/opt/zlib/include -I/usr/local/opt/openssl/include"
+
+The tests check for a $HOME/plonetest directory; create it before running the tests.
+
 Run the tests:
 
     cd tests
