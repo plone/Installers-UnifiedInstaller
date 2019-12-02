@@ -45,7 +45,7 @@ To run the tests on macOS, use Homebrew (https://brew.sh) to install Python depe
 
     brew install libxml2 libxslt zlib openssl
 
-Set LDFLAGS and CPPFLAGS environment variables so that Python will build correctly from source (your paths may vary; check the output of your `brew install` commands:
+Set LDFLAGS and CPPFLAGS environment variables so that Python will build correctly from source. Your paths may vary; check the output of your `brew install` commands:
 
     export LDFLAGS="-L/usr/local/opt/libxml2/lib -L/usr/local/opt/libxslt/lib -L/usr/local/opt/zlib/lib -L/usr/local/opt/openssl/lib"
     export CPPFLAGS="-I/usr/local/opt/libxml2/include -I/usr/local/opt/libxslt/include -I/usr/local/opt/zlib/include -I/usr/local/opt/openssl/include"
