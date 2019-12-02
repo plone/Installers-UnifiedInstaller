@@ -124,7 +124,7 @@ if not os.path.exists(PY_HOME):
         ' --no-warn-script-location',
         check=True
     )
-    doCommand(PIP_BIN + ' install pypiwin32')
+    doCommand(PIP_BIN + ' install pypiwin32', check=True)
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
