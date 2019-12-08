@@ -19,18 +19,20 @@ else
   WGET='curl -O'
 fi
 
-# gnutar or tar?
+# gnutar, gtar or tar?
 if [ -n "`which gnutar`" ]; then
   TAR='gnutar'
+elif [ -n "`which gtar`" ]; then
+  TAR='gtar'
 else
-  echo "Using tar, because gnutar was not found"
-  echo "Warning: Using tar rather than gnutar may have unintended consequences."
+  echo "Using tar, because neither gnutar nor gtar was not found"
+  echo "Warning: Using tar rather than gnutar or gtar may have unintended consequences."
   TAR='tar'
 fi
 
 BASE_VER=5.2.0
 NEWVER=${BASE_VER}
-INSTALLER_REVISION="-r2"
+INSTALLER_REVISION="-r3"
 
 SDIR=`pwd`
 

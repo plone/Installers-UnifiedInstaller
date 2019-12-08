@@ -62,7 +62,9 @@ Read the test results. Fix silly problems. Wash and repeat until clean.
 
 Build a new installer:
 
-    ./buildme.sh destination
+    ./buildme.sh [destination]
+
+where destination is the full path to the working directory to use; defaults to ``~/nobackup/work`.
 
 Upload to Launchpad.
 Update release page to link to new installer.
