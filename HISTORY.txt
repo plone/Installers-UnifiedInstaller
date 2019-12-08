@@ -1,6 +1,6 @@
 unreleased
 
-- Checks for `gtar` when building installer
+- Checks for `gtar` when building installer, update credits, fix indentation, clarify build instructions
   [tkimnguyen]
 
 5.2.0-r3 2019-11-30
