@@ -33,19 +33,19 @@ Download the Installer:
 
 .. code-block:: shell
 
-  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2/+download/Plone-5.2.0-UnifiedInstaller-r2.tgz
+  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2/+download/Plone-5.2.1-UnifiedInstaller-r1.tgz
 
 Extract the downloaded file:
 
 .. code-block:: shell
 
-  tar -xf Plone-5.2.0-UnifiedInstaller-r2.tgz
+  tar -xf Plone-5.2.1-UnifiedInstaller-r1.tgz
 
 Go the folder containing installer script:
 
 .. code-block:: shell
 
-  cd Plone-5.2.0-UnifiedInstaller-r2
+  cd Plone-5.2.1-UnifiedInstaller-r1
 
 Run script:
 

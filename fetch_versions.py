@@ -3,7 +3,7 @@
 
 # Download Plone version files, following extends as necessary.
 # e.g.,
-# fetch_versions.py 5.2.0
+# fetch_versions.py 5.2.1
 
 import re
 import sys
