@@ -1,4 +1,7 @@
-unreleased
+5.2.1 2020-01-14
+
+- Advance Plone to 5.2.1.
+  [tkimnguyen]
 
 - Checks for `gtar` when building installer, update credits, fix indentation, clarify build instructions
   [tkimnguyen]

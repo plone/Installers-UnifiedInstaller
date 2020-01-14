@@ -60,6 +60,8 @@ Run the tests:
 
 Read the test results. Fix silly problems. Wash and repeat until clean.
 
+Update the Plone version in buildme.sh, specifically the `BASE_VER` and `INSTALLER_REVISION` variables.
+
 Build a new installer:
 
     ./buildme.sh [destination]

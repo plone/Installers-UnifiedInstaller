@@ -34,7 +34,7 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.2.0
+readonly FOR_PLONE=5.2.1
 readonly WANT_PYTHON=2.7
 readonly WANT_PYTHON3=3.6
 readonly ELIGIBLE_PYTHONS='2.7 3.5 3.6 3.7 3.8'
