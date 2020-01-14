@@ -33,7 +33,7 @@ Download the Installer:
 
 .. code-block:: shell
 
-  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2/+download/Plone-5.2.1-UnifiedInstaller-r1.tgz
+  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2.1/+download/Plone-5.2.1-UnifiedInstaller-r1.tgz
 
 Extract the downloaded file:
 
