@@ -70,3 +70,29 @@ Upload to Launchpad.
 Update release page to link to new installer.
 
 Tag and push.
+
+Testing the installer
+---------------------
+
+Configurations:
+
+* standalone
+* zeo
+* Python 2
+* Python 3
+
+on these platforms:
+
+* macOS
+* Ubuntu LTS
+* Debian
+* Windows
+* FreeBSD
+
+    ./install.sh --target=/home/bla/Plone-standalone-py2 --with-python=`which python2` standalone
+
+    ./install.sh --target=/home/bla/Plone-zeo-py2 --with-python=`which python2` zeo
+
+    ./install.sh --target=/home/bla/Plone-standalone-py3 --with-python=`which python3` standalone
+
+    ./install.sh --target=/home/bla/Plone-zeo-py3 --with-python=`which python3` zeo
