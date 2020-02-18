@@ -32,11 +32,15 @@ Look for the most recent update of virtualenv that is thought to be roughly comp
 If the copy in ./packages is out-of-date, download the new one to ./packages and remove the old.
 Note that setuptools, etc. will be updated based on the requirements.txt file downloaded by fetch_versions.py -- so you don't necessarily need a virtualenv that matches.
 
-Run preliminary sanity-check installs:
+Run preliminary sanity-check installs, using both Python 2 (currently the default) and 3:
 
     rm ~/Plone
     ./install.sh zeo
     ./install.sh standalone
+
+    rm ~/Plone
+    ./install.sh --with-python=`which python3` zeo
+    ./install.sh --with-python=`which python3` standalone
 
 Make sure these builds succeed.
 If they don't, debug.
@@ -62,7 +66,10 @@ Read the test results. Fix silly problems. Wash and repeat until clean.
 
 Update the Plone version in buildme.sh, specifically the `BASE_VER` and `INSTALLER_REVISION` variables.
 
-Build a new installer:
+If the `tar` on your system is not from GNU, install GNU tar.
+On macOS, use `brew install gnu-tar`.
+
+Update `BASE_VER` and `INSTALLER_REVISION` in `buildme.sh` then build a new installer:
 
     ./buildme.sh [destination]
 

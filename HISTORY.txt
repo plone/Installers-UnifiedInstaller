@@ -1,3 +1,8 @@
+5.2.1-r3 2020-02-18
+
+- update to PloneHotfix20200121 1.1, pin waitress 1.4.3
+  [tkimnguyen]
+
 5.2.1-r2 2020-01-21
 
 - include PloneHotfix20200121

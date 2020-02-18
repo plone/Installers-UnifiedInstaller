@@ -1,5 +1,5 @@
 # Unified Plone installer build script
-# Copyright (c) 2008-2017 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2008-2020 Plone Foundation. Licensed under GPL v 2.
 #
 
 INSTALLER_PWD=`pwd`
