@@ -129,11 +129,11 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR=helper_scripts
 readonly TEMPLATE_DIR=buildout_templates
 
-readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz
-readonly PYTHON_MD5=17add4bf0ad0ec2f08e0cae6d205c700
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+readonly PYTHON_MD5=38c84292658ed4456157195f1c9bcbe1
 readonly GET_PIP_URL=https://bootstrap.pypa.io/get-pip.py
-readonly PYTHON_TB=Python-2.7.13.tgz
-readonly PYTHON_DIR=Python-2.7.13
+readonly PYTHON_TB=Python-2.7.18.tgz
+readonly PYTHON_DIR=Python-2.7.18
 readonly JPEG_TB=jpegsrc.v9b.tar.bz2
 readonly JPEG_DIR=jpeg-9b
 readonly VIRTUALENV_TB=virtualenv-15.1.0.tar.gz
