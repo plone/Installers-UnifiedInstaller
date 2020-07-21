@@ -44,10 +44,10 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR="${INSTALLER_PWD}/helper_scripts"
 readonly TEMPLATE_DIR="${INSTALLER_PWD}/buildout_templates"
 
-readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz
-readonly PYTHON_MD5=045fb3440219a1f6923fefdabde63342
-readonly PYTHON_TB=Python-2.7.15.tgz
-readonly PYTHON_DIR=Python-2.7.15
+readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+readonly PYTHON_MD5=38c84292658ed4456157195f1c9bcbe1
+readonly PYTHON_TB=Python-2.7.18.tgz
+readonly PYTHON_DIR=Python-2.7.18
 readonly PYTHON3_URL=https://www.python.org/ftp/python/3.6.9/Python-3.6.9.tgz
 readonly PYTHON3_MD5=ff7cdaef4846c89c1ec0d7b709bbd54d
 readonly PYTHON3_TB=Python-3.6.9.tgz
