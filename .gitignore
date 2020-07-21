@@ -15,3 +15,10 @@ tests.out
 packages
 .vscode/
 settings.json
+# virtualenv:
+bin/
+include/
+lib/
+lib64/
+pyvenv.cfg
+
