@@ -1,2 +1,2 @@
 Plone version: 5.2.1 (with Zope 4.1.x)
-Installer version: Unified Installer 5.2.1-r1
+Installer version: Unified Installer 5.2.1-r5

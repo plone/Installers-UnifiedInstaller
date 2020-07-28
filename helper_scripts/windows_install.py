@@ -8,8 +8,8 @@
 # for Python kit.
 
 
-from i18n import _
-from i18n import _print
+from .i18n import _
+from .i18n import _print
 
 import argparse
 import glob
@@ -112,7 +112,7 @@ if not os.path.exists(PY_HOME):
     _print("Preparing python virtualenv")
     with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
         tf.extractall(opt.target)
-    vepackagedir = glob.glob(os.path.join(opt.target, 'pypa-virtualenv*'))[0]
+    vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
     doCommand(sys.executable + ' ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME, check=True)
     shutil.rmtree(vepackagedir)
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')

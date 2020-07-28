@@ -1,7 +1,10 @@
-5.2.1-r4 2020-07-21
+5.2.1-r5 (unreleased)
 
-- fixed Windows 10 Python 3 installation
-  [nilshofer, smcmahon]
+- More reliable automatisation and fresher virtualenv.
+  Drop Python 3.5, add Python 3.8
+  [jensens]
+
+5.2.1-r4 2020-07-21
 
 - update built Python 2.7 to final release 2.7.18
   [tobiasherp]
