@@ -112,7 +112,7 @@ if not os.path.exists(PY_HOME):
     _print("Preparing python virtualenv")
     with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
         tf.extractall(opt.target)
-    vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
+    vepackagedir = glob.glob(os.path.join(opt.target, 'pypa-virtualenv*'))[0]
     doCommand(sys.executable + ' ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME, check=True)
     shutil.rmtree(vepackagedir)
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
@@ -128,7 +128,7 @@ if not os.path.exists(PY_HOME):
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
-    _print("Instance home ({}) already exists. Delete it if you wish to install a new instance.").format(INSTANCE_HOME)
+    _print("Instance home ({}) already exists. Delete it if you wish to install a new instance.".format(INSTANCE_HOME))
     sys.exit(1)
 
 _print("Creating instance home and buildout command.")
@@ -161,7 +161,7 @@ returncode = doCommand(
 )
 
 if returncode:
-    _print("Failed Windows build with error code: %s; Aborting.") % returncode
+    _print("Failed Windows build with error code: {0}; Aborting.".format(returncode))
     sys.exit(returncode)
 
 _print("Buildout succeeded.")
