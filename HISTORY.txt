@@ -1,5 +1,8 @@
 5.2.1-r4 2020-07-21
 
+- fixed Windows 10 Python 3 installation
+  [nilshofer, smcmahon]
+
 - update built Python 2.7 to final release 2.7.18
   [tobiasherp]
 

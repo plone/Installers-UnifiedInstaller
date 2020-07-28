@@ -37,7 +37,7 @@ PLONE_GROUP=plone_group
 readonly FOR_PLONE=5.2.1
 readonly WANT_PYTHON=2.7
 readonly WANT_PYTHON3=3.6
-readonly ELIGIBLE_PYTHONS='2.7 3.5 3.6 3.7 3.8'
+readonly ELIGIBLE_PYTHONS='2.7 3.6 3.7 3.8'
 
 PACKAGES_DIR="${INSTALLER_PWD}/packages"
 readonly ONLINE_PACKAGES_DIR=opackages
