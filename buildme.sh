@@ -6,6 +6,17 @@
 # packages should already be updated; particularly the
 # build-cache tarball.
 
+
+# MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
+BASE_VER=5.2.1
+INSTALLER_REVISION="-r5"
+
+# The next file has to start with virtualenv* -
+# otherwise it need to be changed also in helper_scripts/main_install_script.sh and helper_scripts/windows_install.py
+# in ANY CASE the variables VIRTUALENV_TB and VIRTUALENV_DIR helper_scripts/main_install_script.sh need to be edited if changed!
+VIRTUALENV_DOWNLOAD=https://files.pythonhosted.org/packages/15/cd/9bbb31845faec1e3848edcc4645411952a9a2a91a21c5c0fb6b84d929c5f/virtualenv-20.0.28.tar.gz
+# END OF NECESSARY MODS
+
 WORK_DIR=~/nobackup/work
 if [ -n "$1" ]; then
   WORK_DIR=$1
@@ -26,25 +37,20 @@ elif [ -n "`which gtar`" ]; then
   TAR='gtar'
 else
   echo "Using tar, because neither gnutar nor gtar was not found"
-  echo "Warning: Using tar rather than gnutar or gtar may have unintended consequences."
+  echo "Warning: Using tar rather than gnutar or gtar may have unintended consequences on non GNU-Linux Systems."
   TAR='tar'
 fi
 
-BASE_VER=5.2.1
-NEWVER=${BASE_VER}
-INSTALLER_REVISION="-r4"
-
-SDIR=`pwd`
-
-TARGET=Plone-${NEWVER}-UnifiedInstaller${INSTALLER_REVISION}
-
-cd $WORK_DIR
-rm -r ${TARGET} ${TARGET}.tgz
-
+CURDIR=`pwd`
+TARGET=Plone-${BASE_VER}-UnifiedInstaller${INSTALLER_REVISION}
 TARGET_DIR=${WORK_DIR}/${TARGET}
+TARGET_TGZ=${WORK_DIR}/${TARGET}.tgz
 
-cd $SDIR
-cp -R ${SDIR}/ ${TARGET_DIR}/
+echo "Remove previous builds"
+rm -r ${TARGET_DIR} ${TARGET_TGZ}
+
+echo "Copy and cleanup new installer"
+cp -R $CURDIR/ ${TARGET_DIR}/
 rm -rf ${TARGET_DIR}/.git
 rm ${TARGET_DIR}/.gitignore
 rm ${TARGET_DIR}/buildme.sh
@@ -60,27 +66,35 @@ rm -r ${TARGET_DIR}/Plone-docs
 rm -r ${TARGET_DIR}/autom4te.cache
 rm ${TARGET_DIR}/packages/Python*
 
-mkdir ${TARGET_DIR}
-cd ${TARGET_DIR}
-
 echo "Getting docs"
 $WGET --no-check-certificate https://github.com/plone/Plone/archive/${BASE_VER}.zip
 unzip ${BASE_VER}.zip
 rm ${BASE_VER}.zip
-mv Plone-${BASE_VER}/docs Plone-docs
-rm -r Plone-${BASE_VER}
+mv Plone-${BASE_VER}/docs ${TARGET_DIR}/Plone-docs
+rm -rf Plone-${BASE_VER}
 
-find . -name "._*" -exec rm {} \;
-find . -name ".DS_Store" -exec rm {} \;
-find . -name "*.py[co]" -exec rm -f {} \;
-find . -type f -exec chmod 644 {} \;
-chmod 755 install.sh
-find . -type d -exec chmod 755 {} \;
+echo "Getting virtualenv"
+mkdir $TARGET_DIR/packages
+cd $TARGET_DIR/packages
+$WGET --no-check-certificate $VIRTUALENV_DOWNLOAD
+cd $CURDIR
 
+echo "Set permissions on new installer..."
+find ${TARGET_DIR} -name ".DS_Store" -exec rm {} \;
+find ${TARGET_DIR} -name "._*" -exec rm {} \;
+find ${TARGET_DIR} -name "*.py[co]" -exec rm -f {} \;
+find ${TARGET_DIR} -type f -exec chmod 644 {} \;
+chmod 755 ${TARGET_DIR}/install.sh
+find ${TARGET_DIR} -type d -exec chmod 755 {} \;
+
+echo "Making tarball"
 cd $WORK_DIR
-echo Making tarball
-$TAR --owner 0 --group 0 -zcf ${TARGET}.tgz ${TARGET}
+$TAR --owner 0 --group 0 -zcf ${TARGET_TGZ} ${TARGET}
 rm -r ${TARGET}
-echo Test unpack of tarball
-$TAR zxf ${TARGET}.tgz
-cd ${TARGET}
+
+echo "Test unpack of tarball"
+$TAR zxf ${TARGET_TGZ}
+ls -la ${TARGET}
+
+cd $CURDIR
+echo "Done"
