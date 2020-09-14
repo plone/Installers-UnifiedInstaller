@@ -52,8 +52,8 @@ readonly PYTHON3_URL=https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
 readonly PYTHON3_MD5=e2f52bcf531c8cc94732c0b6ff933ff0
 readonly PYTHON3_TB=Python-3.8.5.tgz
 readonly PYTHON3_DIR=Python-3.8.5
-readonly VIRTUALENV_TB=virtualenv-20.0.28.tar.gz
-readonly VIRTUALENV_DIR=virtualenv-20.0.28
+readonly VIRTUALENV_TB=virtualenv-16.7.8.tar.gz
+readonly VIRTUALENV_DIR=pypa-virtualenv-c85afa5
 readonly NEED_CUSTOM_SETUPTOOLS=no
 
 readonly NEED_XML2="2.7.8"
