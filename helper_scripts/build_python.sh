@@ -3,11 +3,15 @@
 # note: Install readline and zlib before running this script
 #
 
+PYTHON_TB="`python_tb "$BUILD_PYTHON"`"
+PYTHON_DIR="`python_dir "$BUILD_PYTHON"`"
+
 eval "echo \"$INSTALLING_PYTHON\""
-cd "$PKG"
-untar "$PYTHON_TB"
-chmod -R 755 "$PYTHON_DIR"
-cd "$PYTHON_DIR"
+logged cd "$PKG"
+
+logged untar "$PYTHON_TB"
+logged chmod -R 755 "$PYTHON_DIR"
+logged cd "$PYTHON_DIR"
 
 # XXX: See if we still need this.
 # echo "Patching for thread size"
@@ -33,23 +37,25 @@ if [ `uname` = 'Darwin' ]; then
     fi
 fi
 
-./configure $EXFLAGS --prefix="$PY_HOME" >> "$INSTALL_LOG" 2>&1
+echo ./configure $EXFLAGS --prefix="$PY_HOME" ...
+logged ./configure $EXFLAGS --prefix="$PY_HOME"
 if [ $? -gt 0 ]; then
-    eval "echo \"$INSTALLING_PYTHON\""
+    eval "echo \"$UNABLE_TO_CONFIGURE_PY\""
     seelog
     exit 1
 fi
 
-make install >> "$INSTALL_LOG" 2>&1
+echo make install ...
+logged make install >> "$INSTALL_LOG" 2>&1
 if [ $? -gt 0 ]; then
     echo $PY_BUILD_FAILED
     seelog
     exit 1
 fi
 
-cd "$PKG"
+logged cd "$PKG"
 if [ -d "$PYTHON_DIR" ]; then
-    rm -rf "$PYTHON_DIR"
+    logged rm -rf "$PYTHON_DIR"
 fi
 if [ ! -x "$PY_HOME/bin/python" ]; then
 	eval "echo \"$INSTALL_PY_FAILED\""
@@ -57,4 +63,4 @@ if [ ! -x "$PY_HOME/bin/python" ]; then
     exit 1
 fi
 
-cd "$CWD"
+logged cd "$CWD"

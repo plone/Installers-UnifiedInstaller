@@ -27,17 +27,70 @@ untar () {
     fi
 }
 
+logged () {
+    echo "### [ `date +'%T'` (in `pwd`) $* [" >> "$INSTALL_LOG"
+    "$@" 2>&1 > "$INSTALL_TMP"
+    LOCAL_RC=$?
+    cat "$INSTALL_TMP" >> "$INSTALL_LOG"
+    if [ -n "$LOCAL_RC" ]; then
+        if [ "$LOCAL_RC" -gt 0 ]; then
+            echo "### ]] --> $LOCAL_RC (ERROR)" >> "$INSTALL_LOG"
+            error "Command failed [$LOCAL_RC]: $*"
+        else
+            echo "### ]] --> $LOCAL_RC" >> "$INSTALL_LOG"
+        fi
+    else
+        echo "### ]] (no return code)" >> "$INSTALL_LOG"
+    fi
+    return $LOCAL_RC
+}
 
 # # download ()
 # # Download using curl or wget.
 # # Arguments should be URL, test filename, md5sum
 download () {
+    if [ -z "$3" ]; then
+        echo "W: MD5 hash for $2 unknown!"
+    fi
+    if [ -f "$2" ]; then
+        echo "Found in `pwd`:"
+        ls -ld "$2"
+        if [ -n "$3" ]; then
+            if (which md5sum > /dev/null); then
+                # check hash
+                echo "$3  $2" | md5sum -c -
+                [ $? -eq 0 ] && return
+                # mismatch; repeating download
+            else
+                echo "W:Can't compute MD5 hash!"
+                if [ $INTERACTIVE -eq 1 ]; then
+                    if confirm "Use this file?"; then 
+                        return
+                    fi
+                fi
+                # non-interactive: download ... 
+            fi
+        else
+            if (which md5sum > /dev/null); then
+                md5sum "$2"
+            else
+                echo "W:Can't compute MD5 hash!"
+            fi
+            if [ $INTERACTIVE -eq 1 ]; then
+                if confirm "Use this file?"; then 
+                    return
+                fi
+            fi
+            # non-interactive: download ... 
+        fi
+    fi
+    eval "echo \"$DOWNLOADING_PYTHON\""
     if (which curl > /dev/null); then
-        echo Downloading $2 with curl
-        curl $1 --output $2 --location
+        echo "Downloading $2 with curl"
+        logged curl $1 --output $2 --location
     elif (which wget > /dev/null); then
-        echo Downloading $2 with wget
-        wget $1 -O $2
+        echo "Downloading $2 with wget"
+        logged wget $1 -O $2
     else
         echo "We need either wget or curl in order to download $2."
         echo "Please use your package manager to install one of them."
@@ -65,6 +118,39 @@ download () {
             echo "Download unusable. Failed!"
             exit 1
         fi
+    fi
+}
+
+download_python () {
+    download "`python_url "$1"`" "`python_tb "$1"`" "${PYTHON_MD5[$1]}"
+}
+
+unchecked_download () {
+    # e.g. for virtualenv.pyz; we don't maintain MD5 hash lists for this here
+    if (which curl > /dev/null); then
+        echo "Downloading $2 with curl"
+        logged curl "$1" --output "$2" --location
+    elif (which wget > /dev/null); then
+        echo "Downloading $2 with wget"
+        logged wget "$1" -O "$2"
+    else
+        echo "We need either wget or curl in order to download $2."
+        echo "Please use your package manager to install one of them."
+        exit 1
+    fi
+    if [ $? -gt 0 ]; then
+        echo "Download of $2 from $1 failed. Check for error messages"
+        echo "on the console. Are you behind an HTTP proxy? If so, set"
+        echo "the http_proxy environment variable."
+        echo "(Download returned error.)"
+        exit 1
+    fi
+    if [ ! -f $2 ]; then
+        echo "Download of $2 from $1 failed. Check for error messages"
+        echo "on the console. Are you behind an HTTP proxy? If so, set"
+        echo "the http_proxy environment variable."
+        echo "(File not found.)"
+        exit 1
     fi
 }
 
@@ -128,3 +214,22 @@ config_version () {
 # done
 
 # download http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2 Python-2.7.4.tar.bz2 62704ea0f125923208d84ff0568f7d50
+
+confirm() {
+    read -n1 -p "$1
+(<y>, <n>) "
+    case "$REPLY" in
+        '')
+            echo "yes"
+            return 0
+            ;;
+        'y' | 'Y')
+            echo -e "\byes"
+            return 0
+            ;;
+        *)  echo -e "\bno"
+            return 1
+            ;;
+    esac
+}
+    
