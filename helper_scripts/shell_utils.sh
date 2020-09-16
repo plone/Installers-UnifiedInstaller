@@ -34,13 +34,13 @@ logged () {
     cat "$INSTALL_TMP" >> "$INSTALL_LOG"
     if [ -n "$LOCAL_RC" ]; then
         if [ "$LOCAL_RC" -gt 0 ]; then
-            echo "### ]] --> $LOCAL_RC (ERROR)" >> "$INSTALL_LOG"
+            echo "### ] `date +'%T'` ] --> $LOCAL_RC (ERROR)" >> "$INSTALL_LOG"
             error "Command failed [$LOCAL_RC]: $*"
         else
-            echo "### ]] --> $LOCAL_RC" >> "$INSTALL_LOG"
+            echo "### ] `date +'%T'` ] --> $LOCAL_RC" >> "$INSTALL_LOG"
         fi
     else
-        echo "### ]] (no return code)" >> "$INSTALL_LOG"
+        echo "### ] `date +'%T'` ] (no return code)" >> "$INSTALL_LOG"
     fi
     return $LOCAL_RC
 }
