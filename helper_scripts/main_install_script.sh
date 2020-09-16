@@ -1,3 +1,4 @@
+w
 # Unified Plone installer build script
 # Copyright (c) 2008-2020 Plone Foundation. Licensed under GPL v 2.
 #
@@ -55,6 +56,7 @@ readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
 
 DEBUG_OPTIONS=no
+DEBUG_TREE=''
 
 # Add message translations below:
 case $LANG in
@@ -115,6 +117,7 @@ TEMPLATE=buildout
 WITHOUT_SSL="no"
 INSTALL_ZEO=0
 INTERACTIVE=0
+KEEP_TMP=''
 
 USE_WHIPTAIL=0
 if [ "$BASH_VERSION" ]; then
@@ -179,7 +182,7 @@ do
                     BUILD_PYTHON="${BEST_PYTHON[$optarg]}"
                     if [ -z "$BUILD_PYTHON" ]; then
                         if [ -n "${PYTHON_MD5[$optarg]}" ]; then
-                            # known x.y.z version specified: 
+                            # known x.y.z version specified:
                             BUILD_PYTHON="$optarg"
                         else
                             error "Sorry; don't know the best Python $optarg version"
@@ -191,7 +194,6 @@ do
             esac
             if [ "$BUILD_PYTHON" != 'no' ]; then
                 WANT_PYTHON=$(echo "$BUILD_PYTHON" | sed 's,^\([23][.][0-9]\+\)\..*$,\1,')
-                echo "BUILD_PYTHON is '$BUILD_PYTHON'"
                 case "$WANT_PYTHON" in
                     2.*.* | 3.*.*)
                         error "WANT_PYTHON: Just major.minor version expected! ($WANT_PYTHON)"
@@ -203,7 +205,7 @@ do
                         PYBIN_NAME='python3'
                         ;;
                     *)
-                        error "WANT_PYTHON: Unexpeced value '$WANT_PYTHON')"
+                        error "WANT_PYTHON: Unexpected value '$WANT_PYTHON')"
                 esac
             fi
             ;;
@@ -211,6 +213,10 @@ do
         --interactive )
             INTERACTIVE=1
             ;;
+
+		--keep-tmp )
+			KEEP_TMP='x'
+			;;
 
         --target=* | -target=* )
             if [ "$optarg" ]; then
@@ -223,7 +229,7 @@ do
 
         --python-prefix=* )
             # parent dir for the Python-[23].x build dir;
-            # default is PLONE_HOME  
+            # default is PLONE_HOME
             if [ "$optarg" ]; then
                 PYTHON_PREFIX="$optarg"
             else
@@ -350,6 +356,10 @@ do
 
         --debug-options )
             DEBUG_OPTIONS=yes
+            ;;
+
+        --debug-tree )
+            DEBUG_TREE=yes
             ;;
 
         --help | -h )
@@ -576,9 +586,20 @@ fi
 # Begin the process of finding a viable Python or creating one
 # if it can't be found.
 
-CANDIDATE_PYTHON=`ls $PLONE_HOME/Python-*/bin/python[23] 2> /dev/null`
+[ -z "$PYTHON_PREFIX" ] && PYTHON_PREFIX="$PLONE_HOME"
+if [ -n "$WANT_PYTHON" ]; then
+    eval "echo \"$CHECKING_WANTED_PYTHON\""
+    CANDIDATE_PYTHON=`ls $PYTHON_PREFIX/Python-$WANT_PYTHON/bin/python[23] 2> /dev/null`
+else
+    eval "echo \"$CHECKING_PREBUILT_PYTHON\""
+    CANDIDATE_PYTHON=`ls $PYTHON_PREFIX/Python-*/bin/python[23] 2> /dev/null`
+fi
+# Still to do:
+# - there might be more than one (especially with --python-target)
+# - do we really want to override --with-python?
+# - BUILD_PYTHON might specify a newer bugfix version
 if [ $? -eq 0 ] ; then
-    echo found exiting py
+    echo "found exiting py ($CANDIDATE_PYTHON)"
     # There is a Python that was probably built by the installer;
     # use it.
     HAVE_PYTHON=yes
@@ -589,7 +610,7 @@ if [ $? -eq 0 ] ; then
         echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
-    logged cd `ls -d $PLONE_HOME/Python-*`
+    logged cd `ls -d $PYTHON_PREFIX/Python-*`
     PY_HOME=`pwd`
     logged cd "$CWD"
     WITH_PYTHON=`ls $PY_HOME/bin/python[23]`
@@ -821,10 +842,42 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     exit 0
 fi
 
+if [ -n "$DEBUG_TREE" ]; then
+    cat <<-EOT
+	File system related configuration
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	(HOME; os variable)                           $HOME
+	(LOCAL_HOME)                                     $LOCAL_HOME
+
+	(PLONE_HOME, default --target)                $PLONE_HOME
+	(WORKDIR; keep with --keep-tmp)               +- tmp/  (${WORKDIR:-$PLONE_HOME/tmp})
+	(INSTANCE_NAME, --instance)                   +- ${INSTANCE_NAME:-(unspecified)}
+	(ZEOCLUSTER_HOME; customize with --instance)  +- $ZEOCLUSTER_HOME
+	(RINSTALL_HOME; customize with --instance)    +- $RINSTALL_HOME
+	(INSTANCE_HOME)                                  ${INSTANCE_HOME:-(unspecified}
+	(INSTANCE_VAR)                                      ${INSTANCE_VAR:-(unspecified)}
+	(BACKUP_DIR)                                        ${BACKUP_DIR:-(unspecified)}
+
+	Python
+	~~~~~~
+	(PYTHON_PREFIX, --python-prefix)         $PYTHON_PREFIX
+	(PY_HOME)                                $PY_HOME
+	(BUILD_PYTHON, --build-python)           $BUILD_PYTHON
+	(WANT_PYTHON, via --build-python)        $WANT_PYTHON
+	(WITH_PYTHON, --with-python)             $WITH_PYTHON
+	(CANDIDATE_PYTHON)                       $CANDIDATE_PYTHON
+	EOT
+    exit 0
+fi
+
 
 # set up log
 if [ -f "$INSTALL_LOG" ]; then
     rm -f "$INSTALL_LOG"
+    if [ -f "$INSTALL_LOG" ]; then
+        eval "echo \"$CANNOT_DELETE_LOG\""
+        ls -ld "$INSTALL_LOG"
+    fi
 fi
 touch "$INSTALL_LOG" 2> /dev/null
 if [ $? -gt 0 ]; then
@@ -833,6 +886,8 @@ if [ $? -gt 0 ]; then
 else
     eval "echo \"$LOGGING_MSG\""
     echo "Detailed installation log" > "$INSTALL_LOG"
+    echo "Called as: $0 $*" >>  "$INSTALL_LOG"
+    echo "       by: `whoami`" >>  "$INSTALL_LOG"
     echo "Starting at `date`" >> "$INSTALL_LOG"
 fi
 seelog () {
@@ -948,7 +1003,7 @@ build_python () {
     logged cd "$CWD"
     PY_HOME="${PYTHON_PREFIX:-$PLONE_HOME}/Python-${WANT_PYTHON}"
     WITH_PYTHON="${PY_HOME}/bin/$PYBIN_NAME"
-    # will build both Python 2 and 3: 
+    # will build both Python 2 and 3:
     . "${INSTALLER_PWD}/helper_scripts/build_python.sh"
 
     if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
@@ -987,7 +1042,7 @@ else
             error "Error detecting Python version!"
         fi
     fi
-    # get the latest virtualenv zipapp supporting our wanted Python: 
+    # get the latest virtualenv zipapp supporting our wanted Python:
     unchecked_download "https://bootstrap.pypa.io/virtualenv/$WANT_PYTHON/virtualenv.pyz" \
                        'virtualenv.pyz'
     logged "$WITH_PYTHON" 'virtualenv.pyz' "$INSTANCE_HOME"
@@ -1136,8 +1191,12 @@ if [ $ROOT_INSTALL -eq 0 ]; then
 fi
 
 logged cd "$CWD"
-# clear our temporary directory
-logged rm -r "$WORKDIR"
+if [ -n "$KEEP_TMP" ]; then
+    eval "echo \"$KEEPING_TMP\""
+else
+    # clear our temporary directory
+    logged rm -r "$WORKDIR"
+fi
 
 PWFILE="$INSTANCE_HOME/adminPassword.txt"
 RMFILE="$INSTANCE_HOME/README.html"

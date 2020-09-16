@@ -251,6 +251,9 @@ ROOTLESS_INSTALL_CHOSEN='Rootless install method chosen. Will install for use by
 
 CANNOT_WRITE_LOG='Unable to write to ${INSTALL_LOG}\; detailed log will go to stdout.'
 
+CANNOT_DELETE_LOG=\
+'Unable to delete ${INSTALL_LOG}:'
+
 LOGGING_MSG='
 Detailed installation log being written to $INSTALL_LOG'
 
@@ -284,6 +287,12 @@ VIRTUALENV_BAD='
 Python created with virtualenv no longer passes baseline tests.
 You may need to use --build-python and let the Unified Installer
 build its own Python.'
+
+CHECKING_PREBUILT_PYTHON=\
+'Looking for any pre-built Python in $PYTHON_PREFIX'
+
+CHECKING_WANTED_PYTHON=\
+'Looking for a pre-built Python $WANT_PYTHON in $PYTHON_PREFIX'
 
 DOWNLOADING_PYTHON='Downloading Python source from $PYTHON_URL'
 
@@ -377,3 +386,6 @@ This is no problem if the required users and group already exist.
 
 UG_CREATE_FAILED='Expected to find uid for $TARGET_USER and gid for $TARGET_GROUP but did not.
 Please use your system tools to create/edit required users and group, then try again.'
+
+KEEPING_TMP=\
+'Keeping the temp. directory $WORKDIR at your request.'
