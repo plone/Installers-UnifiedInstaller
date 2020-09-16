@@ -1035,7 +1035,7 @@ else
         if [ -z "$WITH_PYTHON" ]; then
             error "Hu - o Python here?!"
         fi
-        WANT_PYTHON=`"$WITH_PYTHON" --version | sed -ne 's,^Python \([23]\.[^.]\+\)\..*$,\1,p'`
+        WANT_PYTHON=`"$WITH_PYTHON" --version 2>&1| sed -ne 's,^Python \([23]\.[^.]\+\)\..*$,\1,p'`
         if [ -n "$WANT_PYTHON" ]; then
             echo "Autodetected Python $WANT_PYTHON"
         else
