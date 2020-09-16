@@ -121,9 +121,21 @@ download () {
     fi
 }
 
+# ---------------------- [ little helpers for [23].x.y versions ... [
+python_tb() {
+    echo "Python-${1}.tgz"
+}
+python_dir() {
+    echo "Python-$1"
+}
+python_url() {
+    echo "https://www.python.org/ftp/python/$1/Python-${1}.tgz"
+}
+
 download_python () {
     download "`python_url "$1"`" "`python_tb "$1"`" "${PYTHON_MD5[$1]}"
 }
+# ---------------------- ] ... little helpers for [23].x.y versions ]
 
 unchecked_download () {
     # e.g. for virtualenv.pyz; we don't maintain MD5 hash lists for this here

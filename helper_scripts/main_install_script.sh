@@ -45,37 +45,8 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR="${INSTALLER_PWD}/helper_scripts"
 readonly TEMPLATE_DIR="${INSTALLER_PWD}/buildout_templates"
 
-# readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
-# readonly PYTHON_MD5=
-# readonly PYTHON_TB=Python-2.7.18.tgz
-# readonly PYTHON_DIR=Python-2.7.18
-# readonly PYTHON3_URL=https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
-# readonly PYTHON3_MD5=
-# readonly PYTHON3_TB=Python-3.8.5.tgz
-# readonly PYTHON3_DIR=Python-3.8.5
-declare -A BEST_PYTHON
-# --------- substitute PYTHON[3]_MD5 variables ...
-BEST_PYTHON[2.7]=2.7.18
-BEST_PYTHON[2]=${BEST_PYTHON[2.7]}
-BEST_PYTHON[3.6]=3.6.12
-BEST_PYTHON[3.7]=3.7.9
-BEST_PYTHON[3.8]=3.8.5
-BEST_PYTHON[3]=${BEST_PYTHON[3.8]}
-declare -A PYTHON_MD5
-PYTHON_MD5[2.7.18]='38c84292658ed4456157195f1c9bcbe1'
-PYTHON_MD5[3.6.12]='00c3346f314072fcc810d4a51d06f04e'
-PYTHON_MD5[3.7.9]='bcd9f22cf531efc6f06ca6b9b2919bd4'
-PYTHON_MD5[3.8.5]='e2f52bcf531c8cc94732c0b6ff933ff0'
 # --------- substitute PYTHON[3]_{URL,DIR,TB} variables ...
-python_tb() {
-    echo "Python-${1}.tgz"
-}
-python_dir() {
-    echo "Python-$1"
-}
-python_url() {
-    echo "https://www.python.org/ftp/python/$1/Python-${1}.tgz"
-}
+. "${HSCRIPTS_DIR}/python_versions.sh"
 readonly VIRTUALENV_TB=virtualenv-20.0.28.tar.gz
 readonly VIRTUALENV_DIR=virtualenv-20.0.28
 readonly NEED_CUSTOM_SETUPTOOLS=no
