@@ -73,6 +73,9 @@
 # --nobuildout
 #   Skip running bin/buildout. You should know what you're doing.
 #
+# --keep-tmp
+#   Don't delete the tmp directory (below --target) finally
+#
 # Library build control options:
 #
 # --static-lxml

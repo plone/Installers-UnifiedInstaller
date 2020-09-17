@@ -1,3 +1,4 @@
+w
 # Unified Plone installer build script
 # Copyright (c) 2008-2020 Plone Foundation. Licensed under GPL v 2.
 #
@@ -35,31 +36,27 @@ PLONE_GROUP=plone_group
 #################################################
 
 readonly FOR_PLONE=5.2.2
-readonly WANT_PYTHON=2.7
-readonly WANT_PYTHON3=3.6
+# we'll set this to 2.7 below, unless specified otherwise
+WANT_PYTHON=''
 readonly ELIGIBLE_PYTHONS='2.7 3.6 3.7 3.8'
+PYTHON_PREFIX=''
 
 PACKAGES_DIR="${INSTALLER_PWD}/packages"
 readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR="${INSTALLER_PWD}/helper_scripts"
 readonly TEMPLATE_DIR="${INSTALLER_PWD}/buildout_templates"
 
-readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
-readonly PYTHON_MD5=38c84292658ed4456157195f1c9bcbe1
-readonly PYTHON_TB=Python-2.7.18.tgz
-readonly PYTHON_DIR=Python-2.7.18
-readonly PYTHON3_URL=https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
-readonly PYTHON3_MD5=e2f52bcf531c8cc94732c0b6ff933ff0
-readonly PYTHON3_TB=Python-3.8.5.tgz
-readonly PYTHON3_DIR=Python-3.8.5
-readonly VIRTUALENV_TB=virtualenv-16.7.8.tar.gz
-readonly VIRTUALENV_DIR=pypa-virtualenv-c85afa5
+# --------- substitute PYTHON[3]_{URL,DIR,TB} variables ...
+. "${HSCRIPTS_DIR}/python_versions.sh"
+readonly VIRTUALENV_TB=virtualenv-20.0.28.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-20.0.28
 readonly NEED_CUSTOM_SETUPTOOLS=no
 
 readonly NEED_XML2="2.7.8"
 readonly NEED_XSLT="1.1.26"
 
 DEBUG_OPTIONS=no
+DEBUG_TREE=''
 
 # Add message translations below:
 case $LANG in
@@ -95,6 +92,12 @@ usage () {
     exit 1
 }
 
+error () {
+    echo "E:$*" >&2
+    echo "i:Try --help" >&2
+    exit 1
+}
+
 
 #########################################################
 # Pick up options from command line
@@ -108,10 +111,13 @@ WITH_ZOPE=""
 RUN_BUILDOUT=1
 SKIP_TOOL_TESTS=0
 INSTALL_LOG="$ORIGIN_PATH/install.log"
+INSTALL_TMP="$ORIGIN_PATH/install-output-$$.tmp"
 CLIENT_COUNT=2
 TEMPLATE=buildout
 WITHOUT_SSL="no"
 INSTALL_ZEO=0
+INTERACTIVE=0
+KEEP_TMP=''
 
 USE_WHIPTAIL=0
 if [ "$BASH_VERSION" ]; then
@@ -125,6 +131,7 @@ do
 
     case $option in
         --with-python=* | -with-python=* | --withpython=* | -withpython=* )
+            # specify full path to python or python3 binary
             if [ "$optarg" ]; then
                 WITH_PYTHON="$optarg"
             else
@@ -132,24 +139,99 @@ do
             fi
             ;;
 
-        --build-python | --build-python=* )
-            if [ "$optarg" ]; then
-                BUILD_PYTHON="$optarg"
-                if [ $BUILD_PYTHON != 'yes' ] && [ $BUILD_PYTHON != '3' ] && [ $BUILD_PYTHON != 'no' ]; then
-                    usage $BAD_BUILD_PYTHON
+
+        --find-python=* )
+            _WANT=''
+            case "$optarg" in
+                2 )
+                    _WANT=2.7
+                    ;;
+                3 )
+                    error "Please be more specific! ($option)"
+                    ;;
+                2.*|3.*)
+                    _WANT=$(echo "$optarg" | sed 's,^\([23]\.[0-9]\+\)\..*$,\1,')
+                    if [ "$_WANT" != "$optarg" ]; then
+                        error "$option: Only major.minor version specs supported"
+                    fi
+                    ;;
+                *)
+                    error "$option: Invalid Python version specification"
+            esac
+            if [ -n "$_WANT" ]; then
+                if [ -z "$WANT_PYTHON" ]; then
+                    WANT_PYTHON="$_WANT"
+                elif [ "$_WANT" != "$WANT_PYTHON" ]; then
+                    error "$optarg: we want $WANT_PYTHON, right?!"
                 fi
-                if [ "$BUILD_PYTHON" = '2' ]; then
-                    BUILD_PYTHON=yes
-                fi
-            else
-                BUILD_PYTHON="yes"
             fi
             ;;
+
+        --build-python | --build-python=* )
+            case "$optarg" in
+                ''|yes)
+                    BUILD_PYTHON="${BEST_PYTHON[2.7]}"
+                    ;;
+                'no')
+                    BUILD_PYTHON="$optarg"
+                    ;;
+                2|3)
+                    BUILD_PYTHON="${BEST_PYTHON[$optarg]}"
+                    ;;
+                [23].*)
+                    BUILD_PYTHON="${BEST_PYTHON[$optarg]}"
+                    if [ -z "$BUILD_PYTHON" ]; then
+                        if [ -n "${PYTHON_MD5[$optarg]}" ]; then
+                            # known x.y.z version specified:
+                            BUILD_PYTHON="$optarg"
+                        else
+                            error "Sorry; don't know the best Python $optarg version"
+                        fi
+                    fi
+                    ;;
+                *)
+                    error $BAD_BUILD_PYTHON
+            esac
+            if [ "$BUILD_PYTHON" != 'no' ]; then
+                WANT_PYTHON=$(echo "$BUILD_PYTHON" | sed 's,^\([23][.][0-9]\+\)\..*$,\1,')
+                case "$WANT_PYTHON" in
+                    2.*.* | 3.*.*)
+                        error "WANT_PYTHON: Just major.minor version expected! ($WANT_PYTHON)"
+                        ;;
+                    2.*)
+                        PYBIN_NAME='python'
+                        ;;
+                    3.*)
+                        PYBIN_NAME='python3'
+                        ;;
+                    *)
+                        error "WANT_PYTHON: Unexpected value '$WANT_PYTHON')"
+                esac
+            fi
+            ;;
+
+        --interactive )
+            INTERACTIVE=1
+            ;;
+
+		--keep-tmp )
+			KEEP_TMP='x'
+			;;
 
         --target=* | -target=* )
             if [ "$optarg" ]; then
                 PLONE_HOME="$optarg"
                 USE_WHIPTAIL=0
+            else
+                usage
+            fi
+            ;;
+
+        --python-prefix=* )
+            # parent dir for the Python-[23].x build dir;
+            # default is PLONE_HOME
+            if [ "$optarg" ]; then
+                PYTHON_PREFIX="$optarg"
             else
                 usage
             fi
@@ -276,6 +358,10 @@ do
             DEBUG_OPTIONS=yes
             ;;
 
+        --debug-tree )
+            DEBUG_TREE=yes
+            ;;
+
         --help | -h )
             usage
             USE_WHIPTAIL=0
@@ -304,6 +390,11 @@ do
     esac
 done
 
+if [ -z "$WANT_PYTHON" ] && [ -z "$WITH_PYTHON" ]; then
+    # with $BUILD_PYTHON, WANT_PYTHON would have been set
+    WANT_PYTHON=2.7
+fi
+
 if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" != "Xno" ]; then
     echo "$CONTRADICTORY_PYTHON_COMMANDS"
 fi
@@ -323,7 +414,7 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
     fi
 
 
-    if [ "X$WITH_PYTHON" == "X" ] && [ "X$BUILD_PYTHON" != "Xyes" ]; then
+    if [ "X$WITH_PYTHON" = "X" ] && [ "X$BUILD_PYTHON" != "Xyes" ]; then
         CANDIDATE_PYTHONS=""
         PYTHONS_FOUND=0
         for A_PYTHON in $ELIGIBLE_PYTHONS; do
@@ -480,7 +571,7 @@ if [ $SKIP_TOOL_TESTS -eq 0 ]; then
     # that will allow us to check for headers and tools the same way
     # that the cmmi process will.
     if [ -f ./buildenv.sh ]; then
-        rm -f ./buildenv.sh
+        logged rm -f ./buildenv.sh
     fi
     sh ./preflight -q
     if [ $? -gt 0 ] || [ ! -f "buildenv.sh" ]; then
@@ -495,9 +586,20 @@ fi
 # Begin the process of finding a viable Python or creating one
 # if it can't be found.
 
-CANDIDATE_PYTHON=`ls $PLONE_HOME/Python-*/bin/python[23] 2> /dev/null`
+[ -z "$PYTHON_PREFIX" ] && PYTHON_PREFIX="$PLONE_HOME"
+if [ -n "$WANT_PYTHON" ]; then
+    eval "echo \"$CHECKING_WANTED_PYTHON\""
+    CANDIDATE_PYTHON=`ls $PYTHON_PREFIX/Python-$WANT_PYTHON/bin/python[23] 2> /dev/null`
+else
+    eval "echo \"$CHECKING_PREBUILT_PYTHON\""
+    CANDIDATE_PYTHON=`ls $PYTHON_PREFIX/Python-*/bin/python[23] 2> /dev/null`
+fi
+# Still to do:
+# - there might be more than one (especially with --python-target)
+# - do we really want to override --with-python?
+# - BUILD_PYTHON might specify a newer bugfix version
 if [ $? -eq 0 ] ; then
-    echo found exiting py
+    echo "found exiting py ($CANDIDATE_PYTHON)"
     # There is a Python that was probably built by the installer;
     # use it.
     HAVE_PYTHON=yes
@@ -508,9 +610,9 @@ if [ $? -eq 0 ] ; then
         echo "$IGNORING_BUILD_PYTHON"
         BUILD_PYTHON=no
     fi
-    cd `ls -d $PLONE_HOME/Python-*`
+    logged cd `ls -d $PYTHON_PREFIX/Python-*`
     PY_HOME=`pwd`
-    cd "$CWD"
+    logged cd "$CWD"
     WITH_PYTHON=`ls $PY_HOME/bin/python[23]`
 fi
 
@@ -705,21 +807,19 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "BUILDOUT_USER=$BUILDOUT_USER"
     echo "PLONE_GROUP=$PLONE_GROUP"
     echo "FOR_PLONE=$FOR_PLONE"
-    echo "WANT_PYTHON=$WANT_PYTHON"
-    echo "WANT_PYTHON3=$WANT_PYTHON3"
     echo "PACKAGES_DIR=$PACKAGES_DIR"
     echo "ONLINE_PACKAGES_DIR=$ONLINE_PACKAGES_DIR"
     echo "HSCRIPTS_DIR=$HSCRIPTS_DIR"
     echo "ROOT_INSTALL=$ROOT_INSTALL"
-    echo "PLONE_HOME=$PLONE_HOME"
-    echo "DAEMON_USER=$DAEMON_USER"
-    echo "BUILDOUT_USER=$BUILDOUT_USER"
     echo "ORIGIN_PATH=$ORIGIN_PATH"
     echo "PWD=$INSTALLER_PWD"
     echo "CWD=$CWD"
     echo "PKG=$PKG"
-    echo "WITH_PYTHON=$WITH_PYTHON"
     echo "BUILD_PYTHON=$BUILD_PYTHON"
+    echo "WANT_PYTHON=$WANT_PYTHON"
+    echo "WITH_PYTHON=$WITH_PYTHON"
+    echo "PYTHON_PREFIX=$PYTHON_PREFIX"
+    echo "PY_HOME=$PY_HOME"
     echo "CC=$CC"
     echo "CPP=$CPP"
     echo "CXX=$CXX"
@@ -742,10 +842,42 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     exit 0
 fi
 
+if [ -n "$DEBUG_TREE" ]; then
+    cat <<-EOT
+	File system related configuration
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	(HOME; os variable)                           $HOME
+	(LOCAL_HOME)                                     $LOCAL_HOME
+
+	(PLONE_HOME, default --target)                $PLONE_HOME
+	(WORKDIR; keep with --keep-tmp)               +- tmp/  (${WORKDIR:-$PLONE_HOME/tmp})
+	(INSTANCE_NAME, --instance)                   +- ${INSTANCE_NAME:-(unspecified)}
+	(ZEOCLUSTER_HOME; customize with --instance)  +- $ZEOCLUSTER_HOME
+	(RINSTALL_HOME; customize with --instance)    +- $RINSTALL_HOME
+	(INSTANCE_HOME)                                  ${INSTANCE_HOME:-(unspecified}
+	(INSTANCE_VAR)                                      ${INSTANCE_VAR:-(unspecified)}
+	(BACKUP_DIR)                                        ${BACKUP_DIR:-(unspecified)}
+
+	Python
+	~~~~~~
+	(PYTHON_PREFIX, --python-prefix)         $PYTHON_PREFIX
+	(PY_HOME)                                $PY_HOME
+	(BUILD_PYTHON, --build-python)           $BUILD_PYTHON
+	(WANT_PYTHON, via --build-python)        $WANT_PYTHON
+	(WITH_PYTHON, --with-python)             $WITH_PYTHON
+	(CANDIDATE_PYTHON)                       $CANDIDATE_PYTHON
+	EOT
+    exit 0
+fi
+
 
 # set up log
 if [ -f "$INSTALL_LOG" ]; then
     rm -f "$INSTALL_LOG"
+    if [ -f "$INSTALL_LOG" ]; then
+        eval "echo \"$CANNOT_DELETE_LOG\""
+        ls -ld "$INSTALL_LOG"
+    fi
 fi
 touch "$INSTALL_LOG" 2> /dev/null
 if [ $? -gt 0 ]; then
@@ -754,6 +886,8 @@ if [ $? -gt 0 ]; then
 else
     eval "echo \"$LOGGING_MSG\""
     echo "Detailed installation log" > "$INSTALL_LOG"
+    echo "Called as: $0 $*" >>  "$INSTALL_LOG"
+    echo "       by: `whoami`" >>  "$INSTALL_LOG"
     echo "Starting at `date`" >> "$INSTALL_LOG"
 fi
 seelog () {
@@ -786,10 +920,10 @@ fi # if $ROOT_INSTALL
 #######################################
 # create plone home
 if [ ! -x "$PLONE_HOME" ]; then
-    mkdir "$PLONE_HOME"
+    logged mkdir "$PLONE_HOME"
     if [ $ROOT_INSTALL -eq 1 ]; then
-        chown "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME"
-        chmod g+s "$PLONE_HOME"
+        logged chown "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME"
+        logged chmod g+s "$PLONE_HOME"
     fi
 
     # normalize $PLONE_HOME so we can use it in prefixes
@@ -797,32 +931,32 @@ if [ ! -x "$PLONE_HOME" ]; then
         eval "echo \"$CANNOT_CREATE_HOME\""
         exit 1
     fi
-    cd "$PLONE_HOME"
+    logged cd "$PLONE_HOME"
     PLONE_HOME=`pwd`
 fi
 
-cd "$CWD"
+logged cd "$CWD"
 
 
 # The main install may be done via sudo (if a root install). If it is,
 # our current directory may become unreachable. So, copy the resources
 # we'll need into a tmp directory inside the install destination.
 WORKDIR="${PLONE_HOME}/tmp"
-mkdir "$WORKDIR" > /dev/null 2>&1
-cd "${INSTALLER_PWD}"
-cp -R buildout_templates "$WORKDIR"
-cp -R base_skeleton "$WORKDIR"
-cp -R helper_scripts "$WORKDIR"
-cp -R packages "$WORKDIR"
+logged mkdir -p "$WORKDIR"
+logged cd "${INSTALLER_PWD}"
+logged cp -R buildout_templates "$WORKDIR"
+logged cp -R base_skeleton "$WORKDIR"
+logged cp -R helper_scripts "$WORKDIR"
+logged cp -R packages "$WORKDIR"
 PACKAGES_DIR="${WORKDIR}/packages"
 PKG="$PACKAGES_DIR"
 if [ $ROOT_INSTALL -eq 1 ]; then
-    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$WORKDIR"
-    find "$WORKDIR" -type d -exec chmod g+s {} \;
+    logged chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$WORKDIR"
+    logged find "$WORKDIR" -type d -exec chmod g+s {} \;
 fi
 
 
-cd "$PLONE_HOME"
+logged cd "$PLONE_HOME"
 PLONE_HOME=`pwd`
 # More paths
 if [ ! "x$INSTANCE_NAME" = "x" ]; then
@@ -848,26 +982,30 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     INSTANCE_HOME=$RINSTANCE_HOME
 fi
 if [ -x "$INSTANCE_HOME" ]; then
-    eval "echo \"$INSTANCE_HOME_EXISTS\""
-    exit 1
+    if [ "$INTERACTIVE" -eq 1 ]; then
+        eval "echo \"$INSTANCE_HOME_EXISTS\""
+        if ! confirm 'Continue?'; then
+            exit 1
+        fi
+    else
+        eval "echo \"$INSTANCE_HOME_EXISTS_ABORT\""
+        echo '(try --interactive to continue)'
+        exit 1
+    fi
 fi
 
-cd "$CWD"
+logged cd "$CWD"
 
-if [ "X$BUILD_PYTHON" = "Xyes" ]; then
-    # download python tarball if necessary
-    cd "$PKG"
-    if [ ! -f $PYTHON_TB ]; then
-        eval "echo \"$DOWNLOADING_PYTHON\""
-        download $PYTHON_URL $PYTHON_TB $PYTHON_MD5
-    fi
-    cd "$CWD"
-
-    PY_HOME="$PLONE_HOME/Python-${WANT_PYTHON}"
-    WITH_PYTHON="${PY_HOME}/bin/python"
+build_python () {
+    [ "${BUILD_PYTHON:-no}" = 'no' ] && return
+    logged cd "$PKG"
+    download_python "$BUILD_PYTHON"
+    logged cd "$CWD"
+    PY_HOME="${PYTHON_PREFIX:-$PLONE_HOME}/Python-${WANT_PYTHON}"
+    WITH_PYTHON="${PY_HOME}/bin/$PYBIN_NAME"
+    # will build both Python 2 and 3:
     . "${INSTALLER_PWD}/helper_scripts/build_python.sh"
 
-
     if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
         echo $PYTHON_BUILD_OK
     else
@@ -875,51 +1013,55 @@ if [ "X$BUILD_PYTHON" = "Xyes" ]; then
         exit 1
     fi
 
-fi
-if [ "X$BUILD_PYTHON" = "X3" ]; then
-    # download python tarball if necessary
-    cd "$PKG"
-    if [ ! -f $PYTHON3_TB ]; then
-        eval "echo \"$DOWNLOADING_PYTHON3\""
-        download $PYTHON3_URL $PYTHON3_TB $PYTHON3_MD5
-    fi
-    cd "$CWD"
+}
 
-    PY_HOME="$PLONE_HOME/Python-${WANT_PYTHON3}"
-    WITH_PYTHON="${PY_HOME}/bin/python3"
-    . "${INSTALLER_PWD}/helper_scripts/build_python3.sh"
-
-
-    if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-        echo $PYTHON_BUILD_OK
-    else
-        echo $PYTHON_BUILD_BAD
-        exit 1
-    fi
-
-fi
+build_python
 
 
 # Create and check a Python virtualenv
 PYBNAME=`basename "$WITH_PYTHON"`
 PY_HOME="$INSTANCE_HOME"
-cd "$PKG"
-untar $VIRTUALENV_TB
-cd $VIRTUALENV_DIR
+logged cd "$PKG"
+logged untar $VIRTUALENV_TB
+logged cd $VIRTUALENV_DIR
 echo $CREATING_VIRTUALENV
-$SUDO "$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
-if [ $ROOT_INSTALL -eq 1 ]; then
-    chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PY_HOME"
+if [ -f virtualenv.py ]; then
+    # Hu? There is a setup.py only, right?
+    logged $SUDO "$WITH_PYTHON" virtualenv.py "$PY_HOME"
+else
+    logged cd "$WORKDIR"
+    # we need the minor version here:
+    if [ -z "$WANT_PYTHON" ]; then
+        if [ -z "$WITH_PYTHON" ]; then
+            error "Hu - o Python here?!"
+        fi
+        WANT_PYTHON=`"$WITH_PYTHON" --version 2>&1| sed -ne 's,^Python \([23]\.[^.]\+\)\..*$,\1,p'`
+        if [ -n "$WANT_PYTHON" ]; then
+            echo "Autodetected Python $WANT_PYTHON"
+        else
+            error "Error detecting Python version!"
+        fi
+    fi
+    # get the latest virtualenv zipapp supporting our wanted Python:
+    unchecked_download "https://bootstrap.pypa.io/virtualenv/$WANT_PYTHON/virtualenv.pyz" \
+                       'virtualenv.pyz'
+    logged "$WITH_PYTHON" 'virtualenv.pyz' "$INSTANCE_HOME"
 fi
-cd "$PKG"
-rm -r $VIRTUALENV_DIR
+
+if [ $ROOT_INSTALL -eq 1 ]; then
+    logged chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PY_HOME"
+fi
+logged cd "$PKG"
+logged rm -r $VIRTUALENV_DIR
+# PY=$PY_HOME/bin/$PYBIN_NAME
 PY=$PY_HOME/bin/python
 if [ ! -x "$PY" ]; then
+    echo "E:$PY_HOME/bin/python not found"
     eval "echo \"$VIRTUALENV_CREATION_FAILED\""
     exit 1
 fi
-cd "$CWD"
-if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
+logged cd "$CWD"
+if ! logged "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
     echo $VIRTUALENV_BAD
     exit 1
 fi
@@ -927,7 +1069,7 @@ fi
 # Install setuptools in the virtualenv if there is one in the packages directory
 if [ -f "${PKG}/setuptools*" ]; then
     echo $INSTALLING_SETUPTOOLS
-    $SUDO "${PY_HOME}/bin/pip" install "$PKG"/setuptools* >> "$INSTALL_LOG" 2>&1
+    logged $SUDO "${PY_HOME}/bin/pip" install "$PKG"/setuptools* >> "$INSTALL_LOG" 2>&1
     if [ $? -gt 0 ]; then
         echo $INSTALLING_SETUPTOOLS_FAILED
         seelog
@@ -938,7 +1080,7 @@ fi
 # Install zc.buildout in the virtualenv if there is one in the packages directory
 if [ -f "${PKG}/zc.buildout*" ]; then
     echo $INSTALLING_BUILDOUT
-    $SUDO "${PY_HOME}/bin/pip" install "$PKG"/zc.buildout* >> "$INSTALL_LOG" 2>&1
+    logged $SUDO "${PY_HOME}/bin/pip" install "$PKG"/zc.buildout* >> "$INSTALL_LOG" 2>&1
     if [ $? -gt 0 ]; then
         echo $INSTALLING_BUILDOUT_FAILED
         seelog
@@ -948,7 +1090,7 @@ fi
 
 if [ -f "${WORKDIR}/base_skeleton/requirements.txt" ]; then
     echo $INSTALLING_REQUIREMENTS
-    $SUDO "${PY_HOME}/bin/pip" install -r "${WORKDIR}/base_skeleton/requirements.txt" >> "$INSTALL_LOG" 2>&1
+    logged $SUDO "${PY_HOME}/bin/pip" install -r "${WORKDIR}/base_skeleton/requirements.txt" >> "$INSTALL_LOG" 2>&1
     if [ $? -gt 0 ]; then
         echo $INSTALLING_REQUIREMENTS_FAILED
         seelog
@@ -964,8 +1106,8 @@ if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
         eval "echo \"$FOUND_BUILDOUT_CACHE\""
     else
         eval "echo \"$UNPACKING_BUILDOUT_CACHE\""
-        cd $PLONE_HOME
-        untar "${PKG}/buildout-cache.tar.bz2"
+        logged cd $PLONE_HOME
+        logged untar "${PKG}/buildout-cache.tar.bz2"
         # # compile .pyc files in cache
         # echo "Compiling .py files in egg cache"
         # "$PY" "$PLONE_HOME"/Python*/lib/python*/compileall.py "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
@@ -976,16 +1118,16 @@ if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
         exit 1
     fi
     if [ $ROOT_INSTALL -eq 1 ]; then
-        chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
+        logged chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
     fi
     FORCE_BUILD_FROM_CACHE=yes
 else
-    mkdir "$BUILDOUT_CACHE" > /dev/null 2>&1
-    mkdir "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
-    mkdir "$BUILDOUT_CACHE"/extends > /dev/null 2>&1
-    mkdir "$BUILDOUT_CACHE"/downloads > /dev/null 2>&1
+    logged mkdir -p "$BUILDOUT_CACHE"
+    logged mkdir -p "$BUILDOUT_CACHE"/eggs
+    logged mkdir -p "$BUILDOUT_CACHE"/extends
+    logged mkdir -p "$BUILDOUT_CACHE"/downloads
     if [ $ROOT_INSTALL -eq 1 ]; then
-        chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
+        logged chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$BUILDOUT_CACHE"
     fi
     FORCE_BUILD_FROM_CACHE=no
 fi
@@ -994,20 +1136,20 @@ fi
 # copy docs
 if [ -x "$CWD/Plone-docs" ] && [ ! -x "$PLONE_HOME/Plone-docs" ]; then
     echo "Copying Plone-docs"
-    cp -R "$CWD/Plone-docs" "$PLONE_HOME/Plone-docs"
+    logged cp -R "$CWD/Plone-docs" "$PLONE_HOME/Plone-docs"
     if [ $ROOT_INSTALL -eq 1 ]; then
-        chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME/Plone-docs"
+        logged chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PLONE_HOME/Plone-docs"
     fi
 fi
 
 
-cd "$CWD"
+logged cd "$CWD"
 
 ########################
 # Instance install steps
 ########################
 
-cd "$WORKDIR"
+logged cd "$WORKDIR"
 
 ################################################
 # Install the zeocluster or stand-alone instance
@@ -1018,7 +1160,7 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     CLIENT_COUNT=0
 fi
 
-$SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
+logged $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--uidir=$WORKDIR" \
     "--plone_home=$PLONE_HOME" \
     "--instance_home=$INSTANCE_HOME" \
@@ -1045,12 +1187,16 @@ echo $BUILDOUT_SUCCESS
 if [ $ROOT_INSTALL -eq 0 ]; then
     # for non-root installs, restrict var access.
     # root installs take care of this during buildout.
-    chmod 700 "$INSTANCE_HOME/var"
+    logged chmod 700 "$INSTANCE_HOME/var"
 fi
 
-cd "$CWD"
-# clear our temporary directory
-rm -r "$WORKDIR"
+logged cd "$CWD"
+if [ -n "$KEEP_TMP" ]; then
+    eval "echo \"$KEEPING_TMP\""
+else
+    # clear our temporary directory
+    logged rm -r "$WORKDIR"
+fi
 
 PWFILE="$INSTANCE_HOME/adminPassword.txt"
 RMFILE="$INSTANCE_HOME/README.html"
@@ -1070,6 +1216,9 @@ if [ -d "$PLONE_HOME" ]; then
         echo $NEED_HELP_MSG
     fi
     echo "Finished at `date`" >> "$INSTALL_LOG"
+    if [ -n "$INSTALL_TMP" ] && [ -f "$INSTALL_TMP" ]; then
+        rm "$INSTALL_TMP"
+    fi
 else
     eval "echo \"$REPORT_ERRORS_MSG\""
     exit 1
