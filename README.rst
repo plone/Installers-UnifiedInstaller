@@ -81,15 +81,15 @@ Documentation
 
 Full documentation for end users can be found in the */docs* directory of this repository.
 
-It is also available as part of our `documentation <http://docs.plone.org/manage/installing/installation.html#installing-plone-using-the-unified-unix-installer>`_.
+It is also available as part of our `documentation <https://docs.plone.org/manage/installing/installation.html#plone-unified-unix-installer>`_.
 
 
 Contribute
 ==========
 
-- Issue Tracker: https://github.com/plone//Installers-UnifiedInstaller/issues
-- Source Code: https://github.com/plone//Installers-UnifiedInstaller
-- Documentation: http://docs.plone.org/manage/installing/installation.html/unified-unix-installer
+- Issue Tracker: https://github.com/plone/Installers-UnifiedInstaller/issues
+- Source Code: https://github.com/plone/Installers-UnifiedInstaller
+- Documentation: https://docs.plone.org/manage/installing/installation.html#plone-unified-unix-installer
 
 Support
 =======
