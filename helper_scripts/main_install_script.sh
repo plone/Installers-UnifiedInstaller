@@ -48,8 +48,8 @@ readonly TEMPLATE_DIR="${INSTALLER_PWD}/buildout_templates"
 
 # --------- substitute PYTHON[3]_{URL,DIR,TB} variables ...
 . "${HSCRIPTS_DIR}/python_versions.sh"
-readonly VIRTUALENV_TB=virtualenv-16.7.8.tar.gz
-readonly VIRTUALENV_DIR=pypa-virtualenv-c85afa5
+readonly VIRTUALENV_TB=virtualenv-20.0.28.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-20.0.28
 readonly NEED_CUSTOM_SETUPTOOLS=no
 
 readonly NEED_XML2="2.7.8"
