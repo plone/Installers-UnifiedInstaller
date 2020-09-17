@@ -8,8 +8,8 @@
 
 
 # MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
-BASE_VER=5.2.1
-INSTALLER_REVISION="-r5"
+BASE_VER=5.2.2
+INSTALLER_REVISION=""
 
 # The next file has to start with virtualenv* -
 # otherwise it need to be changed also in helper_scripts/main_install_script.sh and helper_scripts/windows_install.py
