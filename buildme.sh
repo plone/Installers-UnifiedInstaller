@@ -17,10 +17,13 @@ INSTALLER_REVISION=""
 VIRTUALENV_DOWNLOAD=https://files.pythonhosted.org/packages/15/cd/9bbb31845faec1e3848edcc4645411952a9a2a91a21c5c0fb6b84d929c5f/virtualenv-20.0.28.tar.gz
 # END OF NECESSARY MODS
 
-WORK_DIR=~/nobackup/work
+CURDIR=`pwd`
+
+WORK_DIR=../`basename $CURDIR`-dist
 if [ -n "$1" ]; then
   WORK_DIR=$1
 fi
+echo "Working directory is $WORK_DIR"
 
 # wget or curl?
 if [ -n "`which wget`" ]; then
@@ -41,13 +44,23 @@ else
   TAR='tar'
 fi
 
-CURDIR=`pwd`
 TARGET=Plone-${BASE_VER}-UnifiedInstaller${INSTALLER_REVISION}
 TARGET_DIR=${WORK_DIR}/${TARGET}
 TARGET_TGZ=${WORK_DIR}/${TARGET}.tgz
 
 echo "Remove previous builds"
-rm -r ${TARGET_DIR} ${TARGET_TGZ}
+if [ -e "${TARGET_DIR}" ]; then
+  echo "Remove previous build directory"
+  rm -r ${TARGET_DIR}
+fi
+if [ -e "${TARGET_TGZ}" ]; then
+  echo "Remove previous build targz"
+  rm -r ${TARGET_TGZ}
+fi
+if [ ! -d "${WORK_DIR}" ]; then
+  echo "Create working directory"
+  mkdir ${WORK_DIR}
+fi
 
 echo "Copy and cleanup new installer"
 cp -R $CURDIR/ ${TARGET_DIR}/
@@ -97,4 +110,10 @@ $TAR zxf ${TARGET_TGZ}
 ls -la ${TARGET}
 
 cd $CURDIR
-echo "Done"
+echo "Build Done"
+echo "---------------------------------------------------------------------"
+cd $TARGET_DIR/tests
+ls
+`which python` testall.py
+echo "---------------------------------------------------------------------"
+

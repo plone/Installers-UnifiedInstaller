@@ -31,16 +31,17 @@ Update the version files.
 Note that fetch_versions updates both buildout version files and the ``requirements.txt``.
 
 Look for the most recent update of virtualenv that is thought to be roughly compatible with the new release.
+Be careful here, if it works for you it does not mean it works everywhere!
 If the copy in ./packages is out-of-date, download the new one to ./packages and remove the old.
 Note that setuptools, etc. will be updated based on the `requirements.txt` file downloaded by `fetch_versions.py` -- so you don't necessarily need a virtualenv that matches.
 
-Run preliminary sanity-check installs, using both Python 2 (probably the default) and 3
+Run preliminary sanity-check installs, using both Python 2 and 3 (probably the default).
 
 ::
 
     rm ~/Plone
-    ./install.sh zeo
-    ./install.sh standalone
+    ./install.sh --with-python=`which python2` zeo
+    ./install.sh --with-python=`which python2` standalone
 
     rm ~/Plone
     ./install.sh --with-python=`which python3` zeo

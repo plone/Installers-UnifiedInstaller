@@ -10,13 +10,13 @@ These tests assume that you have a "plonetest" directory in your $HOME directory
 Setup stuff
 -----------
 
-    >>> import subprocess, os, os.path, sys, shutil, urllib2, stat, pwd, time
+    >>> import subprocess, os, os.path, sys, shutil, urllib, stat, pwd, time, tempfile
     >>> uid = os.geteuid()
     >>> root = uid == 0
 
     NOTE: Make sure the test target is in a partition where ownership &
     permissions work. That may not be so in a mountable or tmp partition.
-    >>> testTarget = '/home/steve/plonetest'
+    >>> testTarget = os.path.join(tempfile.mkdtemp(), 'plonetest')
     >>> withPython = '/usr/bin/python2.7'
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
@@ -50,9 +50,9 @@ Running install.sh with help option should result in a usage message:
     >>> stdout, stderr, returncode = doCommand('./install.sh --help')
     >>> returncode
     0
-    >>> stderr
+    >>> stderr.decode()
     ''
-    >>> print stdout
+    >>> print(stdout.decode())
     <BLANKLINE>
     Usage: -etc-
 
@@ -64,7 +64,7 @@ Test a ZEO install
     >>> returncode and (stdout + stderr)
     0
 
-    >>> print stdout
+    >>> print(stdout.decode())
     <BLANKLINE>
     -etc-
     Installing Plone 5.2-etc-
@@ -93,11 +93,11 @@ Test a ZEO install
     []
 
     parts/README.html should be a warning
-    >>> print open('%s/zeocluster/parts/README.txt' % testTarget).read()
+    >>> print(open('%s/zeocluster/parts/README.txt' % testTarget).read())
     WARNING:-etc-run bin/buildout-etc-
 
     We should have an inituser for admin
-    >>> print open('%s/zeocluster/parts/client1/inituser' % testTarget).read()
+    >>> print(open('%s/zeocluster/parts/client1/inituser' % testTarget).read())
     admin:{SHA}-etc-
 
     Check bin contents
@@ -108,7 +108,7 @@ Test a ZEO install
 
     Installing again to the same target should fail
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
-    >>> print stdout
+    >>> print(stdout.decode())
     <BLANKLINE>
     -etc-
     Instance target -etc-zeocluster already exists\; aborting install.
@@ -181,7 +181,7 @@ Test a ZEO install
     '-etc-Plone is up and running-etc-'
 
     Check Banner
-    >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
+    >>> print(urllib2.urlopen('http://localhost:8080/').headers['server'])
     waitress
 
     Stop it
@@ -204,7 +204,7 @@ Test building Python and dependencies
     >>> returncode and (stdout + stderr)
     0
 
-    >>> print stdout
+    >>> print(stdout.decode())
     <BLANKLINE>
     Rootless install method chosen. Will install for use by system user -etc-
     -etc-
@@ -260,7 +260,7 @@ Test building Python 3
     >>> returncode and (stdout + stderr)
     0
 
-    >>> print stdout
+    >>> print(stdout.decode())
     <BLANKLINE>
     Rootless install method chosen. Will install for use by system user -etc-
     -etc-
@@ -347,7 +347,7 @@ Test building Python 3
     '-etc-Plone is up and running-etc-'
 
     Check Banner
-    >>> print urllib2.urlopen('http://localhost:8080/').headers['server']
+    >>> print(urllib2.urlopen('http://localhost:8080/').headers['server'])
     waitress
 
     Stop it
