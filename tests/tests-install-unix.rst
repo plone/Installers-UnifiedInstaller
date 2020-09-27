@@ -152,6 +152,9 @@ Test a ZEO install
     >>> safestr(stderr)
     ''
 
+    >>> if start - time.time() < 30:
+    ...     time.sleep(30 - (time.time() - start))
+
     Fetch root page via client1
     >>> "Plone is up and running" in safestr(urlopen('http://localhost:8080/').read())
     True
