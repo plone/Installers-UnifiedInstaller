@@ -267,7 +267,7 @@ Please check rights and pathnames.
 Installation has failed.
 '
 
-INSTANCE_HOME_EXISTS='Instance target $INSTANCE_HOME already exists\; aborting install.'
+INSTANCE_HOME_EXISTS='Instance target $INSTANCE_HOME already exists; aborting install.'
 
 CREATING_VIRTUALENV="Creating Python virtual environment."
 

@@ -20,6 +20,7 @@ import shutil
 import stat
 import sys
 
+
 BASE_ADDRESS = 8080
 ADD_CLIENTS_MARKER = "# __ZEO_CLIENTS_HERE__\n"
 CLIENT_TEMPLATE = """

@@ -14,7 +14,8 @@ INSTALLER_REVISION=""
 # The next file has to start with virtualenv* -
 # otherwise it need to be changed also in helper_scripts/main_install_script.sh and helper_scripts/windows_install.py
 # in ANY CASE the variables VIRTUALENV_TB and VIRTUALENV_DIR helper_scripts/main_install_script.sh need to be edited if changed!
-VIRTUALENV_DOWNLOAD=https://files.pythonhosted.org/packages/15/cd/9bbb31845faec1e3848edcc4645411952a9a2a91a21c5c0fb6b84d929c5f/virtualenv-20.0.28.tar.gz
+VIRTUALENV_DOWNLOAD=https://files.pythonhosted.org/packages/a4/e3/1f067de470e3a86875ed915438dc3bd781fb0346254f541190a09472b677/virtualenv-16.7.10.tar.gz
+VIRTUALENV_FILE=virtualenv-16.7.10.tar.gz
 # END OF NECESSARY MODS
 
 CURDIR=`pwd`
@@ -25,12 +26,10 @@ if [ -n "$1" ]; then
 fi
 echo "Working directory is $WORK_DIR"
 
-# wget or curl?
-if [ -n "`which wget`" ]; then
-  WGET='wget'
-else
-  echo "Using curl, because wget was not found"
-  WGET='curl -O'
+# curl?
+if [ ! -n "`which curl`" ]; then
+  echo "curl was not found, install curl and try again"
+  exit 1
 fi
 
 # gnutar, gtar or tar?
@@ -77,10 +76,11 @@ rm ${TARGET_DIR}/buildenv.sh
 rm ${TARGET_DIR}/tests/testout.txt
 rm -r ${TARGET_DIR}/Plone-docs
 rm -r ${TARGET_DIR}/autom4te.cache
+rm -r ${TARGET_DIR}/.github
 rm ${TARGET_DIR}/packages/Python*
 
 echo "Getting docs"
-$WGET --no-check-certificate https://github.com/plone/Plone/archive/${BASE_VER}.zip
+curl -O  https://github.com/plone/Plone/archive/${BASE_VER}.zip
 unzip ${BASE_VER}.zip
 rm ${BASE_VER}.zip
 mv Plone-${BASE_VER}/docs ${TARGET_DIR}/Plone-docs
@@ -89,7 +89,7 @@ rm -rf Plone-${BASE_VER}
 echo "Getting virtualenv"
 mkdir $TARGET_DIR/packages
 cd $TARGET_DIR/packages
-$WGET --no-check-certificate $VIRTUALENV_DOWNLOAD
+curl $VIRTUALENV_DOWNLOAD -o $VIRTUALENV_FILE
 cd $CURDIR
 
 echo "Set permissions on new installer..."
@@ -112,8 +112,9 @@ ls -la ${TARGET}
 cd $CURDIR
 echo "Build Done"
 echo "---------------------------------------------------------------------"
+PYTHON=`which python`
 cd $TARGET_DIR/tests
-ls
-`which python` testall.py
+echo Running tests with $PYTHON
+$PYTHON testall.py
 echo "---------------------------------------------------------------------"
 

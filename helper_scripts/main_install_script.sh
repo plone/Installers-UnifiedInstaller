@@ -52,8 +52,8 @@ readonly PYTHON3_URL=https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
 readonly PYTHON3_MD5=e2f52bcf531c8cc94732c0b6ff933ff0
 readonly PYTHON3_TB=Python-3.8.5.tgz
 readonly PYTHON3_DIR=Python-3.8.5
-readonly VIRTUALENV_TB=virtualenv-16.7.8.tar.gz
-readonly VIRTUALENV_DIR=pypa-virtualenv-c85afa5
+readonly VIRTUALENV_TB=virtualenv-16.7.10.tar.gz
+readonly VIRTUALENV_DIR=virtualenv-16.7.10
 readonly NEED_CUSTOM_SETUPTOOLS=no
 
 readonly NEED_XML2="2.7.8"
@@ -903,54 +903,39 @@ fi
 # Create and check a Python virtualenv
 PYBNAME=`basename "$WITH_PYTHON"`
 PY_HOME="$INSTANCE_HOME"
-cd "$PKG"
-untar $VIRTUALENV_TB
-cd $VIRTUALENV_DIR
-echo $CREATING_VIRTUALENV
-$SUDO "$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
+echo $CREATING_VIRTUALENV|tee -a "$INSTALL_LOG"
+PYTHON_MAJOR=`$WITH_PYTHON --version 2>&1|awk '{print $2}'|head -c 1`
+if [ "2" = "$PYTHON_MAJOR" ]; then
+    cd "$PKG"
+    tar xf $VIRTUALENV_TB
+    cd $VIRTUALENV_DIR
+    $SUDO "$WITH_PYTHON" virtualenv.py "$PY_HOME"  2>> "$INSTALL_LOG"
+    cd "$PKG"
+    rm -r $VIRTUALENV_DIR
+else
+    $SUDO "$WITH_PYTHON" -m venv "$PY_HOME"  2>> "$INSTALL_LOG"
+fi
+PY=$PY_HOME/bin/python
+if [ ! -x "$PY" ]; then
+    eval "echo \"$VIRTUALENV_CREATION_FAILED\""|tee -a "$INSTALL_LOG"
+    exit 1
+fi
 if [ $ROOT_INSTALL -eq 1 ]; then
     chown -R "$BUILDOUT_USER:$PLONE_GROUP" "$PY_HOME"
 fi
-cd "$PKG"
-rm -r $VIRTUALENV_DIR
-PY=$PY_HOME/bin/python
-if [ ! -x "$PY" ]; then
-    eval "echo \"$VIRTUALENV_CREATION_FAILED\""
-    exit 1
-fi
+echo "Virtualenv successfully created" >> "$INSTALL_LOG"
+
 cd "$CWD"
 if ! "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-    echo $VIRTUALENV_BAD
+    echo $VIRTUALENV_BAD|tee -a "$INSTALL_LOG"
     exit 1
-fi
-
-# Install setuptools in the virtualenv if there is one in the packages directory
-if [ -f "${PKG}/setuptools*" ]; then
-    echo $INSTALLING_SETUPTOOLS
-    $SUDO "${PY_HOME}/bin/pip" install "$PKG"/setuptools* >> "$INSTALL_LOG" 2>&1
-    if [ $? -gt 0 ]; then
-        echo $INSTALLING_SETUPTOOLS_FAILED
-        seelog
-        exit 1
-    fi
-fi
-
-# Install zc.buildout in the virtualenv if there is one in the packages directory
-if [ -f "${PKG}/zc.buildout*" ]; then
-    echo $INSTALLING_BUILDOUT
-    $SUDO "${PY_HOME}/bin/pip" install "$PKG"/zc.buildout* >> "$INSTALL_LOG" 2>&1
-    if [ $? -gt 0 ]; then
-        echo $INSTALLING_BUILDOUT_FAILED
-        seelog
-        exit 1
-    fi
 fi
 
 if [ -f "${WORKDIR}/base_skeleton/requirements.txt" ]; then
-    echo $INSTALLING_REQUIREMENTS
+    echo $INSTALLING_REQUIREMENTS|tee -a "$INSTALL_LOG"
     $SUDO "${PY_HOME}/bin/pip" install -r "${WORKDIR}/base_skeleton/requirements.txt" >> "$INSTALL_LOG" 2>&1
     if [ $? -gt 0 ]; then
-        echo $INSTALLING_REQUIREMENTS_FAILED
+        echo $INSTALLING_REQUIREMENTS_FAILED|tee -a "$INSTALL_LOG"
         seelog
         exit 1
     fi
@@ -961,11 +946,11 @@ BUILDOUT_CACHE="$PLONE_HOME/buildout-cache"
 BUILDOUT_DIST="$PLONE_HOME/buildout-cache/downloads/dist"
 if [ -f "${PKG}/buildout-cache.tar.bz2" ]; then
     if [ -x "$BUILDOUT_CACHE" ]; then
-        eval "echo \"$FOUND_BUILDOUT_CACHE\""
+        eval "echo \"$FOUND_BUILDOUT_CACHE\""|tee -a "$INSTALL_LOG"
     else
-        eval "echo \"$UNPACKING_BUILDOUT_CACHE\""
+        echo "$UNPACKING_BUILDOUT_CACHE"|tee -a "$INSTALL_LOG"
         cd $PLONE_HOME
-        untar "${PKG}/buildout-cache.tar.bz2"
+        tar xf "${PKG}/buildout-cache.tar.bz2"
         # # compile .pyc files in cache
         # echo "Compiling .py files in egg cache"
         # "$PY" "$PLONE_HOME"/Python*/lib/python*/compileall.py "$BUILDOUT_CACHE"/eggs > /dev/null 2>&1
@@ -1018,6 +1003,8 @@ elif [ $INSTALL_STANDALONE -eq 1 ]; then
     CLIENT_COUNT=0
 fi
 
+echo "Create buildout: $INSTALL_METHOD" |tee -a "$INSTALL_LOG"
+
 $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--uidir=$WORKDIR" \
     "--plone_home=$PLONE_HOME" \
@@ -1033,14 +1020,14 @@ $SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
     "--backup_dir=$BACKUP_DIR" \
     "--template=$TEMPLATE" \
     "--force_build_from_cache=$FORCE_BUILD_FROM_CACHE" \
-    "--clients=$CLIENT_COUNT" 2>> "$INSTALL_LOG"
+    "--clients=$CLIENT_COUNT" 2>&1 >>"$INSTALL_LOG"
 
 if [ $? -gt 0 ]; then
-    echo $BUILDOUT_FAILED
+    echo $BUILDOUT_FAILED|tee -a "$INSTALL_LOG"
     seelog
     exit 1
 fi
-echo $BUILDOUT_SUCCESS
+echo $BUILDOUT_SUCCESS|tee -a "$INSTALL_LOG"
 
 if [ $ROOT_INSTALL -eq 0 ]; then
     # for non-root installs, restrict var access.
@@ -1062,15 +1049,15 @@ if [ -d "$PLONE_HOME" ]; then
         echo " "
         echo "#####################################################################"
         if [ $RUN_BUILDOUT -eq 1 ]; then
-            eval "echo \"$INSTALL_COMPLETE\""
+            eval "echo \"$INSTALL_COMPLETE\""|tee -a "$INSTALL_LOG"
             cat $PWFILE
         else
-            eval "echo \"$BUILDOUT_SKIPPED_OK\""
+            eval "echo \"$BUILDOUT_SKIPPED_OK\""|tee -a "$INSTALL_LOG"
         fi
         echo $NEED_HELP_MSG
     fi
     echo "Finished at `date`" >> "$INSTALL_LOG"
 else
-    eval "echo \"$REPORT_ERRORS_MSG\""
+    eval "echo \"$REPORT_ERRORS_MSG\""|tee -a "$INSTALL_LOG"
     exit 1
 fi
