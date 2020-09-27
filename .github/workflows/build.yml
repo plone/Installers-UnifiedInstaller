@@ -7,9 +7,6 @@ jobs:
     strategy:
       matrix:
         python-version:
-        - "2.7"
-        - "3.6"
-        - "3.7"
         - "3.8"
         os:
         - ubuntu-latest
@@ -29,12 +26,15 @@ jobs:
     - name: Upload Plone Installer from build
       uses: actions/upload-artifact@v2
       with:
-        name: Plone-Installer
+        name: Plone-Installer-${{ matrix.os }}
         path: "~/dist/Plone-5.2.2-UnifiedInstaller.tgz"
   check-install:
     needs: build
     strategy:
       matrix:
+        buildartifact:
+        - Plone-Installer-ubuntu-latest
+        - Plone-Installer-macos-latest
         python-version:
         - "2.7"
         - "3.6"
@@ -49,7 +49,7 @@ jobs:
       - name: Download Plone-Installer
         uses: actions/download-artifact@v2
         with:
-          name: Plone-Installer
+          name: ${{ matrix.buildartifact }}
       - name: Test Installer
         shell: bash
         run: |

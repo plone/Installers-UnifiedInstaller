@@ -177,7 +177,7 @@ Test a ZEO install
     True
 
     Check Banner
-    >>> print(""urlopen('http://localhost:8080/').headers['server'])
+    >>> print(urlopen('http://localhost:8080/').headers['server'])
     waitress
 
     Stop it

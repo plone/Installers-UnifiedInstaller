@@ -122,9 +122,3 @@ ls -la ${TARGET}
 cd $CURDIR
 echo "Build Done"
 echo "---------------------------------------------------------------------"
-PYTHON=`which python`
-cd $TARGET_DIR/tests
-echo Running tests with $PYTHON
-$PYTHON testall.py
-echo "---------------------------------------------------------------------"
-
