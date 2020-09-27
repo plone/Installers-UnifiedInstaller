@@ -74,6 +74,7 @@ for idx, testfile in enumerate(TESTFILES):
         testfile,
         module_relative=False,
         optionflags=OPTION_FLAGS,
+        verbose=True,
         globs=GLOBS,
     )
     shutil.rmtree(tmpdirname)
