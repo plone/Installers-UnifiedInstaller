@@ -4,37 +4,25 @@ on: [push]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        python-version:
-        - "3.8"
-        os:
-        - ubuntu-latest
-        - macos-latest
-
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.8
     - name: Run buildme.sh
       run: |
         WITH_PYTHON=`which python` ./buildme.sh ~/dist
     - name: Upload Plone Installer from build
       uses: actions/upload-artifact@v2
       with:
-        name: Plone-Installer-${{ matrix.os }}
-        path: "~/dist/Plone-5.2.2-UnifiedInstaller.tgz"
-  check-install:
+        name: Plone-Unified-Installer
+        path: "~/dist/*.tgz"
+  test:
     needs: build
     strategy:
       matrix:
-        buildartifact:
-        - Plone-Installer-ubuntu-latest
-        - Plone-Installer-macos-latest
         python-version:
         - "2.7"
         - "3.6"
@@ -43,17 +31,20 @@ jobs:
         os:
         - ubuntu-latest
         - macos-latest
-#        - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Download Plone-Installer
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ matrix.buildartifact }}
-      - name: Test Installer
-        shell: bash
-        run: |
-          tar xzf Plone-5.2.2-UnifiedInstaller.tgz
-          cd Plone-5.2.2-UnifiedInstaller/tests
-          WITH_PYTHON=`which python` python testall.py
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Test Installer
+      shell: bash
+      run: |
+        tar xzf Plone-5.2.2-UnifiedInstaller.tgz
+        cd Plone-5.2.2-UnifiedInstaller/tests
+        WITH_PYTHON=`which python` python testall.py
 
