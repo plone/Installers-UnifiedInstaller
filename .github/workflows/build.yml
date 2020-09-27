@@ -48,6 +48,7 @@ jobs:
         mv Plone-5.2.2-UnifiedInstaller ../installer
         cd ..
         mkdir tmp
+        ls -la
         cd installer/tests
         WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
 
