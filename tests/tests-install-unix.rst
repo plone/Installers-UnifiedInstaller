@@ -141,8 +141,10 @@ Test a ZEO install
 
     # wait for service
     >>> start = time.time()
-    >>> while not checkport(server="localhost", port=8081) and time.time() - start < 60:
+    >>> while not checkport(server="localhost", port=8081):
     ...     time.sleep(1)
+    ...     if time.time() - start > 60:
+    ...         raise RuntimeError("cluster start took longer than 60 seconds")
 
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
