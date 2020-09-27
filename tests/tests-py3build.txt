@@ -10,7 +10,7 @@ These tests assume that you have a "plonetest" directory in your $HOME directory
 Setup stuff
 -----------
 
-    >>> import subprocess, os, os.path, sys, shutil, urllib, stat, pwd, time, tempfile
+    >>> import subprocess, os, os.path, sys, shutil, urllib, stat, time, tempfile
     >>> uid = os.geteuid()
     >>> root = uid == 0
 
