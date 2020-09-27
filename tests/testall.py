@@ -28,11 +28,17 @@ def safestr(value):
 doctest.ELLIPSIS_MARKER = "-etc-"
 OPTION_FLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
 GLOBS = {"withPython": withPython, "urlopen": urlopen, "safestr": safestr}
-TESTFILES = [
-    "tests-install.txt",
-    "tests-py2build.txt",
-    "tests-py3build.txt",
+TESTPYBUILDFILES = [
+    "tests-py2build.rst",
+    "tests-py3build.rst",
 ]
+TESTFILES = []
+if os.name == 'nt':
+    TESTFILES.append('tests-install-windows.rst')
+else:
+    TESTFILES.append('tests-install-unix.rst')
+    TESTFILES += TESTPYBUILDFILES
+
 for testfile in TESTFILES:
     print("-" * 60)
     print("run doctests in {}".format(testfile))

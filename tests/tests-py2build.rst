@@ -16,8 +16,8 @@ NOTE: Make sure the test target is in a partition where ownership & permissions 
 That may not be so in a mountable or tmp partition.
 
     >>> testTarget = os.path.join(tempfile.mkdtemp(), 'plonetest')
-
-    >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
+    >>> if os.path.exists(testTarget):
+    ...     shutil.rmtree(testTarget)
 
 This test should be run from the directory with install.sh
 
