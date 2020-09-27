@@ -10,14 +10,7 @@ These tests assume that you have a "plonetest" directory in your $HOME directory
 Setup stuff
 -----------
 
-    >>> import subprocess, os, os.path, shutil, time, tempfile
-
-NOTE: Make sure the test target is in a partition where ownership & permissions work.
-That may not be so in a mountable or tmp partition.
-
-    >>> testTarget = os.path.join(tempfile.mkdtemp(), 'plonetest')
-    >>> if os.path.exists(testTarget):
-    ...     shutil.rmtree(testTarget)
+    >>> import subprocess, os, os.path, shutil, time
 
 This test should be run from the directory with install.sh
 

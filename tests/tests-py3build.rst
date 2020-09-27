@@ -12,13 +12,6 @@ Setup stuff
 
     >>> import os, os.path, shutil, time, tempfile
 
-NOTE: Make sure the test target is in a partition where ownership & permissions work.
-That may not be so in a mountable or tmp partition.
-
-    >>> testTarget = os.path.join(tempfile.mkdtemp(), 'plonetest')
-    >>> if os.path.exists(testTarget):
-    ...     shutil.rmtree(testTarget)
-
 This test should be run from the directory with install.sh
 
     >>> os.chdir(os.path.join(os.getcwd(), '..'))

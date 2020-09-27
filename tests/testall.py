@@ -3,12 +3,12 @@ import doctest
 import subprocess
 import unittest
 import os
+import tempfile
 
 try:
     # py3
-    from urllib.request import urlopen
-
     PY = 3
+    from urllib.request import urlopen
 except ImportError:
     # py 2
     PY = 2
@@ -57,14 +57,17 @@ else:
 for testfile in TESTFILES:
     os.chdir(CWD)  # start always here!
     print("-" * 60)
-    print("run doctests in {}".format(testfile))
+    print("run doctests: {}".format(testfile))
     print("-" * 60)
-    result = doctest.testfile(
-        testfile,
-        module_relative=False,
-        optionflags=OPTION_FLAGS,
-        globs=GLOBS,
-    )
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        print('Created temporary directory', tmpdirname)
+        GLOBS['testTarget'] = tmpdirname
+        result = doctest.testfile(
+            testfile,
+            module_relative=False,
+            optionflags=OPTION_FLAGS,
+            globs=GLOBS,
+        )
     if result.failed:
         print("Failed.")
         exit(1)
