@@ -143,8 +143,8 @@ Test a ZEO install
     >>> start = time.time()
     >>> while not (checkport(server="localhost", port=8080) and checkport(server="localhost", port=8081)):
     ...     time.sleep(1)
-    ...     if time.time() - start > 60:
-    ...         raise RuntimeError("cluster start took longer than 60 seconds")
+    ...     if time.time() - start > 90:
+    ...         raise RuntimeError("cluster start took longer than 90 seconds")
 
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
@@ -157,9 +157,6 @@ Test a ZEO install
     Fetch root page via client1
     >>> "Plone is up and running" in safestr(urlopen('http://localhost:8080/').read())
     True
-
-    >>> while not checkport(server="localhost", port=8081) and time.time() - start < 60:
-    ...     time.sleep(3)
 
     Fetch root page via client2
     >>> "Plone is up and running" in safestr(urlopen('http://localhost:8081/').read())
