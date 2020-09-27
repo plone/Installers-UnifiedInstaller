@@ -18,9 +18,9 @@ print("Run installer tests using Python: {}".format(withPython))
 
 
 def safestr(value):
-    if PY==3 and isinstance(value, bytes):
+    if PY == 3 and isinstance(value, bytes):
         return value.decode()
-    if PY==2 and isinstance(value, unicode):
+    if PY == 2 and isinstance(value, unicode):
         return value.encode()
     return value
 
@@ -28,15 +28,16 @@ def safestr(value):
 doctest.ELLIPSIS_MARKER = "-etc-"
 OPTION_FLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
 GLOBS = {"withPython": withPython, "urlopen": urlopen, "safestr": safestr}
+CWD = os.path.abspath(os.path.dirname(__file__))
 TESTPYBUILDFILES = [
-    "tests-py2build.rst",
-    "tests-py3build.rst",
+    os.path.join(CWD, "tests-py2build.rst"),
+    os.path.join(CWD, "tests-py3build.rst"),
 ]
 TESTFILES = []
-if os.name == 'nt':
-    TESTFILES.append('tests-install-windows.rst')
+if os.name == "nt":
+    TESTFILES.append(os.path.join(CWD, "tests-install-windows.rst"))
 else:
-    TESTFILES.append('tests-install-unix.rst')
+    TESTFILES.append(os.path.join(CWD, "tests-install-unix.rst"))
     TESTFILES += TESTPYBUILDFILES
 
 for testfile in TESTFILES:
@@ -45,6 +46,7 @@ for testfile in TESTFILES:
     print("-" * 60)
     result = doctest.testfile(
         testfile,
+        module_relative=False,
         optionflags=OPTION_FLAGS,
         globs=GLOBS,
     )
