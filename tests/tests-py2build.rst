@@ -27,9 +27,6 @@ install.sh should be executable
 Test building Python and dependencies
 -------------------------------------
 
-    First, clean out prior work
-    >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
-
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin --build-python --static-lxml' % testTarget)
     >>> returncode and (stdout + stderr)
     0
