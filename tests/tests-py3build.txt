@@ -10,7 +10,7 @@ These tests assume that you have a "plonetest" directory in your $HOME directory
 Setup stuff
 -----------
 
-    >>> import subprocess, os, os.path, sys, shutil, urllib, stat, time, tempfile
+    >>> import subprocess, os, os.path, shutil, time, tempfile
     >>> uid = os.geteuid()
     >>> root = uid == 0
 
@@ -131,15 +131,15 @@ Test building Python 3
     ''
 
     Fetch root page via client1
-    >>> urllib2.urlopen('http://localhost:8080/').read()
+    >>> urlopen('http://localhost:8080/').read()
     '-etc-Plone is up and running-etc-'
 
     Fetch root page via client2
-    >>> urllib2.urlopen('http://localhost:8081/').read()
+    >>> urlopen('http://localhost:8081/').read()
     '-etc-Plone is up and running-etc-'
 
     Check Banner
-    >>> print(urllib2.urlopen('http://localhost:8080/').headers['server'])
+    >>> print(urlopen('http://localhost:8080/').headers['server'])
     waitress
 
     Stop it
