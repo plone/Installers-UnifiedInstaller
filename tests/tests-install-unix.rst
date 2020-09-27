@@ -139,30 +139,31 @@ Test a ZEO install
     >>> safestr(stderr)
     ''
 
-    Status check
+    # wait for service
     >>> start = time.time()
-    >>> returncode = -1
-    >>> while time.time() - start < 30 and returncode != 0:
-    ...    time.sleep(3)
-    ...    stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
+    >>> while not checkport(server="localhost", port=8081) and time.time() - start < 60:
+    ...     time.sleep(1)
 
+    Status check
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
     >>> returncode
     0
 
     >>> safestr(stderr)
     ''
 
-    >>> time.sleep(30)
-
     Fetch root page via client1
     >>> "Plone is up and running" in safestr(urlopen('http://localhost:8080/').read())
     True
+
+    >>> while not checkport(server="localhost", port=8081) and time.time() - start < 60:
+    ...     time.sleep(3)
 
     Fetch root page via client2
     >>> "Plone is up and running" in safestr(urlopen('http://localhost:8081/').read())
     True
 
-    Check Banner
+    Check Banner for WSGI
     >>> print(safestr(urlopen('http://localhost:8080/').headers['server']))
     waitress
 

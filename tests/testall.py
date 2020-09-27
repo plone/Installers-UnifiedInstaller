@@ -4,6 +4,7 @@ import subprocess
 import unittest
 import os
 import shutil
+import socket
 import tempfile
 
 try:
@@ -23,6 +24,7 @@ if tempdir is None:
     tempdir = os.path.join(tempfile.mkdtemp())
 tempdir = os.path.abspath(tempdir)
 
+
 def safestr(value):
     if PY == 3 and isinstance(value, bytes):
         return value.decode()
@@ -39,6 +41,14 @@ def doCommand(command):
     return (out, err, p.returncode)
 
 
+def checkport(server="127.0.0.1", port=8080):
+    a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    location = (server, port)
+    result_of_check = a_socket.connect_ex(location)
+    a_socket.close()
+    return result_of_check == 0
+
+
 doctest.ELLIPSIS_MARKER = "-etc-"
 OPTION_FLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
 GLOBS = {
@@ -46,6 +56,7 @@ GLOBS = {
     "urlopen": urlopen,
     "safestr": safestr,
     "doCommand": doCommand,
+    "checkport": checkport,
 }
 CWD = os.path.abspath(os.path.dirname(__file__))
 TESTPYBUILDFILES = [
@@ -68,8 +79,8 @@ for idx, testfile in enumerate(TESTFILES):
     if os.path.exists(tmpdirname):
         shutil.rmtree(tmpdirname)
     os.mkdir(tmpdirname)
-    print('Created temporary directory', tmpdirname)
-    GLOBS['testTarget'] = tmpdirname
+    print("Created temporary directory", tmpdirname)
+    GLOBS["testTarget"] = tmpdirname
     result = doctest.testfile(
         testfile,
         module_relative=False,
