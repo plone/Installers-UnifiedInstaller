@@ -141,7 +141,7 @@ Test a ZEO install
 
     # wait for service
     >>> start = time.time()
-    >>> while not checkport(server="localhost", port=8081):
+    >>> while not (checkport(server="localhost", port=8080) and checkport(server="localhost", port=8081)):
     ...     time.sleep(1)
     ...     if time.time() - start > 60:
     ...         raise RuntimeError("cluster start took longer than 60 seconds")
