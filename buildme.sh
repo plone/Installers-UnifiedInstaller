@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Script to build a UnifiedInstaller tarball
 # By default the target built against is the ~/nobackup/work directory.
@@ -34,13 +35,21 @@ fi
 
 # gnutar, gtar or tar?
 if [ -n "`which gnutar`" ]; then
-  TAR='gnutar'
+  TAR='gnutar --owner 0 --group 0 c-zf'
+  UNTAR='gnutar xzf'
 elif [ -n "`which gtar`" ]; then
-  TAR='gtar'
+  TAR='gtar --owner 0 --group 0 -czf'
+  UNTAR='gtar xzf'
 else
-  echo "Using tar, because neither gnutar nor gtar was not found"
-  echo "Warning: Using tar rather than gnutar or gtar may have unintended consequences on non GNU-Linux Systems."
-  TAR='tar'
+  if [ "`tar --help|grep GNU|head -n1|awk -F ' ' '{print $1}'`" = "GNU" ]; then
+    TAR="tar --owner 0 --group 0 -czf"
+    UNTAR='tar xzf'
+  else
+    echo "Using BSD tar, because neither gnutar nor gtar was not found"
+    echo "Warning: Using BSD tar rather than gnutar or gtar may have unintended consequences."
+    TAR='tar -czf'
+    UNTAR="tar -xzf"
+  fi
 fi
 
 TARGET=Plone-${BASE_VER}-UnifiedInstaller${INSTALLER_REVISION}
@@ -66,25 +75,25 @@ cp -R $CURDIR/ ${TARGET_DIR}/
 rm -rf ${TARGET_DIR}/.git
 rm ${TARGET_DIR}/.gitignore
 rm ${TARGET_DIR}/buildme.sh
+rm ${TARGET_DIR}/UPDATING_ME.rst
 rm ${TARGET_DIR}/preflight.ac
-rm ${TARGET_DIR}/update_packages.py
-rm ${TARGET_DIR}/to-do.txt
-rm ${TARGET_DIR}/install.log
-rm ${TARGET_DIR}/config.status
-rm ${TARGET_DIR}/config.log
-rm ${TARGET_DIR}/buildenv.sh
-rm ${TARGET_DIR}/tests/testout.txt
-rm -r ${TARGET_DIR}/Plone-docs
-rm -r ${TARGET_DIR}/autom4te.cache
+rm -f ${TARGET_DIR}/install.log
+rm -f {TARGET_DIR}/config.status
+rm -f ${TARGET_DIR}/config.log
+rm -f ${TARGET_DIR}/tests/testout.txt
+rm -rf ${TARGET_DIR}/Plone-docs
+rm -rf ${TARGET_DIR}/autom4te.cache
 rm -r ${TARGET_DIR}/.github
-rm ${TARGET_DIR}/packages/Python*
+rm -rf ${TARGET_DIR}/packages/Python*
 
 echo "Getting docs"
-curl -O  https://github.com/plone/Plone/archive/${BASE_VER}.zip
-unzip ${BASE_VER}.zip
-rm ${BASE_VER}.zip
-mv Plone-${BASE_VER}/docs ${TARGET_DIR}/Plone-docs
-rm -rf Plone-${BASE_VER}
+curl -L https://github.com/plone/Plone/archive/${BASE_VER}.zip --output ${BASE_VER}.zip
+if [ -f "${BASE_VER}.zip" ]; then
+  unzip ${BASE_VER}.zip
+  rm ${BASE_VER}.zip
+  mv Plone-${BASE_VER}/docs ${TARGET_DIR}/Plone-docs
+  rm -rf Plone-${BASE_VER}
+fi
 
 echo "Getting virtualenv"
 mkdir $TARGET_DIR/packages
@@ -102,11 +111,12 @@ find ${TARGET_DIR} -type d -exec chmod 755 {} \;
 
 echo "Making tarball"
 cd $WORK_DIR
-$TAR --owner 0 --group 0 -zcf ${TARGET_TGZ} ${TARGET}
+echo "$TAR ${TARGET_TGZ} ${TARGET}"
+$TAR ${TARGET_TGZ} ${TARGET}
 rm -r ${TARGET}
 
 echo "Test unpack of tarball"
-$TAR zxf ${TARGET_TGZ}
+$UNTAR ${TARGET_TGZ}
 ls -la ${TARGET}
 
 cd $CURDIR

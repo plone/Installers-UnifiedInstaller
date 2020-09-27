@@ -26,7 +26,7 @@ jobs:
     - name: Run buildme.sh
       run: |
         ./buildme.sh ~/dist
-    - name: Upload math result for job 1
+    - name: Upload Plone Installer from build
       uses: actions/upload-artifact@v2
       with:
         name: Plone-Installer
