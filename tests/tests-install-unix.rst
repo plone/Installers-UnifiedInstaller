@@ -76,7 +76,7 @@ Test a ZEO install
 
     target should have basic kit
     >>> sorted(os.listdir(testTarget))
-    ['buildout-cache', 'zeocluster']
+    ['Plone-docs', 'buildout-cache', 'zeocluster']
 
     There should now be a buildout skeleton in zeocluster
     >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'requirements.txt']
