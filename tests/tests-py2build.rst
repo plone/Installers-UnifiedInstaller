@@ -50,7 +50,7 @@ Test building Python and dependencies
     >>> returncode and (stdout + stderr)
     0
 
-    >>> print(stdout.decode())
+    >>> print(safestr(stdout))
     <BLANKLINE>
     Rootless install method chosen. Will install for use by system user -etc-
     -etc-
@@ -63,31 +63,31 @@ Test building Python and dependencies
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import readline"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import zlib"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import zip_decoder"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from lxml import etree"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     This Python should not be a virtualenv.
@@ -106,7 +106,7 @@ Test building Python 3
     >>> returncode and (stdout + stderr)
     0
 
-    >>> print(stdout.decode())
+    >>> print(safestr(stdout))
     <BLANKLINE>
     Rootless install method chosen. Will install for use by system user -etc-
     -etc-
@@ -120,31 +120,31 @@ Test building Python 3
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import readline"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "import zlib"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import zip_decoder"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from lxml import etree"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     This Python should not be a virtualenv.
@@ -158,19 +158,19 @@ Test building Python 3
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zeoserver start' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client1 start' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client2 start' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> time.sleep(30)
@@ -181,7 +181,7 @@ Test building Python 3
     >>> returncode
     0
 
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     Fetch root page via client1
@@ -202,5 +202,5 @@ Test building Python 3
     >>> returncode
     0
 
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
