@@ -49,9 +49,9 @@ Running install.sh with help option should result in a usage message:
     >>> stdout, stderr, returncode = doCommand('./install.sh --help')
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
-    >>> print(stdout.decode())
+    >>> print(safestr(stdout))
     <BLANKLINE>
     Usage: -etc-
 
@@ -63,7 +63,7 @@ Test a ZEO install
     >>> returncode and (stdout + stderr)
     0
 
-    >>> print(stdout.decode())
+    >>> print(safestr(stdout))
     <BLANKLINE>
     -etc-
     Installing Plone 5.2-etc-
@@ -107,7 +107,7 @@ Test a ZEO install
 
     Installing again to the same target should fail
     >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
-    >>> "already exists; aborting install." in stdout.decode()
+    >>> "already exists; aborting install." in safestr(stdout)
     True
 
     Check the Python
@@ -116,19 +116,19 @@ Test a ZEO install
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import zip_decoder"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from lxml import etree"' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     Since we didn't specify otherwise, this Python should be a virtualenv.
@@ -142,19 +142,19 @@ Test a ZEO install
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zeoserver start' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client1 start' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client2 start' % testTarget)
     >>> returncode
     0
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     >>> time.sleep(30)
@@ -165,7 +165,7 @@ Test a ZEO install
     >>> returncode
     0
 
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
 
     Fetch root page via client1
@@ -186,5 +186,5 @@ Test a ZEO install
     >>> returncode
     0
 
-    >>> stderr.decode()
+    >>> safestr(stderr)
     ''
