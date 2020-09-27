@@ -11,11 +11,10 @@ Setup stuff
 -----------
 
     >>> import subprocess, os, os.path, shutil, time, tempfile
-    >>> uid = os.geteuid()
-    >>> root = uid == 0
 
-    NOTE: Make sure the test target is in a partition where ownership &
-    permissions work. That may not be so in a mountable or tmp partition.
+NOTE: Make sure the test target is in a partition where ownership & permissions work.
+That may not be so in a mountable or tmp partition.
+
     >>> testTarget = os.path.join(tempfile.mkdtemp(), 'plonetest')
 
     >>> if os.path.exists(testTarget): shutil.rmtree(testTarget)
