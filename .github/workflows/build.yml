@@ -46,6 +46,8 @@ jobs:
       run: |
         tar xzf Plone-5.2.2-UnifiedInstaller.tgz
         mv Plone-5.2.2-UnifiedInstaller ../installer
-        cd ../installer/tests
-        WITH_PYTHON=`which python` python testall.py
+        cd ..
+        mkdir tmp
+        cd installer/tests
+        WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
 

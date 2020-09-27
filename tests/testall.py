@@ -18,6 +18,10 @@ except ImportError:
 withPython = os.environ.get("WITH_PYTHON", "/usr/bin/python3")
 print("Run installer tests using Python: {}".format(withPython))
 
+tempdir = os.environ.get("WITH_TEMP", None)
+if tempdir is None:
+    tempdir = os.path.join(tempfile.mkdtemp())
+tempdir = os.path.abspath(tempdir)
 
 def safestr(value):
     if PY == 3 and isinstance(value, bytes):
@@ -55,12 +59,15 @@ else:
     TESTFILES.append(os.path.join(CWD, "tests-install-unix.rst"))
     TESTFILES += TESTPYBUILDFILES
 
-for testfile in TESTFILES:
+for idx, testfile in enumerate(TESTFILES):
     os.chdir(CWD)  # start always here!
     print("-" * 60)
-    print("run doctests: {}".format(testfile))
+    print("run doctest {0} : {1}".format(idx, testfile))
     print("-" * 60)
-    tmpdirname = os.path.join(tempfile.mkdtemp())
+    tmpdirname = os.path.join(tempdir, str(idx))
+    if os.path.exists(tmpdirname):
+        shutil.rmtree(tmpdirname)
+    os.mkdir(tmpdirname)
     print('Created temporary directory', tmpdirname)
     GLOBS['testTarget'] = tmpdirname
     result = doctest.testfile(
