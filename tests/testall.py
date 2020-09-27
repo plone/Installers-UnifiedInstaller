@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import doctest
+import subprocess
 import unittest
 import os
 
@@ -25,9 +26,22 @@ def safestr(value):
     return value
 
 
+def doCommand(command):
+    p = subprocess.Popen(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+    )
+    out, err = p.communicate()
+    return (out, err, p.returncode)
+
+
 doctest.ELLIPSIS_MARKER = "-etc-"
 OPTION_FLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
-GLOBS = {"withPython": withPython, "urlopen": urlopen, "safestr": safestr}
+GLOBS = {
+    "withPython": withPython,
+    "urlopen": urlopen,
+    "safestr": safestr,
+    "doCommand": doCommand,
+}
 CWD = os.path.abspath(os.path.dirname(__file__))
 TESTPYBUILDFILES = [
     os.path.join(CWD, "tests-py2build.rst"),
@@ -41,6 +55,7 @@ else:
     TESTFILES += TESTPYBUILDFILES
 
 for testfile in TESTFILES:
+    os.chdir(CWD)  # start always here!
     print("-" * 60)
     print("run doctests in {}".format(testfile))
     print("-" * 60)

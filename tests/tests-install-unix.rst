@@ -29,16 +29,6 @@ install.sh should be executable
     >>> os.access('install.sh', os.X_OK)
     True
 
-
-Let's set up a convenience function for executing a command line
-and getting stdout, stderr and return code.
-
-    >>> def doCommand(command):
-    ...    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    ...    out, err = p.communicate()
-    ...    return (out, err, p.returncode)
-
-
 -------------
 Usage Message
 -------------
