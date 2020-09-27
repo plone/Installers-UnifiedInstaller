@@ -5,7 +5,7 @@ try:
     # py3
     from urllib.request import urlopen
 except ImportError:
-    from urlib2 import urlopen
+    from urllib2 import urlopen
 
 doctest.ELLIPSIS_MARKER = "-etc-"
 OPTION_FLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
