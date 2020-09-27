@@ -10,7 +10,7 @@ These tests assume that you have a "plonetest" directory in your $HOME directory
 Setup stuff
 -----------
 
-    >>> import os, os.path, shutil, time, tempfile
+    >>> import os, os.path, time
 
 This test should be run from the directory with install.sh
 
@@ -111,14 +111,9 @@ Test building Python 3
 
     >>> stderr.decode()
     ''
-Let's set up a convenience function for executing a command line
-and getting stdout, stderr and return code.
 
-    >>> def doCommand(command):
-    ...    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    ...    out, err = p.communicate()
-    ...    return (out, err, p.returncode)
-e via client1
+Fetch root page via client1
+
     >>> urlopen('http://localhost:8080/').read()
     '-etc-Plone is up and running-etc-'
 

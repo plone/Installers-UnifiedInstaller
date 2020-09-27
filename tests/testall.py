@@ -3,6 +3,7 @@ import doctest
 import subprocess
 import unittest
 import os
+import shutil
 import tempfile
 
 try:
@@ -59,15 +60,16 @@ for testfile in TESTFILES:
     print("-" * 60)
     print("run doctests: {}".format(testfile))
     print("-" * 60)
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        print('Created temporary directory', tmpdirname)
-        GLOBS['testTarget'] = tmpdirname
-        result = doctest.testfile(
-            testfile,
-            module_relative=False,
-            optionflags=OPTION_FLAGS,
-            globs=GLOBS,
-        )
+    tmpdirname = os.path.join(tempfile.mkdtemp())
+    print('Created temporary directory', tmpdirname)
+    GLOBS['testTarget'] = tmpdirname
+    result = doctest.testfile(
+        testfile,
+        module_relative=False,
+        optionflags=OPTION_FLAGS,
+        globs=GLOBS,
+    )
+    shutil.rmtree(tmpdirname)
     if result.failed:
         print("Failed.")
         exit(1)

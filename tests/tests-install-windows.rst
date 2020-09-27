@@ -10,7 +10,7 @@ These tests assume that you have a "plonetest" directory in your $HOME directory
 Setup stuff
 -----------
 
-    >>> import os, os.path, shutil, time, tempfile
+    >>> import os, os.path, time
 
 This test should be run from the directory with install.sh
 

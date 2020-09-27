@@ -10,7 +10,7 @@ These tests assume that you have a "plonetest" directory in your $HOME directory
 Setup stuff
 -----------
 
-    >>> import subprocess, os, os.path, shutil, time
+    >>> import subprocess, os, os.path, time
 
 This test should be run from the directory with install.sh
 
@@ -142,7 +142,7 @@ Test a ZEO install
     Status check
     >>> start = time.time()
     >>> returncode = -1
-    >>> while time.time() - start < 30 and returncode != 0
+    >>> while time.time() - start < 30 and returncode != 0:
     ...    time.sleep(3)
     ...    stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
 
