@@ -146,10 +146,12 @@ Test a ZEO install
     >>> safestr(stderr)
     ''
 
-    >>> time.sleep(30)
-
     Status check
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
+    >>> start = time.time()
+    >>> returncode = -1
+    >>> while time.time() - start < 30 and returncode != 0
+    ...    time.sleep(3)
+    ...    stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
 
     >>> returncode
     0
