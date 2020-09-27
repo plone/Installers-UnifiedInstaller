@@ -68,7 +68,8 @@ if os.name == "nt":
     TESTFILES.append(os.path.join(CWD, "tests-install-windows.rst"))
 else:
     TESTFILES.append(os.path.join(CWD, "tests-install-unix.rst"))
-    TESTFILES += TESTPYBUILDFILES
+    # ssl on macos needed:
+    # TESTFILES += TESTPYBUILDFILES
 
 for idx, testfile in enumerate(TESTFILES):
     os.chdir(CWD)  # start always here!
