@@ -5,6 +5,7 @@ import unittest
 import os
 import shutil
 import socket
+import sys
 import tempfile
 
 try:
@@ -68,8 +69,9 @@ if os.name == "nt":
     TESTFILES.append(os.path.join(CWD, "tests-install-windows.rst"))
 else:
     TESTFILES.append(os.path.join(CWD, "tests-install-unix.rst"))
-    # ssl on macos needed:
-    # TESTFILES += TESTPYBUILDFILES
+    if sys.platform == "linux":
+        # ssl on macos needed, need to figure out how to get it on GH actions
+        TESTFILES += TESTPYBUILDFILES
 
 for idx, testfile in enumerate(TESTFILES):
     os.chdir(CWD)  # start always here!
