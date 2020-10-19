@@ -141,10 +141,12 @@ Test a ZEO install
 
     # wait for service
     >>> start = time.time()
+    >>> import os
+    >>> PLONE_SERVER_START_WAIT = int(os.environ.get('PLONE_SERVER_START_WAIT', 90))
     >>> while not (checkport(server="localhost", port=8080) and checkport(server="localhost", port=8081)):
     ...     time.sleep(1)
-    ...     if time.time() - start > 90:
-    ...         raise RuntimeError("cluster start took longer than 90 seconds")
+    ...     if time.time() - start > PLONE_SERVER_START_WAIT:
+    ...         raise RuntimeError("cluster start took longer than {0} seconds".format(PLONE_SERVER_START_WAIT))
 
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
