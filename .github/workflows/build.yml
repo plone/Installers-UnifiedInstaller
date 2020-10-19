@@ -33,6 +33,13 @@ jobs:
         - macos-latest
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Install GNU tar
+      # Work around https://github.com/actions/virtual-environments/issues/1534#issuecomment-699617344
+      # by using GNU tar instead of BSD tar.
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install gnu-tar
+        echo PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH" >> $GITHUB_ENV
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
