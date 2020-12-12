@@ -54,7 +54,6 @@ jobs:
         name: Plone-Unified-Installer
     - name: Display structure of downloaded files
       run: ls -R
-      working-directory: ~/Installers-UnifiedInstaller
     - name: Test Installer
       shell: bash
       run: |
