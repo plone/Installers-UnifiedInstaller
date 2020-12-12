@@ -19,11 +19,6 @@ Options (see top of install.sh for complete list):
   Path to the Python-${WANT_PYTHON} that you wish to use with Plone.
   virtualenv will be used to isolate the install.
 
---build-python
-  If you do not have a suitable Python available, the installer will
-  build one for you if you set this option. Requires Internet access
-  to download Python source.
-
 --password=InstancePassword
   If not specified, a random password will be generated.
 

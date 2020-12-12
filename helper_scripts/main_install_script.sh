@@ -34,9 +34,8 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.2.2
-readonly WANT_PYTHON=2.7
-readonly WANT_PYTHON3=3.6
+readonly FOR_PLONE=5.2.3
+readonly WANT_PYTHON=3.8
 readonly ELIGIBLE_PYTHONS='2.7 3.6 3.7 3.8'
 
 PACKAGES_DIR="${INSTALLER_PWD}/packages"
@@ -44,14 +43,6 @@ readonly ONLINE_PACKAGES_DIR=opackages
 readonly HSCRIPTS_DIR="${INSTALLER_PWD}/helper_scripts"
 readonly TEMPLATE_DIR="${INSTALLER_PWD}/buildout_templates"
 
-readonly PYTHON_URL=https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
-readonly PYTHON_MD5=38c84292658ed4456157195f1c9bcbe1
-readonly PYTHON_TB=Python-2.7.18.tgz
-readonly PYTHON_DIR=Python-2.7.18
-readonly PYTHON3_URL=https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
-readonly PYTHON3_MD5=e2f52bcf531c8cc94732c0b6ff933ff0
-readonly PYTHON3_TB=Python-3.8.5.tgz
-readonly PYTHON3_DIR=Python-3.8.5
 readonly VIRTUALENV_TB=virtualenv-16.7.10.tar.gz
 readonly VIRTUALENV_DIR=virtualenv-16.7.10
 readonly NEED_CUSTOM_SETUPTOOLS=no
@@ -103,7 +94,6 @@ usage () {
 INSTALL_STANDALONE=0
 INSTANCE_NAME=""
 WITH_PYTHON=""
-BUILD_PYTHON="no"
 WITH_ZOPE=""
 RUN_BUILDOUT=1
 SKIP_TOOL_TESTS=0
@@ -128,21 +118,8 @@ do
             if [ "$optarg" ]; then
                 WITH_PYTHON="$optarg"
             else
+                echo "Problem at $option"
                 usage
-            fi
-            ;;
-
-        --build-python | --build-python=* )
-            if [ "$optarg" ]; then
-                BUILD_PYTHON="$optarg"
-                if [ $BUILD_PYTHON != 'yes' ] && [ $BUILD_PYTHON != '3' ] && [ $BUILD_PYTHON != 'no' ]; then
-                    usage $BAD_BUILD_PYTHON
-                fi
-                if [ "$BUILD_PYTHON" = '2' ]; then
-                    BUILD_PYTHON=yes
-                fi
-            else
-                BUILD_PYTHON="yes"
             fi
             ;;
 
@@ -151,6 +128,7 @@ do
                 PLONE_HOME="$optarg"
                 USE_WHIPTAIL=0
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -159,6 +137,7 @@ do
             if [ "$optarg" ]; then
                 INSTANCE_NAME="$optarg"
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -167,6 +146,7 @@ do
             if [ "$optarg" ]; then
                 INSTANCE_VAR="$optarg"
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -175,6 +155,7 @@ do
             if [ "$optarg" ]; then
                 BACKUP_DIR="$optarg"
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -187,6 +168,7 @@ do
             if [ "$optarg" ]; then
                 DAEMON_USER="$optarg"
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -195,6 +177,7 @@ do
             if [ "$optarg" ]; then
                 BUILDOUT_USER="$optarg"
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -203,6 +186,7 @@ do
             if [ "$optarg" ]; then
                 PLONE_GROUP="$optarg"
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -215,6 +199,7 @@ do
                    usage "$BAD_TEMPLATE"
                 fi
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -227,19 +212,12 @@ do
             fi
             ;;
 
-        --without-ssl | --without-ssl=* )
-            if [ "$optarg" ]; then
-                WITHOUT_SSL="$optarg"
-            else
-                WITHOUT_SSL="yes"
-            fi
-            ;;
-
         --password=* | -password=* )
             if [ "$optarg" ]; then
                 PASSWORD="$optarg"
                 USE_WHIPTAIL=0
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -259,6 +237,7 @@ do
             if [ "$optarg" ]; then
                 INSTALL_LOG="$optarg"
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -268,6 +247,7 @@ do
                 CLIENT_COUNT="$optarg"
                 USE_WHIPTAIL=0
             else
+                echo "Problem at $option"
                 usage
             fi
             ;;
@@ -297,16 +277,13 @@ do
                     RUN_BUILDOUT=0
                     ;;
                 *)
+                echo "Problem at $option"
                     usage
                     ;;
             esac
         ;;
     esac
 done
-
-if [ "X$WITH_PYTHON" != "X" ] && [ "X$BUILD_PYTHON" != "Xno" ]; then
-    echo "$CONTRADICTORY_PYTHON_COMMANDS"
-fi
 
 whiptail_goodbye() {
     echo "$POLITE_GOODBYE"
@@ -323,7 +300,7 @@ if [ $USE_WHIPTAIL -eq 1 ]; then
     fi
 
 
-    if [ "X$WITH_PYTHON" == "X" ] && [ "X$BUILD_PYTHON" != "Xyes" ]; then
+    if [ "X$WITH_PYTHON" == "X" ]; then
         CANDIDATE_PYTHONS=""
         PYTHONS_FOUND=0
         for A_PYTHON in $ELIGIBLE_PYTHONS; do
@@ -521,55 +498,39 @@ python_usage () {
 }
 
 
-if [ "X$BUILD_PYTHON" != "Xno" ]; then
-    # if OpenBSD, apologize and surrender
-    if [ `uname` = "OpenBSD" ]; then
-        eval "echo\"$SORRY_OPENBSD\""
-        exit 1
-    fi
+# if OpenBSD, apologize and surrender
+if [ `uname` = "OpenBSD" ]; then
+    eval "echo\"$SORRY_OPENBSD\""
+    exit 1
+fi
 
-    # check to see if we've what we need to build a suitable python
-    # Abort install if no libz or libssl
-
-    if [ "X$HAVE_LIBZ" != "Xyes" ] ; then
-        echo $NEED_INSTALL_LIBZ_MSG
-        exit 1
-    fi
-
-    if [ "X$WITHOUT_SSL" != "Xyes" ]; then
-        if [ "X$HAVE_LIBSSL" != "Xyes" ]; then
-            echo $NEED_INSTALL_SSL_MSG
-            exit 1
-        fi
-    fi
-else
     # no build Python specified
 
-    if [ "X$WITH_PYTHON" = "X" ]; then
-        # try to find a Python
-        WITH_PYTHON=`which python${WANT_PYTHON}`
-        if [ $? -gt 0 ] || [ "X$WITH_PYTHON" = "X" ]; then
-            eval "echo \"$PYTHON_NOT_FOUND\""
-            python_usage
-        fi
+if [ "X$WITH_PYTHON" = "X" ]; then
+    # try to find a Python
+    WITH_PYTHON=`which python${WANT_PYTHON}`
+    if [ $? -gt 0 ] || [ "X$WITH_PYTHON" = "X" ]; then
+        eval "echo \"$PYTHON_NOT_FOUND\""
+        python_usage
+        exit 1
     fi
+fi
 
-    # We have a Python, let's see if it's viable.
-    if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
-        eval "echo \"$TESTING_WITH_PYTHON\""
-        if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-            eval "echo \"$WITH_PYTHON_IS_OK\""
-            echo
-            # if the supplied Python is adequate, we don't need to build libraries
-            WITHOUT_SSL="yes"
-        else
-            eval "echo \"$WITH_PYTHON_IS_BAD\""
-            python_usage
-        fi
+# We have a Python, let's see if it's viable.
+if [ -x "$WITH_PYTHON" ] && [ ! -d "$WITH_PYTHON" ]; then
+    eval "echo \"$TESTING_WITH_PYTHON\""
+    if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
+        eval "echo \"$WITH_PYTHON_IS_OK\""
+        echo
+        # if the supplied Python is adequate, we don't need to build libraries
+        WITHOUT_SSL="yes"
     else
-        eval "echo \"$WITH_PYTHON_NOT_EX\""
+        eval "echo \"$WITH_PYTHON_IS_BAD\""
         python_usage
     fi
+else
+    eval "echo \"$WITH_PYTHON_NOT_EX\""
+    python_usage
 fi
 
 
@@ -706,7 +667,6 @@ if [ "X$DEBUG_OPTIONS" = "Xyes" ]; then
     echo "PLONE_GROUP=$PLONE_GROUP"
     echo "FOR_PLONE=$FOR_PLONE"
     echo "WANT_PYTHON=$WANT_PYTHON"
-    echo "WANT_PYTHON3=$WANT_PYTHON3"
     echo "PACKAGES_DIR=$PACKAGES_DIR"
     echo "ONLINE_PACKAGES_DIR=$ONLINE_PACKAGES_DIR"
     echo "HSCRIPTS_DIR=$HSCRIPTS_DIR"
@@ -853,51 +813,6 @@ if [ -x "$INSTANCE_HOME" ]; then
 fi
 
 cd "$CWD"
-
-if [ "X$BUILD_PYTHON" = "Xyes" ]; then
-    # download python tarball if necessary
-    cd "$PKG"
-    if [ ! -f $PYTHON_TB ]; then
-        eval "echo \"$DOWNLOADING_PYTHON\""
-        download $PYTHON_URL $PYTHON_TB $PYTHON_MD5
-    fi
-    cd "$CWD"
-
-    PY_HOME="$PLONE_HOME/Python-${WANT_PYTHON}"
-    WITH_PYTHON="${PY_HOME}/bin/python"
-    . "${INSTALLER_PWD}/helper_scripts/build_python.sh"
-
-
-    if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-        echo $PYTHON_BUILD_OK
-    else
-        echo $PYTHON_BUILD_BAD
-        exit 1
-    fi
-
-fi
-if [ "X$BUILD_PYTHON" = "X3" ]; then
-    # download python tarball if necessary
-    cd "$PKG"
-    if [ ! -f $PYTHON3_TB ]; then
-        eval "echo \"$DOWNLOADING_PYTHON3\""
-        download $PYTHON3_URL $PYTHON3_TB $PYTHON3_MD5
-    fi
-    cd "$CWD"
-
-    PY_HOME="$PLONE_HOME/Python-${WANT_PYTHON3}"
-    WITH_PYTHON="${PY_HOME}/bin/python3"
-    . "${INSTALLER_PWD}/helper_scripts/build_python3.sh"
-
-
-    if "$WITH_PYTHON" "$HSCRIPTS_DIR"/checkPython.py --without-ssl=${WITHOUT_SSL}; then
-        echo $PYTHON_BUILD_OK
-    else
-        echo $PYTHON_BUILD_BAD
-        exit 1
-    fi
-
-fi
 
 
 # Create and check a Python virtualenv

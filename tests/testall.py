@@ -60,18 +60,11 @@ GLOBS = {
     "checkport": checkport,
 }
 CWD = os.path.abspath(os.path.dirname(__file__))
-TESTPYBUILDFILES = [
-    os.path.join(CWD, "tests-py2build.rst"),
-    os.path.join(CWD, "tests-py3build.rst"),
-]
 TESTFILES = []
 if os.name == "nt":
     TESTFILES.append(os.path.join(CWD, "tests-install-windows.rst"))
 else:
     TESTFILES.append(os.path.join(CWD, "tests-install-unix.rst"))
-    if sys.platform == "linux":
-        # ssl on macos needed, need to figure out how to get it on GH actions
-        TESTFILES += TESTPYBUILDFILES
 
 for idx, testfile in enumerate(TESTFILES):
     os.chdir(CWD)  # start always here!

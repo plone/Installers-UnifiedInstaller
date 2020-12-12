@@ -1,3 +1,11 @@
+5.2.3 (unreleased)
+
+- Update to Plone 5.2.3
+  [jensens]
+
+- Drop Python build. Overhaul script, see https://github.com/plone/Installers-UnifiedInstaller/pull/110
+  [jensens]
+
 5.2.2 (unreleased)
 
 - update to Plone 5.2.2
