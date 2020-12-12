@@ -57,8 +57,8 @@ jobs:
     - name: Test Installer
       shell: bash
       run: |
-        tar xzf Installers-UnifiedInstaller/Installers-UnifiedInstaller/Plone-5.2.2-UnifiedInstaller.tgz
-        mv Plone-5.2.2-UnifiedInstaller ../installer
+        tar xzf Plone-*-UnifiedInstaller.tgz
+        mv Plone-*-UnifiedInstaller ../installer
         cd ..
         mkdir tmp
         ls -la
