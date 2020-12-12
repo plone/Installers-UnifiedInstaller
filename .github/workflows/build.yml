@@ -18,7 +18,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Plone-Unified-Installer
-        path: "~/dist/*.tgz"
+        path: "~/dist/*.tgz
   test:
     needs: build
     strategy:
@@ -52,6 +52,9 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: ~/Installers-UnifiedInstaller
     - name: Test Installer
       shell: bash
       run: |
