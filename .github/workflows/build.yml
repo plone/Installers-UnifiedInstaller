@@ -33,13 +33,14 @@ jobs:
         - macos-latest
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Install GNU tar
-      # Work around https://github.com/actions/virtual-environments/issues/1534#issuecomment-699617344
-      # by using GNU tar instead of BSD tar.
+    - name: Installs on Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt install libxml2-dev libxslt1-dev
+    - name: Installs on Macos
       if: matrix.os == 'macos-latest'
       run: |
-        brew install gnu-tar
-        echo PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH" >> $GITHUB_ENV
+        brew install libxml2 libxslt
     - name: Increase WAIT for Service on macos
       if: matrix.os == 'macos-latest'
       run: |
