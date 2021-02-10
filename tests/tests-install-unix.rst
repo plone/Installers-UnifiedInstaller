@@ -157,15 +157,19 @@ Test a ZEO install
     ''
 
     Fetch root page via client1
-    >>> "Plone is up and running" in safestr(urlopen('http://localhost:8080/').read())
+    >>> response = urlopen('http://localhost:8080/')    
+    >>> body = safestr(response.read())
+    >>> True if "Plone is up and running" in body else body
     True
 
     Fetch root page via client2
-    >>> "Plone is up and running" in safestr(urlopen('http://localhost:8081/').read())
+    >>> response = urlopen('http://localhost:8081/')
+    >>> body = safestr(response.read())
+    >>> True if "Plone is up and running" in body else body
     True
 
     Check Banner for WSGI
-    >>> print(safestr(urlopen('http://localhost:8080/').headers['server']))
+    >>> print(response.headers['server'])
     waitress
 
     Stop it
