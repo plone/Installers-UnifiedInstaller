@@ -920,7 +920,7 @@ fi
 
 echo "Create buildout: $INSTALL_METHOD" |tee -a "$INSTALL_LOG"
 
-$SUDO "$PY" "$WORKDIR/helper_scripts/create_instance.py" \
+$SUDO "$PY" "${HSCRIPTS_DIR}/create_instance.py" \
     "--uidir=$WORKDIR" \
     "--plone_home=$PLONE_HOME" \
     "--instance_home=$INSTANCE_HOME" \
