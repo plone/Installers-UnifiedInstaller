@@ -88,9 +88,9 @@ Test a ZEO install
     []
 
     Installing again to the same target should fail
-    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --target=%s --password=admin' % testTarget)
-    >>> "already exists; aborting install." in safestr(stdout)
-    True
+    >>> stdout, stderr, returncode = doCommand('./install.sh zeo --with-python={} --target={} --password=admin'.format(withPython, testTarget))
+    >>> "ok" if "already exists; aborting install." in safestr(stdout) else stdout
+    'ok'
 
     Check the Python
     ----------------
