@@ -147,6 +147,6 @@ Stand-Alone, Root Overview
 Ports
 =====
 
-- Zope server runs on port 8080
+- Zope server runs on port 9080
 
 Edit ``buildout.cfg`` and run ``bin/buildout`` to change port.

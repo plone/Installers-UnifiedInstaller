@@ -152,15 +152,15 @@ Test a ZEO install
     ''
 
     Fetch root page via client1
-    >>> "Plone is up and running" in urlopen('http://localhost:8080/').read()
+    >>> "Plone is up and running" in urlopen('http://localhost:9080/').read()
     True
 
     Fetch root page via client2
-    >>> "Plone is up and running" in urlopen('http://localhost:8081/').read()
+    >>> "Plone is up and running" in urlopen('http://localhost:9081/').read()
     True
 
     Check Banner
-    >>> print(urlopen('http://localhost:8080/').headers['server'])
+    >>> print(urlopen('http://localhost:9080/').headers['server'])
     waitress
 
     Stop it

@@ -160,4 +160,4 @@ Start the instance:
 
 	bin/plonectl start
 
-Now you can point your browser to ``localhost:8080`` and explore your site.
+Now you can point your browser to ``localhost:9080`` and explore your site.
