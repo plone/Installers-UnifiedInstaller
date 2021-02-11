@@ -7,6 +7,7 @@ import shutil
 import socket
 import sys
 import tempfile
+import time
 
 try:
     # py3
@@ -42,12 +43,24 @@ def doCommand(command):
     return (out, err, p.returncode)
 
 
-def checkport(server="127.0.0.1", port=8080):
-    a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    location = (server, port)
-    result_of_check = a_socket.connect_ex(location)
-    a_socket.close()
-    return result_of_check == 0
+def checkport(server="0.0.0.0", port=8080, timeout=90):
+    start = time.time()
+
+    result_of_check = -1
+    while True:
+        a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        location = (server, port)
+        result_of_check = a_socket.connect_ex(location)
+        a_socket.close()
+        if result_of_check == 0:
+            return
+        if time.time() - start > timeout:
+            raise RuntimeError(
+                "cluster start took longer than {0} seconds. Socket status: {1}".format(
+                    timeout, result_of_check
+                )
+            )
+        time.sleep(1)
 
 
 doctest.ELLIPSIS_MARKER = "-etc-"

@@ -1,5 +1,7 @@
 5.2.3 (unreleased)
 
+Foo
+
 - Update to Plone 5.2.3
   [jensens]
 
