@@ -19,7 +19,7 @@ jobs:
       with:
         name: Plone-Unified-Installer
         path: ~/dist/*.tgz
-  test:
+  test-ubuntu:
     needs: build
     strategy:
       matrix:
@@ -28,17 +28,44 @@ jobs:
         - "3.6"
         - "3.7"
         - "3.8"
-        os:
-        - ubuntu-latest
-        - macos-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - name: Installs on Linux
-      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt install libxml2-dev libxslt1-dev
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: Test Installer
+      shell: bash
+      run: |
+        tar xzf Plone-*-UnifiedInstaller.tgz
+        mv Plone-*-UnifiedInstaller ../installer
+        cd ..
+        mkdir tmp
+        ls -la
+        cd installer/tests
+        WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
+  test-macos:
+    needs: build
+    strategy:
+      matrix:
+        python-version:
+        - "2.7"
+        - "3.6"
+# do not test on 3.7, b/c it fails for unknown GH actions specific reasons
+#        - "3.7"
+        - "3.8"
+    runs-on: macos-latest
+    steps:
     - name: Installs on Macos
-      if: matrix.os == 'macos-latest'
       run: |
         brew install libxml2 libxslt
     - name: Increase WAIT for Service on macos
