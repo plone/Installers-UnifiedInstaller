@@ -124,3 +124,5 @@ jobs:
         mkdir tmp
         cd installer\tests
         dir
+        setx WITH_TEMP "..\..\tmp" 
+        python testall.py
