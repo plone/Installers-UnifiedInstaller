@@ -46,6 +46,7 @@ else:
     PLONE_HOME = os.path.join(os.environ['HOME'], 'Plone')
     SCRIPTS = 'bin'
     BIN_SUFFIX = ''
+    
 INSTALLER_HOME = os.getcwd()
 PACKAGES_HOME = os.path.join(INSTALLER_HOME, 'packages')
 
