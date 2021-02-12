@@ -237,18 +237,28 @@ if opt.run_buildout:
     else:
         ext = ''
 
+    paths_to_check = {os.path.join(opt.instance_home, 'var']
     if opt.itype == 'standalone':
-        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'instance' + ext)) and
-                os.path.exists(os.path.join(opt.instance_home, 'parts', 'instance')) and
-                os.path.exists(os.path.join(opt.instance_home, 'var'))):
-            _print("Parts of the install are missing. Buildout must have failed. Aborting.")
-            sys.exit(1)
+        paths_to_check += [
+            os.path.join(opt.instance_home, 'bin', 'instance' + ext),
+            os.path.join(opt.instance_home, 'parts', 'instance'),           
+        ]
     else:
-        if not (os.path.exists(os.path.join(opt.instance_home, 'bin', 'zeoserver' + ext)) and
-                os.path.exists(os.path.join(opt.instance_home, 'bin', 'client1')) and
-                os.path.exists(os.path.join(opt.instance_home, 'parts', 'client1')) and
-                os.path.exists(os.path.join(opt.instance_home, 'var'))):
-            _print("Parts of the install are missing. Buildout must have failed. Aborting.")
+        paths_to_check += [
+            os.path.join(opt.instance_home, 'bin', 'zeoserver' + ext),
+            os.path.join(opt.instance_home, 'parts', 'zeoserver'),           
+            os.path.join(opt.instance_home, 'bin', 'client1' + ext),
+            os.path.join(opt.instance_home, 'parts', 'client1'),           
+            os.path.join(opt.instance_home, 'bin', 'client2' + ext),
+            os.path.join(opt.instance_home, 'parts', 'client2'),           
+        ]
+    for path_to_check in paths_to_check:
+        if not os.path.exists(path_to_check):
+            _print(
+                "Parts of the install are missing: path '{}'. Buildout must have failed. Aborting.".format(
+                    path_to_check
+                )
+            )
             sys.exit(1)
 
     # sanity check PIL and lxml with our zopepy
