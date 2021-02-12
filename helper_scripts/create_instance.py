@@ -247,9 +247,9 @@ if opt.run_buildout:
         paths_to_check += [
             os.path.join(opt.instance_home, 'bin', 'zeoserver' + ext),
             os.path.join(opt.instance_home, 'parts', 'zeoserver'),           
-            os.path.join(opt.instance_home, 'bin', 'client1' + ext),
+            os.path.join(opt.instance_home, 'bin', 'client1'),
             os.path.join(opt.instance_home, 'parts', 'client1'),           
-            os.path.join(opt.instance_home, 'bin', 'client2' + ext),
+            os.path.join(opt.instance_home, 'bin', 'client2'),
             os.path.join(opt.instance_home, 'parts', 'client2'),           
         ]
     for path_to_check in paths_to_check:
