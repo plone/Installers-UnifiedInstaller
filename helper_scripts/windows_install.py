@@ -8,8 +8,8 @@
 # for Python kit.
 
 
-from .i18n import _
-from .i18n import _print
+from i18n import _
+from i18n import _print
 
 import argparse
 import glob
