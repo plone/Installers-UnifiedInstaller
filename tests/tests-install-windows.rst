@@ -42,7 +42,7 @@ Running install.sh with help option should result in a usage message:
 Test a ZEO install
 ------------------
 
-    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target={} --password=admin zeo'.format(withPython, testTarget))
+    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target={} --password=admin zeo'.format(testTarget))
     >>> returncode and (stdout + stderr)
     0
 
