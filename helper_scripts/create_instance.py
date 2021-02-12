@@ -259,7 +259,13 @@ if opt.run_buildout:
                     path_to_check
                 )
             )
-            _print("directory contains:\n{}".format('\n'.join(os.listdir(opt.instance_home))))
+            _print("instance directory contains:\n{}".format('\n'.join(os.listdir(opt.instance_home))))
+            _print("instance bin directory contains:\n{}".format(
+                '\n'.join(os.listdir(os.path.join(opt.instance_home, 'bin'))))
+            )
+            _print("instance parts directory contains:\n{}".format(
+                '\n'.join(os.listdir(os.path.join(opt.instance_home, 'parts'))))
+            )
             sys.exit(1)
 
     # sanity check PIL and lxml with our zopepy
