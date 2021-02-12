@@ -46,7 +46,7 @@ else:
     PLONE_HOME = os.path.join(os.environ['HOME'], 'Plone')
     SCRIPTS = 'bin'
     BIN_SUFFIX = ''
-    
+
 INSTALLER_HOME = os.getcwd()
 PACKAGES_HOME = os.path.join(INSTALLER_HOME, 'packages')
 
@@ -138,9 +138,8 @@ if os.path.exists(INSTANCE_HOME):
     sys.exit(1)
 
 _print("Creating instance home and buildout command.")
-os.mkdir(INSTANCE_HOME)
 INSTANCE_BIN = os.path.join(INSTANCE_HOME, 'bin')
-os.mkdir(INSTANCE_BIN)
+os.makedirs(INSTANCE_BIN)
 if os.name == 'nt':
     with open(os.path.join(INSTANCE_BIN, 'buildout.bat'), 'w') as f:
         f.write(os.path.join(PY_SCRIPTS, 'buildout' + BIN_SUFFIX) + ' %*')
