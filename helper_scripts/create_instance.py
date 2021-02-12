@@ -237,7 +237,7 @@ if opt.run_buildout:
     else:
         ext = ''
 
-    paths_to_check = {os.path.join(opt.instance_home, 'var']
+    paths_to_check = [os.path.join(opt.instance_home, 'var')]
     if opt.itype == 'standalone':
         paths_to_check += [
             os.path.join(opt.instance_home, 'bin', 'instance' + ext),
