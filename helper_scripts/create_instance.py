@@ -259,6 +259,7 @@ if opt.run_buildout:
                     path_to_check
                 )
             )
+            _print("directory contains:\n{}".format('\n'.join(os.listdir(opt.instance_home))))
             sys.exit(1)
 
     # sanity check PIL and lxml with our zopepy
