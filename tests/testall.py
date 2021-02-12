@@ -43,7 +43,7 @@ def doCommand(command):
     return (out, err, p.returncode)
 
 
-def checkport(server="0.0.0.0", port=9080, timeout=90):
+def checkport(server="0.0.0.0", port=8080, timeout=90):
     start = time.time()
 
     result_of_check = -1

@@ -143,8 +143,8 @@ ZEO Cluster
 ------------
 
 - ZEO server runs on port 8100
-- ZEO client1 runs on port 9080
-- ZEO client2 runs on port 9081
+- ZEO client1 runs on port 8080
+- ZEO client2 runs on port 8081
 - ...
 
 Edit ``buildout.cfg`` and run ``bin/buildout`` to change ports.

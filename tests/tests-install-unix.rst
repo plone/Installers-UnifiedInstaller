@@ -142,8 +142,8 @@ Test a ZEO install
     # wait for service
     >>> import os
     >>> PLONE_SERVER_START_WAIT = int(os.environ.get('PLONE_SERVER_START_WAIT', 90))
-    >>> checkport(port=9080, timeout=PLONE_SERVER_START_WAIT)
-    >>> checkport(port=9081, timeout=PLONE_SERVER_START_WAIT)
+    >>> checkport(port=8080, timeout=PLONE_SERVER_START_WAIT)
+    >>> checkport(port=8081, timeout=PLONE_SERVER_START_WAIT)
 
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
@@ -154,13 +154,13 @@ Test a ZEO install
     ''
 
     Fetch root page via client1
-    >>> response = urlopen('http://localhost:9080/')
+    >>> response = urlopen('http://localhost:8080/')
     >>> body = safestr(response.read())
     >>> True if "Plone is up and running" in body else body
     True
 
     Fetch root page via client2
-    >>> response = urlopen('http://localhost:9081/')
+    >>> response = urlopen('http://localhost:8081/')
     >>> body = safestr(response.read())
     >>> True if "Plone is up and running" in body else body
     True
