@@ -46,7 +46,8 @@ Test a ZEO install
     >>> returncode
     0
 
-    >>> print(safestr(stderr))
+Uncomment the next for better debugging output    
+    >> print(safestr(stderr))
     <BLANKLINE>
 
     >>> print(safestr(stdout))
