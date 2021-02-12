@@ -35,7 +35,7 @@ Running install.sh with help option should result in a usage message:
     >>> safestr(stderr)
     ''
     >>> print(safestr(stdout))
-    <BLANKLINE>
+    -etc-
     Usage: -etc-
 
 ------------------
