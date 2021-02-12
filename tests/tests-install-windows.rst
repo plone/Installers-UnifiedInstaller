@@ -36,13 +36,13 @@ Running install.sh with help option should result in a usage message:
     ''
     >>> print(safestr(stdout))
     -etc-
-    Usage: -etc-
+    usage: -etc-
 
 ------------------
 Test a ZEO install
 ------------------
 
-    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat zeo --with-python={} --target={} --password=admin'.format(withPython, testTarget))
+    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target={} --password=admin zeo'.format(withPython, testTarget))
     >>> returncode and (stdout + stderr)
     0
 

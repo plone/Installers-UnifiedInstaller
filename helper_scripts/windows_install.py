@@ -110,11 +110,16 @@ PY_HOME = os.path.join(opt.target, os.path.split(sys.executable)[-1])
 PY_SCRIPTS = os.path.join(PY_HOME, SCRIPTS)
 if not os.path.exists(PY_HOME):
     _print("Preparing python virtualenv")
-    with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
-        tf.extractall(opt.target)
-    vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
-    doCommand(sys.executable + ' ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME, check=True)
-    shutil.rmtree(vepackagedir)
+    if sys.version_info[0] < 3:
+        with tarfile.open(glob.glob(os.path.join(PACKAGES_HOME, 'virtualenv*'))[0]) as tf:
+            tf.extractall(opt.target)
+        vepackagedir = glob.glob(os.path.join(opt.target, 'virtualenv*'))[0]
+        doCommand(sys.executable + ' ' + os.path.join(vepackagedir, 'virtualenv.py') + ' ' + PY_HOME, check=True)
+        shutil.rmtree(vepackagedir)
+    else:
+        import venv
+        builder = venv.EnvBuilder(with_pip=True)
+        builder.create(PY_HOME)
     PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
     # _print(PIP_BIN)
     _print("Installing requirements in virtualenv")
