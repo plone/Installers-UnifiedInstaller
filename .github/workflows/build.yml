@@ -93,3 +93,28 @@ jobs:
         cd installer/tests
         WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
 
+  test-windows:
+    needs: build
+    strategy:
+      matrix:
+        python-version:
+        # - "2.7"
+        # - "3.6"
+        # - "3.7"
+        - "3.8"
+    runs-on: windows-latest
+    steps:
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: dir
+    - name: Extract Tar
+      run: tar.exe xzf Plone-*-UnifiedInstaller.tgz
+    - name: Display structure of extracted files
+      run: dir
