@@ -43,8 +43,11 @@ Test a ZEO install
 ------------------
 
     >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target={} --password=admin zeo'.format(testTarget))
-    >>> returncode and (stdout + stderr)
+    >>> returncode
     0
+
+    >>> print(safestr(stderr))
+    <BLANKLINE>
 
     >>> print(safestr(stdout))
     <BLANKLINE>
