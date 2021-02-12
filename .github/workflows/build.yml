@@ -115,6 +115,12 @@ jobs:
     - name: Display structure of downloaded files
       run: dir
     - name: Extract Tar
-      run: tar.exe xzf Plone-*-UnifiedInstaller.tgz
-    - name: Display structure of extracted files
-      run: dir
+      run: |
+        tar.exe xzf Plone-5.2.3-UnifiedInstaller.tgz
+        move Plone-5.2.3-UnifiedInstaller ..\installer
+    - name: Run tests
+      run: |
+        cd ..
+        mkdir tmp
+        cd installer\tests
+        dir
