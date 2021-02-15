@@ -31,6 +31,7 @@ def doCommand(command, check=False):
     )
     stdout, stderr = po.communicate()
     sys.stderr.write(stdout)
+    sys.stdout.write(stdout)
     if check and po.returncode != 0:
         raise AssertionError(
             '"{}" Failed with error code: {}'.format(command, po.returncode)
