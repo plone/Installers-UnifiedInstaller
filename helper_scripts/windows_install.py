@@ -108,7 +108,7 @@ if not os.path.exists(opt.target):
     os.mkdir(opt.target, 0o700)
 
 # virtualenv
-PY_HOME = os.path.join(opt.target, os.path.split(sys.executable)[-1])
+PY_HOME = "py-" + '.'.join([str(x) for x in sys.version_info])
 PY_SCRIPTS = os.path.join(PY_HOME, SCRIPTS)
 if not os.path.exists(PY_HOME):
     _print("Preparing python virtualenv")
