@@ -62,7 +62,7 @@ Test a ZEO install
     ['Plone-docs', 'buildout-cache', 'zeocluster']
 
     There should now be a buildout skeleton in zeocluster
-    >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'requirements.txt']
+    >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'var', 'requirements.txt']
     >>> found = os.listdir('%s/zeocluster' % testTarget)
     >>> [s for s in expected if s not in found]
     []
