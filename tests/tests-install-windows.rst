@@ -134,7 +134,7 @@ Run it
 
 ::
 
-    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\zeoserver start' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('START "" %s\zeocluster\bin\zeoserver_runzeo.bat' % testTarget)
     >>> returncode
     0
     >>> safestr(stderr)
