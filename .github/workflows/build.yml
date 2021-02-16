@@ -2,6 +2,10 @@ name: Build and test result
 
 on: [push]
 
+env:
+    PLONE_VERSION: "5.2.3"
+    INSTALLER_VERSION: "1.0"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -46,8 +50,8 @@ jobs:
     - name: Test Installer
       shell: bash
       run: |
-        tar xzf Plone-*-UnifiedInstaller*.tgz
-        mv Plone-*-UnifiedInstaller* ../installer
+        tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
         cd ..
         mkdir tmp
         ls -la
@@ -85,8 +89,8 @@ jobs:
     - name: Test Installer
       shell: bash
       run: |
-        tar xzf Plone-*-UnifiedInstaller-*.tgz
-        mv Plone-*-UnifiedInstaller* ../installer
+        tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
         cd ..
         mkdir tmp
         ls -la
@@ -116,8 +120,8 @@ jobs:
       run: dir
     - name: Extract Tar
       run: |
-        tar.exe xzf Plone-5.2.3-UnifiedInstaller-1.0.tgz
-        move Plone-5.2.3-UnifiedInstaller-1.0 ..\installer
+        tar.exe xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        move Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ..\installer
     - name: Run tests
       run: |
         cd ..
