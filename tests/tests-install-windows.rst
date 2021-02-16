@@ -134,12 +134,7 @@ Run it
 
 ::
 
-    >>> stdout, stderr, returncode = doCommand('START "" %s\zeocluster\bin\zeoserver_runzeo.bat' % testTarget)
-    >>> returncode
-    0
-    >>> safestr(stderr)
-    ''
-
+    >>> zeo = doCommand('%s\zeocluster\bin\zeoserver_runzeo.bat' % testTarget, forever=True)
     >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\runwsgi.exe -dv .\parts\client1\etc\wsgi.ini' % testTarget)
     >>> returncode
     0

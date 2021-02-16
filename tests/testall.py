@@ -34,10 +34,12 @@ def safestr(value):
     return value
 
 
-def doCommand(command):
+def doCommand(command, forever=False):
     p = subprocess.Popen(
-        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=not forever
     )
+    if forever:
+        return p
     out, err = p.communicate()
     return (out, err, p.returncode)
 
