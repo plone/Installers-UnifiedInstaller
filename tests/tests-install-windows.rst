@@ -46,10 +46,7 @@ Test a ZEO install
     >>> returncode
     0
 
-    >>> if returncode:
-    ...     print(safestr(stderr))
-
-    >>> print(safestr(stdout))
+    >>> print(safestr(stdout).replace("\r", ""))
     <BLANKLINE>
     -etc-
     Installing Plone 5.2-etc-
@@ -61,43 +58,52 @@ Test a ZEO install
       Username: admin
       Password: admin-etc-
 
-    target should have basic kit
+target should have basic kit::
+
     >>> sorted(os.listdir(testTarget))
     ['buildout-cache', 'zeocluster']
 
-    There should now be a buildout skeleton in zeocluster
+There should now be a buildout skeleton in zeocluster::
+
     >>> expected = ['.installed.cfg', 'README.html', 'adminPassword.txt', 'base.cfg', 'bin', 'buildout.cfg', 'develop-eggs', 'develop.cfg', 'lxml_static.cfg', 'parts', 'products', 'src', 'var', 'requirements.txt']
-    >>> found = os.listdir('%s/zeocluster' % testTarget)
+    >>> found = os.listdir('%s\zeocluster' % testTarget)
     >>> [s for s in expected if s not in found]
     []
 
-    Parts should contain the needed components
+Parts should contain the needed components::
+
     >>> expected = ['README.txt', 'client1', 'client2', 'zeoserver']
-    >>> found = os.listdir('%s/zeocluster/parts' % testTarget)
+    >>> found = os.listdir('%s\zeocluster\parts' % testTarget)
     >>> [s for s in expected if s not in found]
     []
 
-    parts/README.html should be a warning
+parts/README.html should be a warning::
+
     >>> print(open('%s/zeocluster/parts/README.txt' % testTarget).read())
     WARNING:-etc-run bin/buildout-etc-
 
-    We should have an inituser for admin
+We should have an inituser for admin::
+
     >>> print(open('%s/zeocluster/parts/client1/inituser' % testTarget).read())
     admin:{SHA}-etc-
 
-    Check bin contents
+Check bin contents::
+
     >>> expected = ['backup', 'buildout', 'client1', 'client2', 'plonectl', 'pip', 'python', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
     >>> found = os.listdir('%s/zeocluster/bin' % testTarget)
     >>> [s for s in expected if s not in found]
     []
 
-    Installing again to the same target should fail
+Installing again to the same target should fail::
+
     >>> stdout, stderr, returncode = doCommand('.\windows_install.bat zeo --target=%s --password=admin' % testTarget)
     >>> "already exists; aborting install." in safestr(stdout)
     True
 
-    Check the Python
-    ----------------
+Check the Python
+----------------
+
+::
 
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zopepy -c "from PIL._imaging import jpeg_decoder"' % testTarget)
     >>> returncode
@@ -117,27 +123,30 @@ Test a ZEO install
     >>> safestr(stderr)
     ''
 
-    Since we didn't specify otherwise, this Python should be a virtualenv.
+Since we didn't specify otherwise, this Python should be a virtualenv.::
+
     >>> os.path.exists(os.path.join(testTarget, 'zeocluster', 'bin', 'activate'))
     True
 
 
-    Run it
-    ------
+Run it
+------
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/zeoserver start' % testTarget)
+::
+
+    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\zeoserver start' % testTarget)
     >>> returncode
     0
     >>> safestr(stderr)
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client1 start' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\client1 start' % testTarget)
     >>> returncode
     0
     >>> safestr(stderr)
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/client2 start' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\client2 start' % testTarget)
     >>> returncode
     0
     >>> safestr(stderr)
@@ -146,7 +155,7 @@ Test a ZEO install
     >>> time.sleep(30)
 
     Status check
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\plonectl status' % testTarget)
 
     >>> returncode
     0
@@ -154,19 +163,23 @@ Test a ZEO install
     >>> safestr(stderr)
     ''
 
-    Fetch root page via client1
+Fetch root page via client1::
+
     >>> "Plone is up and running" in urlopen('http://localhost:8080/').read()
     True
 
-    Fetch root page via client2
+Fetch root page via client2::
+
     >>> "Plone is up and running" in urlopen('http://localhost:8081/').read()
     True
 
-    Check Banner
+Check Banner::
+
     >>> print(urlopen('http://localhost:8080/').headers['server'])
     waitress
 
-    Stop it
+Stop it::
+
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl stop' % testTarget)
 
     >>> returncode

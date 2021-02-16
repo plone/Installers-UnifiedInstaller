@@ -1,9 +1,5 @@
-setuptools==42.0.2
-zc.buildout==2.13.3
-wheel
+-r https://dist.plone.org/release/5.2.3/requirements.txt
 
-# Windows specific down here (has to be installed here, fails in buildout)
-# Dependency of zope.sendmail:
-pywin32 ; platform_system == 'Windows'
-# Dependency of collective.recipe.omelette:
-ntfsutils ; platform_system == 'Windows' and python_version < '3.0'
+# SSL Certs on windows, because Python is missing them otherwise:
+# can be removed for 5.2.4 (included in coredev)
+certifi ; platform_system == 'Windows'
