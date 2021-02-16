@@ -140,29 +140,21 @@ Run it
     >>> safestr(stderr)
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\client1 start' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\runwsgi.exe -dv .\parts\client1\etc\wsgi.ini' % testTarget)
     >>> returncode
     0
     >>> safestr(stderr)
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\client2 start' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\runwsgi.exe -dv .\parts\client2\etc\wsgi.ini' % testTarget)
     >>> returncode
     0
+    
     >>> safestr(stderr)
     ''
 
     >>> time.sleep(30)
-
-    Status check
-    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\plonectl status' % testTarget)
-
-    >>> returncode
-    0
-
-    >>> safestr(stderr)
-    ''
-
+    
 Fetch root page via client1::
 
     >>> "Plone is up and running" in urlopen('http://localhost:8080/').read()
