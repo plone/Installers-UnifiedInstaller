@@ -108,7 +108,7 @@ if not os.path.exists(opt.target):
     os.mkdir(opt.target, 0o700)
 
 # virtualenv
-PY_HOME = "py-" + '.'.join([str(x) for x in sys.version_info])
+PY_HOME = os.path.join(opt.target, "py-" + '.'.join([str(x) for x in sys.version_info]))
 PY_SCRIPTS = os.path.join(PY_HOME, SCRIPTS)
 if not os.path.exists(PY_HOME):
     _print("Preparing python virtualenv")
@@ -122,16 +122,17 @@ if not os.path.exists(PY_HOME):
         import venv
         builder = venv.EnvBuilder(with_pip=True)
         builder.create(PY_HOME)
-    PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
-    # _print(PIP_BIN)
-    _print("Installing requirements in virtualenv")
-    doCommand(
-        PIP_BIN + ' install -r ' +
-        os.path.join(INSTALLER_HOME, 'base_skeleton', 'requirements.txt') +
-        ' --no-warn-script-location',
-        check=True
-    )
-    doCommand(PIP_BIN + ' install pypiwin32', check=True)
+PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
+_print("Updating pip")
+doCommand(PIP_BIN + ' install -U pip', check=True)
+_print("Installing requirements in virtualenv")
+doCommand(
+    PIP_BIN + ' install -r ' +
+    os.path.join(INSTALLER_HOME, 'base_skeleton', 'requirements.txt') +
+    ' --no-warn-script-location',
+    check=True
+)
+doCommand(PIP_BIN + ' install pypiwin32', check=True)
 
 INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
 if os.path.exists(INSTANCE_HOME):
