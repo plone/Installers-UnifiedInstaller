@@ -1,4 +1,4 @@
-# Copyright (c) 2012-2013 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2012-2021 Plone Foundation. Licensed under GPL v 2.
 #
 # Utilities meant to be sourced into a shell script
 
@@ -110,21 +110,3 @@ config_version () {
     fi
     return 1
 }
-
-# for NEED_XML2 in 1.9.0 2.7.7 2.7.8 2.7.9 2.7.11 2.8.0; do
-#     if config_version xml2 $NEED_XML2; then
-#         echo "Yes, xml2-config exists, and version is >= $NEED_XML2"
-#     else
-#         echo "No, xml2-config doesn't exist, or version is < $NEED_XML2"
-#     fi
-# done
-
-# for NEED_XSLT in 1.0.25 1.1.25 1.1.26 1.1.27 1.2.0 3.0.0; do
-#     if config_version xslt $NEED_XSLT; then
-#         echo "Yes, xslt-config exists, and version is >= $NEED_XSLT"
-#     else
-#         echo "No, xslt-config doesn't exist, or version is < $NEED_XSLT"
-#     fi
-# done
-
-# download http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2 Python-2.7.4.tar.bz2 62704ea0f125923208d84ff0568f7d50
