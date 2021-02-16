@@ -22,7 +22,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Plone-Unified-Installer
-        path: ~/dist/*.tgz
+        path: ~/dist/Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.*
   test-ubuntu:
     needs: build
     strategy:

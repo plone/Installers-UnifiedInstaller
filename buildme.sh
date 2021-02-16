@@ -9,7 +9,7 @@ set -e
 
 
 # MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
-BASE_VER=5.2.3
+BASE_VER="5.2.3"
 INSTALLER_REVISION="1.0"
 
 # The next file has to start with virtualenv* -
@@ -55,6 +55,7 @@ fi
 TARGET=Plone-${BASE_VER}-UnifiedInstaller-${INSTALLER_REVISION}
 TARGET_DIR=${WORK_DIR}/${TARGET}
 TARGET_TGZ=${WORK_DIR}/${TARGET}.tgz
+TARGET_ZIP=${WORK_DIR}/${TARGET}.zip
 
 echo "Remove previous builds"
 if [ -e "${TARGET_DIR}" ]; then
@@ -109,15 +110,28 @@ find ${TARGET_DIR} -type f -exec chmod 644 {} \;
 chmod 755 ${TARGET_DIR}/install.sh
 find ${TARGET_DIR} -type d -exec chmod 755 {} \;
 
-echo "Making tarball"
 cd $WORK_DIR
+
+echo "Making tarball"
 echo "$TAR ${TARGET_TGZ} ${TARGET}"
 $TAR ${TARGET_TGZ} ${TARGET}
+
+echo "Making ZIP-file"
+echo "zip -r ${TARGET_ZIP} ${TARGET}"
+zip -r ${TARGET_ZIP} ${TARGET}
+
+echo "Remove Build Dir"
 rm -r ${TARGET}
 
 echo "Test unpack of tarball"
 $UNTAR ${TARGET_TGZ}
 ls -la ${TARGET}
+rm -r ${TARGET}
+
+echo "Test unpack of zipfile"
+unzip ${TARGET_ZIP}
+ls -la ${TARGET}
+rm -r ${TARGET}
 
 cd $CURDIR
 echo "Build Done"
