@@ -10,7 +10,7 @@ set -e
 
 # MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
 BASE_VER=5.2.3
-INSTALLER_REVISION=""
+INSTALLER_REVISION="1.0"
 
 # The next file has to start with virtualenv* -
 # otherwise it need to be changed also in helper_scripts/main_install_script.sh and helper_scripts/windows_install.py
@@ -52,7 +52,7 @@ else
   fi
 fi
 
-TARGET=Plone-${BASE_VER}-UnifiedInstaller${INSTALLER_REVISION}
+TARGET=Plone-${BASE_VER}-UnifiedInstaller-${INSTALLER_REVISION}
 TARGET_DIR=${WORK_DIR}/${TARGET}
 TARGET_TGZ=${WORK_DIR}/${TARGET}.tgz
 

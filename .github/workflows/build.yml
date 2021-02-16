@@ -46,8 +46,8 @@ jobs:
     - name: Test Installer
       shell: bash
       run: |
-        tar xzf Plone-*-UnifiedInstaller.tgz
-        mv Plone-*-UnifiedInstaller ../installer
+        tar xzf Plone-*-UnifiedInstaller*.tgz
+        mv Plone-*-UnifiedInstaller* ../installer
         cd ..
         mkdir tmp
         ls -la
@@ -85,8 +85,8 @@ jobs:
     - name: Test Installer
       shell: bash
       run: |
-        tar xzf Plone-*-UnifiedInstaller.tgz
-        mv Plone-*-UnifiedInstaller ../installer
+        tar xzf Plone-*-UnifiedInstaller-*.tgz
+        mv Plone-*-UnifiedInstaller* ../installer
         cd ..
         mkdir tmp
         ls -la
@@ -116,8 +116,8 @@ jobs:
       run: dir
     - name: Extract Tar
       run: |
-        tar.exe xzf Plone-5.2.3-UnifiedInstaller.tgz
-        move Plone-5.2.3-UnifiedInstaller ..\installer
+        tar.exe xzf Plone-5.2.3-UnifiedInstaller-1.0.tgz
+        move Plone-5.2.3-UnifiedInstaller-1.0 ..\installer
     - name: Run tests
       run: |
         cd ..
