@@ -130,11 +130,6 @@ Check the Python
     >>> safestr(stderr)
     ''
 
-Since we didn't specify otherwise, this Python should be a virtualenv.::
-
-    >>> os.path.exists(os.path.join(testTarget, 'zeocluster', 'bin', 'activate'))
-    True
-
 
 Run it
 ------
