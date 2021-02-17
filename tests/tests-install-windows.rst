@@ -148,7 +148,7 @@ Run it
     >>> safestr(stderr)
     ''
 
-    >>> time.sleep(30)
+    >>> time.sleep(60)
     
 Fetch root page via client1::
 
