@@ -12,14 +12,14 @@ Setup stuff
 
     >>> import os, os.path, time
 
-This test should be run from the directory with install.sh
+This test should be run from the directory with windows_install.bat
 
     >>> os.chdir(os.path.join(os.getcwd(), '..'))
-    >>> os.path.exists('install.sh')
+    >>> os.path.exists('windows_install.bat')
     True
 
-install.sh should be executable
-    >>> os.access('install.sh', os.X_OK)
+windows_install.bat should be executable
+    >>> os.access('windows_install.bat', os.X_OK)
     True
 
 
@@ -27,7 +27,7 @@ install.sh should be executable
 Usage Message
 -------------
 
-Running install.sh with help option should result in a usage message:
+Running windows_install.bat with help option should result in a usage message:
 
     >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --help')
     >>> returncode

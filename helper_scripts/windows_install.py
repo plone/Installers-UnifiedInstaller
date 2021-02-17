@@ -106,6 +106,8 @@ if opt.instance is None:
 if not os.path.exists(opt.target):
     _print("Creating target directory " + opt.target)
     os.mkdir(opt.target, 0o700)
+else:
+    _print("Using target directory " + opt.target)
 
 # virtualenv
 PY_HOME = os.path.join(opt.target, "py-" + ".".join([str(x) for x in sys.version_info]))
