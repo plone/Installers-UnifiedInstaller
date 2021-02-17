@@ -116,12 +116,16 @@ else:
     client_index = parts.index('client1')
     for client in range(1, CLIENTS):
         parts.insert(client_index + client, 'client%d' % (client + 1))
-if not opt.root_install:
-    parts.remove('setpermissions')
-    parts.remove('precompiler')
+
 if os.name == 'nt':
+    parts.remove('setpermissions')
+    parts.remove('unifiedinstaller')
+    parts.remove('precompiler')
     # no hard links and rsync, no backup
     parts.remove('backup')
+elif not opt.root_install:
+    parts.remove('setpermissions')
+    parts.remove('precompiler')
 
 parts = 'parts =\n    {0}\n'.format('\n    '.join(parts))
 buildout = re.sub(r"^parts =\n.+?\n\n", parts, buildout, flags=re.MULTILINE + re.DOTALL)
@@ -221,7 +225,7 @@ if opt.run_buildout:
 
     if not returncode:
         _print("Building Zope/Plone; this takes a while...")
-        options = ''
+        options = ' -vv '
         if opt.force_build_from_cache == 'yes':
             options += ' -NU buildout:install-from-cache=true'
         returncode = doCommand(
