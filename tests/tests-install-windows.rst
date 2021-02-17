@@ -60,7 +60,7 @@ Test a ZEO install
 
 target should have basic kit::
 
-    >>> contents = os.listdir(testTarget))
+    >>> contents = os.listdir(testTarget)
     >>> 'buildout-cache' in contents
     True
 
