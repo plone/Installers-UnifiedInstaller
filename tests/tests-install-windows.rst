@@ -48,12 +48,9 @@ Test a ZEO install
 
     >>> print(safestr(stdout).replace("\r", ""))
     -etc-
-    <BLANKLINE>
     ######################  Installation Complete  ######################
     <BLANKLINE>
     Plone successfully installed at -etc-
-    -etc-\README.html
-    for startup instructions.
     -etc-
 
 target should have basic kit::

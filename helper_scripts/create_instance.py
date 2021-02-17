@@ -237,7 +237,6 @@ if opt.install_lxml == "yes":
     shutil.rmtree("parts/lxml")
 
 _print("Building Zope/Plone; this takes a while...")
-options = " -vv "
 if opt.force_build_from_cache == "yes":
     options += " -NU buildout:install-from-cache=true"
 returncode = doCommand(os.path.join(opt.instance_home, "bin", "buildout") + options)
