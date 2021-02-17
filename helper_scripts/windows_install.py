@@ -40,11 +40,11 @@ def doCommand(command, check=False):
 
 
 if os.name == "nt":
-    PLONE_HOME = os.path.join(os.environ["HOMEPATH"], "Plone")
+    DEFAULT_PLONE_HOME = os.path.join(os.environ["HOMEPATH"], "Plone")
     SCRIPTS = "Scripts"
     BIN_SUFFIX = ".exe"
 else:
-    PLONE_HOME = os.path.join(os.environ["HOME"], "Plone")
+    DEFAULT_PLONE_HOME = os.path.join(os.environ["HOME"], "Plone")
     SCRIPTS = "bin"
     BIN_SUFFIX = ""
 
@@ -69,10 +69,10 @@ argparser.add_argument(
 argparser.add_argument(
     "--target",
     required=False,
-    default=PLONE_HOME,
+    default=DEFAULT_PLONE_HOME,
     help="Use to specify top-level path for installs. "
     "Plone instances will be built inside this directory. "
-    "Default is {}.".format(PLONE_HOME),
+    "Default is {}.".format(DEFAULT_PLONE_HOME),
 )
 argparser.add_argument(
     "--instance",
@@ -147,7 +147,7 @@ doCommand(
 )
 doCommand(PIP_BIN + " install pypiwin32", check=True)
 
-INSTANCE_HOME = os.path.join(PLONE_HOME, opt.instance)
+INSTANCE_HOME = os.path.join(opt.target, opt.instance)
 if os.path.exists(INSTANCE_HOME):
     _print(
         "Instance home ({}) already exists. Delete it if you wish to install a new instance.".format(
@@ -176,14 +176,14 @@ if opt.itype == "zeo":
     options += " --clients=" + str(opt.clients)
 
 _print("Running create_instance.py; this takes a while.")
-returncode = doCommand(
+command = (
     PYTHON_BIN
     + " "
     + os.path.join(INSTALLER_HOME, "helper_scripts", "create_instance.py")
     + " --uidir="
     + INSTALLER_HOME
     + " --plone_home="
-    + PLONE_HOME
+    + opt.target
     + " --instance_home="
     + INSTANCE_HOME
     + " --itype="
@@ -191,6 +191,8 @@ returncode = doCommand(
     + " --force_build_from_cache=no"
     + options
 )
+_print("> " + command)
+returncode = doCommand(command)
 
 if returncode:
     _print("Failed Windows build with error code: {0}; Aborting.".format(returncode))
