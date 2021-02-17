@@ -42,7 +42,7 @@ Running windows_install.bat with help option should result in a usage message:
 Test a ZEO install
 ------------------
 
-    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target={} --password=admin zeo'.format(testTarget))
+    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target {0} --password admin zeo'.format(testTarget))
     >>> returncode
     0
 
@@ -101,7 +101,7 @@ Check bin contents::
 
 Installing again to the same target should fail::
 
-    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat zeo --target=%s --password=admin' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat zeo --target %s --password admin' % testTarget)
     >>> "already exists; aborting install." in safestr(stdout)
     True
 

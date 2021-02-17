@@ -85,7 +85,7 @@ opt.run_buildout = bool(int(opt.run_buildout))
 ##########################################################
 # Copy the buildout skeleton into place, clean up a bit
 #
-_print("Copying buildout skeleton")
+_print("Copying buildout skeleton to {}".format(opt.instance_home))
 copy_tree(os.path.join(opt.uidir, "base_skeleton"), opt.instance_home, update=1)
 
 if os.name != "nt":

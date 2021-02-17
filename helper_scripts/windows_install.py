@@ -180,20 +180,15 @@ returncode = doCommand(
     PYTHON_BIN
     + " "
     + os.path.join(INSTALLER_HOME, "helper_scripts", "create_instance.py")
-    + " "
-    + "--uidir="
+    + " --uidir="
     + INSTALLER_HOME
-    + " "
-    + "--plone_home="
+    + " --plone_home="
     + PLONE_HOME
-    + " "
-    + "--instance_home="
+    + " --instance_home="
     + INSTANCE_HOME
-    + " "
-    + "--itype="
+    + " --itype="
     + ITYPE
-    + " "
-    + "--force_build_from_cache=no"
+    + " --force_build_from_cache=no"
     + options
 )
 
