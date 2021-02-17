@@ -60,8 +60,15 @@ Test a ZEO install
 
 target should have basic kit::
 
-    >>> sorted(os.listdir(testTarget))
-    ['buildout-cache', 'zeocluster']
+    >>> contents = os.listdir(testTarget))
+    >>> 'buildout-cache' in contents
+    True
+
+    >>> 'zeocluster' in contents
+    True
+
+    >>> len([x for x in contents if x.startswith('py')])
+    1
 
 There should now be a buildout skeleton in zeocluster::
 
