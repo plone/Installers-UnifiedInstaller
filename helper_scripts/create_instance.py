@@ -250,19 +250,19 @@ if os.name == "nt":
 else:
     ext = ""
 
-paths_to_check = [os.path.join(opt.instance_home, "var")]
+paths_to_check = [
+    os.path.join(opt.instance_home, "var"),
+    os.path.join(opt.instance_home, "bin", "runwsgi" + ext),
+]
 if opt.itype == "standalone":
     paths_to_check += [
-        os.path.join(opt.instance_home, "bin", "instance" + ext),
         os.path.join(opt.instance_home, "parts", "instance"),
     ]
 else:
     paths_to_check += [
         os.path.join(opt.instance_home, "bin", "zeoserver" + ext),
         os.path.join(opt.instance_home, "parts", "zeoserver"),
-        os.path.join(opt.instance_home, "bin", "client1"),
         os.path.join(opt.instance_home, "parts", "client1"),
-        os.path.join(opt.instance_home, "bin", "client2"),
         os.path.join(opt.instance_home, "parts", "client2"),
     ]
 for path_to_check in paths_to_check:
@@ -274,7 +274,7 @@ for path_to_check in paths_to_check:
         )
         _print("-" * 80)
         _print(
-            "Instance directory {} contains:\n{}- ".format(
+            "Instance directory {} contains:\n- {}".format(
                 opt.instance_home, "\n- ".join(os.listdir(opt.instance_home))
             )
         )
