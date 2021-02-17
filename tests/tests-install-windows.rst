@@ -47,16 +47,14 @@ Test a ZEO install
     0
 
     >>> print(safestr(stdout).replace("\r", ""))
-    <BLANKLINE>
     -etc-
-    Installing Plone 5.2-etc-
-    #####################################################################
     <BLANKLINE>
     ######################  Installation Complete  ######################
     <BLANKLINE>
     Plone successfully installed at -etc-
-      Username: admin
-      Password: admin-etc-
+    -etc-\README.html
+    for startup instructions.
+    -etc-
 
 target should have basic kit::
 
