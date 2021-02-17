@@ -98,7 +98,7 @@ Check bin contents::
 
 Installing again to the same target should fail::
 
-    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target %s --password admin zeo' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target {0} --password admin zeo'.format(testTarget))
     >>> "already exists; aborting install." in safestr(stdout)
     True
 

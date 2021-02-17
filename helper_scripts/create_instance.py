@@ -174,11 +174,11 @@ else:
     client_parts = ""
     client_addresses = ""
     for client in range(1, CLIENTS + 1):
-        options = {
+        c_options = {
             "client_num": client,
             "client_port": BASE_ADDRESS + client - 1,
         }
-        client_parts = "%s%s" % (client_parts, CLIENT_TEMPLATE % options)
+        client_parts = "%s%s" % (client_parts, CLIENT_TEMPLATE % c_options)
     buildout = buildout.replace(ADD_CLIENTS_MARKER, client_parts)
 
 # write out buildout.cfg
@@ -237,6 +237,7 @@ if opt.install_lxml == "yes":
     shutil.rmtree("parts/lxml")
 
 _print("Building Zope/Plone; this takes a while...")
+options = ""
 if opt.force_build_from_cache == "yes":
     options += " -NU buildout:install-from-cache=true"
 returncode = doCommand(os.path.join(opt.instance_home, "bin", "buildout") + options)
