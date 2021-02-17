@@ -94,6 +94,26 @@ if os.name != "nt":
     doCommand('find %s -name ".svn" | xargs rm -rf' % opt.instance_home)
 
 ##########################################################
+# create adminPassword.txt
+#
+if os.name == "nt":
+    with open(os.path.join(opt.instance_home, 'adminPassword.txt'), "w") as fd:
+        fd.write(opt.password + "\n")
+    with open(os.path.join(opt.instance_home, 'README.html'), "w") as fd:
+        fd.write("<html><body>")
+        fd.write("<h1>Welcome to your Plone</h1>")
+        if opt.itype == "standalone":        
+            fd.write("<p>Start your instance with <i>bin\\runwsgi.exe -dv part/instance/wsgi.ini</i></p>")
+        else:
+            fd.write("<p>Start your cluster with>:<br/>")
+            fd.write("<i>START bin\\zeoserver_runzeo.bat</i><br />")
+            fd.write("<i>START runwsgi.exe -dv part/client1/wsgi.ini</i><br />")
+            fd.write("<i>bin\\runwsgi.exe -dv part/client2/wsgi.ini</i></p>")
+        fd.write("<p><a href='https://docs.plone.org'>Read the Plone documentation</a> for more information or ")
+        fd.write("consult the <a href='https://community.plone.org'>Plone Community Forum</a></p>")
+        fd.write("</html></body>")
+
+##########################################################
 # buildout.cfg customizations
 #
 CLIENTS = int(opt.clients)
