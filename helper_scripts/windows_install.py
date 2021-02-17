@@ -122,9 +122,9 @@ if not os.path.exists(PY_HOME):
         import venv
         builder = venv.EnvBuilder(with_pip=True)
         builder.create(PY_HOME)
-PIP_BIN = os.path.join(PY_SCRIPTS, 'pip')
+PIP_BIN = os.path.join(PY_SCRIPTS, 'pip' + BIN_SUFFIX)
 _print("Updating pip")
-doCommand(PIP_BIN + ' install -U pip', check=True)
+doCommand(PIP_BIN + ' install -U pip')
 _print("Installing requirements in virtualenv")
 doCommand(
     PIP_BIN + ' install -r ' +

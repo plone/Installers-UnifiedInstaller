@@ -102,9 +102,9 @@ jobs:
     strategy:
       matrix:
         python-version:
-        # - "2.7"
-        # - "3.6"
-        # - "3.7"
+        # by intend no support for Python 2.7
+        - "3.6"
+        - "3.7"
         - "3.8"
     runs-on: windows-latest
     steps:
