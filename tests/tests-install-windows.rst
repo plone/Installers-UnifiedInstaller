@@ -127,13 +127,13 @@ Run it
 ::
 
     >>> zeo = doCommand('%s/zeocluster/bin/zeoserver_runzeo.bat' % testTarget, forever=True)
-    >>> stdout, stderr, returncode = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/parts/client1/etc/wsgi.ini'.format(target=testTarget))
+    >>> stdout, stderr, returncode = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/zeocluster/parts/client1/etc/wsgi.ini'.format(target=testTarget))
     >>> returncode
     0
     >>> safestr(stderr)
     ''
 
-    >>> stdout, stderr, returncode = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/parts/client2/etc/wsgi.ini'.format(target=testTarget))
+    >>> stdout, stderr, returncode = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/zeocluster/parts/client2/etc/wsgi.ini'.format(target=testTarget))
     >>> returncode
     0
     
