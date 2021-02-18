@@ -79,11 +79,6 @@ Parts should contain the needed components::
     >>> [s for s in expected if s not in found]
     []
 
-parts/README.html should be a warning::
-
-    >>> print(open('%s/zeocluster/parts/README.txt' % testTarget).read())
-    WARNING:-etc-run bin/buildout-etc-
-
 We should have an inituser for admin::
 
     >>> print(open('%s/zeocluster/parts/client1/inituser' % testTarget).read())
@@ -91,7 +86,7 @@ We should have an inituser for admin::
 
 Check bin contents::
 
-    >>> expected = ['backup', 'buildout', 'client1', 'client2', 'plonectl', 'pip', 'python', 'repozo', 'restore', 'snapshotbackup', 'snapshotrestore', 'zeopack', 'zeoserver', 'zopepy']
+    >>> expected = ['runwsgi.exe', 'zeoserver_runzeo.bat', 'zeopack.exe', 'zopepy.exe']
     >>> found = os.listdir('%s/zeocluster/bin' % testTarget)
     >>> [s for s in expected if s not in found]
     []
@@ -99,7 +94,7 @@ Check bin contents::
 Installing again to the same target should fail::
 
     >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target {0} --password admin zeo'.format(testTarget))
-    >>> "already exists; aborting install." in safestr(stdout)
+    >>> "already exists; aborting install." in safestr(stdout) or safestr(stdout)
     True
 
 Check the Python
@@ -131,14 +126,14 @@ Run it
 
 ::
 
-    >>> zeo = doCommand('%s\zeocluster\bin\zeoserver_runzeo.bat' % testTarget, forever=True)
-    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\runwsgi.exe -dv .\parts\client1\etc\wsgi.ini' % testTarget)
+    >>> zeo = doCommand('%s/zeocluster/bin/zeoserver_runzeo.bat' % testTarget, forever=True)
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/runwsgi.exe -dv .\parts\client1\etc\wsgi.ini' % testTarget)
     >>> returncode
     0
     >>> safestr(stderr)
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s\zeocluster\bin\runwsgi.exe -dv .\parts\client2\etc\wsgi.ini' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/runwsgi.exe -dv .\parts\client2\etc\wsgi.ini' % testTarget)
     >>> returncode
     0
     
