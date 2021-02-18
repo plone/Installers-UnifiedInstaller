@@ -74,7 +74,7 @@ There should now be a buildout skeleton in zeocluster::
 
 Parts should contain the needed components::
 
-    >>> expected = ['README.txt', 'client1', 'client2', 'zeoserver']
+    >>> expected = ['client1', 'client2', 'zeoserver']
     >>> found = os.listdir('%s\zeocluster\parts' % testTarget)
     >>> [s for s in expected if s not in found]
     []
@@ -94,7 +94,7 @@ Check bin contents::
 Installing again to the same target should fail::
 
     >>> stdout, stderr, returncode = doCommand('.\windows_install.bat --target {0} --password admin zeo'.format(testTarget))
-    >>> "already exists; aborting install." in safestr(stdout) or safestr(stdout)
+    >>> "already exists. Delete it if you wish" in safestr(stdout) or safestr(stdout)
     True
 
 Check the Python
@@ -127,13 +127,13 @@ Run it
 ::
 
     >>> zeo = doCommand('%s/zeocluster/bin/zeoserver_runzeo.bat' % testTarget, forever=True)
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/runwsgi.exe -dv .\parts\client1\etc\wsgi.ini' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}\parts\client1\etc\wsgi.ini'.format(target=testTarget))
     >>> returncode
     0
     >>> safestr(stderr)
     ''
 
-    >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/runwsgi.exe -dv .\parts\client2\etc\wsgi.ini' % testTarget)
+    >>> stdout, stderr, returncode = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}\parts\client2\etc\wsgi.ini'.format(target=testTarget))
     >>> returncode
     0
     
