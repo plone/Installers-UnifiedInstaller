@@ -7,15 +7,11 @@
 - Update to Plone 5.2.4
   [jensens]
 
-- Major Overhaul: Drop Python build. Overhaul scriptd, see https://github.com/plone/Installers-UnifiedInstaller/pull/110
+- Major Overhaul: Drop Python build. Overhaul script, see https://github.com/plone/Installers-UnifiedInstaller/pull/110
   [jensens]
 
-5.2.2 (unreleased)
-
-- update to Plone 5.2.2
+- Update to Plone 5.2.2
   [tkimnguyen]
-
-5.2.1-r5 (unreleased)
 
 - More reliable automatisation and fresher virtualenv.
   Drop Python 3.5, add Python 3.8
