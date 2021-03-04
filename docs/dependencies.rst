@@ -45,6 +45,13 @@ RPM:
 - make
 - which
 
+SuSE Linux
+
+.. code-block::
+
+    sudo zypper install gcc-c++ patch openssl-devel libjpeg-devel libxslt-devel readline-devel make which python3-devel bzip2
+
+
 Other Linux distributions may have slightly different names.
 
 LibXML2/LibXSLT versions
