@@ -1,6 +1,6 @@
-============================
+===============================
 Plone 5.2: Instalador Unificado
-============================
+===============================
 
 Idioma: `Inglês <README.rst>`_ | `Português(Brasil) <README-pt-br.rst>`_
 
@@ -33,20 +33,20 @@ Faça o download do instalador:
 
 .. code-block:: shell
 
-  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2.1/+download/Plone-5.2.1-UnifiedInstaller-r1.tgz
+  wget --no-check-certificate https://launchpad.net/plone/5.2/5.2.4/+download/Plone-5.2.4-UnifiedInstaller-1.0.tgz
 
 Extraia o arquivo baixado:
 
 
 .. code-block:: shell
 
-  tar -xf Plone-5.2.1-UnifiedInstaller-r1.tgz
+  tar -xf Plone-5.2.4-UnifiedInstaller-1.0.tgz
 
 Vá para a pasta que contém o script do instalador:
 
 .. code-block:: shell
 
-  cd Plone-5.2.1-UnifiedInstaller-r1
+  cd Plone-5.2.4-UnifiedInstaller-1.0
 
 Execute o script:
 

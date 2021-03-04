@@ -41,11 +41,6 @@ Options
   The specified Python will need to have been built with support
   for libz and libjpeg and include the Python Imaging Library.
 
---build-python
-  If you do not have a suitable Python available, the installer will
-  build one for you if you set this option. Requires Internet access
-  to download Python source.
-
 --password=InstancePassword
   If not specified, a random password will be generated.
 

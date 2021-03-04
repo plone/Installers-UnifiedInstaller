@@ -48,16 +48,6 @@
 #   virtualenv will be used to isolate the copy used for the install.
 #   Note: the Python specified by --with-python should not itself be a virtualenv.
 #
-# --build-python
-#   If you do not have a suitable Python available, the installer will
-#   build one for you if you set this option. Requires Internet access
-#   to download Python source.
-#   Make sure that you have enough memory and swap.
-#   Use '--build-python=3' to build Python 3. Otherwise, we'll build 2.7.
-#
-# --without-ssl
-#   Optional. Allows the build to proceed without ssl dependency tests.
-#
 # --var=pathname
 #   Full pathname to the directory where you'd like to put the "var"
 #   components of the install. By default target/instance/var.

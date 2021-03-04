@@ -12,19 +12,20 @@ passed = True
 
 # check version
 vi = sys.version_info[:3]
-if vi[0] == 2 and vi < (2, 7, 9) or vi[0] == 3 and vi < (3, 5, 0):
-    _print("Failed: Python version must be 2.7.9+ or 3.5.0+.")
+if vi[0] == 2 and vi < (2, 7, 9) or vi[0] == 3 and vi < (3, 6, 0):
+    _print("Failed: Python version must be 2.7.9+ or 3.6.0+.")
     # not much point in further testing.
     sys.exit(1)
 
 include_dir = os.path.join(get_python_inc(plat_specific=1))
-if not os.path.isfile(os.path.join(include_dir, 'Python.h')):
+if not os.path.isfile(os.path.join(include_dir, "Python.h")):
     _print("Failed: We need to be able to use Python.h, which is missing.")
     _print("You may be able to resolve this by installing the python-dev package.")
     passed = False
 
 try:
     import xml.parsers.expat
+
     xml.parsers.expat
 except ImportError:
     _print("Failed: Python must include xml.parsers.expat module.")
@@ -33,9 +34,10 @@ except ImportError:
 
 try:
     import zlib
+
     zlib
     try:
-        zlib.compress(b'test')
+        zlib.compress(b"test")
     except LookupError:
         _print("Failed: Python zlib is not working.\n")
         passed = False
@@ -45,9 +47,10 @@ except ImportError:
 
 try:
     import _ssl
+
     _ssl
 except ImportError:
-    if '--without-ssl=yes' in sys.argv:
+    if "--without-ssl=yes" in sys.argv:
         _print("Warning: This Python does not have ssl support.")
     else:
         _print("Failed: This Python does not have ssl support.")
@@ -57,10 +60,13 @@ except ImportError:
 
 try:
     import readline
+
     readline
 except ImportError:
     _print("Warning: This Python does not have readline support.")
-    _print("It may still be usable for Zope, but interacting directly with Python will be painful.\n")
+    _print(
+        "It may still be usable for Zope, but interacting directly with Python will be painful.\n"
+    )
 
 if not passed:
     sys.exit(1)

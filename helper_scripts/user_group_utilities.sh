@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Plone Foundation. Licensed under GPL v 2.
+# Copyright (c) 2012-2021 Plone Foundation. Licensed under GPL v 2.
 #
 # This shell package provides functions for creating
 # users and groups in common UNIX work-alikes:

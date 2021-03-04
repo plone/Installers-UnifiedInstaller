@@ -19,11 +19,6 @@ Options (see top of install.sh for complete list):
   Path to the Python-${WANT_PYTHON} that you wish to use with Plone.
   virtualenv will be used to isolate the install.
 
---build-python
-  If you do not have a suitable Python available, the installer will
-  build one for you if you set this option. Requires Internet access
-  to download Python source.
-
 --password=InstancePassword
   If not specified, a random password will be generated.
 
@@ -67,9 +62,6 @@ Options (see top of install.sh for complete list):
 Read the top of install.sh for more install options.
 '
 
-BAD_BUILD_PYTHON=\
-'Bad argument for --build-python; "yes", "no" or "3" are valid.'
-
 BAD_USER_OPTION=\
 'Did you want "--daemon-user" instead of "--user"?'
 
@@ -79,9 +71,6 @@ BAD_TEMPLATE=\
 NO_METHOD_SELECTED=\
 'No method selected.
 Will use standalone method for convenience, but not run bin/buildout.'
-
-CONTRADICTORY_PYTHON_COMMANDS=\
-'--with-python and --build-python may not be employed at the same time.'
 
 POLITE_GOODBYE=\
 '
@@ -137,7 +126,6 @@ Aborting installation.
 "
 
 IGNORING_WITH_PYTHON="We already have a Python environment for this target; ignoring --with-python."
-IGNORING_BUILD_PYTHON="We already have a Python environment for this target; ignoring --build-python."
 
 CHOOSE_PYTHON_TITLE="Pick a Python"
 CHOOSE_PYTHON_EXPLANATION="
@@ -155,9 +143,7 @@ $PACKAGES_DIR and $HSCRIPTS_DIR subdirectories.
 NEED_INSTALL_PYTHON_MSG='
 Please do one of the following:
 1) Install python${WANT_PYTHON} or python3.6+ as a system "dev" package\;
-2) Use --with-python=... option to point the installer to a useable python\; or
-3) Only if no system package is available, use the --build-python option
-   to tell the installer to build Python 2.7 or --build-python=3 to build Python 3.x.
+2) Use --with-python=... option to point the installer to a useable python.\
 '
 
 NEED_INSTALL_LIBZ_MSG="
@@ -267,7 +253,7 @@ Please check rights and pathnames.
 Installation has failed.
 '
 
-INSTANCE_HOME_EXISTS='Instance target $INSTANCE_HOME already exists\; aborting install.'
+INSTANCE_HOME_EXISTS='Instance target $INSTANCE_HOME already exists; aborting install.'
 
 CREATING_VIRTUALENV="Creating Python virtual environment."
 
@@ -276,8 +262,7 @@ Failed to create virtual environment for $WITH_PYTHON'
 
 VIRTUALENV_BAD='
 Python created with virtualenv no longer passes baseline tests.
-You may need to use --build-python and let the Unified Installer
-build its own Python.'
+'
 
 DOWNLOADING_PYTHON='Downloading Python source from $PYTHON_URL'
 DOWNLOADING_PYTHON3='Downloading Python source from $PYTHON3_URL'

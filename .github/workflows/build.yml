@@ -1,0 +1,132 @@
+name: Build and test result
+
+on: [push]
+
+env:
+    PLONE_VERSION: "5.2.4"
+    INSTALLER_VERSION: "1.0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Run buildme.sh
+      run: |
+        WITH_PYTHON=`which python` ./buildme.sh ~/dist
+    - name: Upload Plone Installer from build
+      uses: actions/upload-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+        path: ~/dist/Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.*
+  test-ubuntu:
+    needs: build
+    strategy:
+      matrix:
+        python-version:
+        - "2.7"
+        - "3.6"
+        - "3.7"
+        - "3.8"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Installs on Linux
+      run: |
+        sudo apt install libxml2-dev libxslt1-dev
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: Test Installer
+      shell: bash
+      run: |
+        tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
+        cd ..
+        mkdir tmp
+        ls -la
+        cd installer/tests
+        WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
+  test-macos:
+    needs: build
+    strategy:
+      matrix:
+        python-version:
+        - "2.7"
+        - "3.6"
+# do not test on 3.7, b/c it fails for unknown GH actions specific reasons
+#        - "3.7"
+        - "3.8"
+    runs-on: macos-latest
+    steps:
+    - name: Installs on Macos
+      run: |
+        brew install libxml2 libxslt
+    - name: Increase WAIT for Service on macos
+      if: matrix.os == 'macos-latest'
+      run: |
+        echo PLONE_SERVER_START_WAIT="120" >> $GITHUB_ENV
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: Test Installer
+      shell: bash
+      run: |
+        tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
+        cd ..
+        mkdir tmp
+        ls -la
+        cd installer/tests
+        WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
+
+  test-windows:
+    needs: build
+    strategy:
+      matrix:
+        python-version:
+        # by intend no support for Python 2.7
+        - "3.6"
+        - "3.7"
+        - "3.8"
+    runs-on: windows-latest
+    steps:
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: dir
+    - name: Extract Tar
+      run: |
+        tar.exe xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        move Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ..\installer
+    - name: Run tests
+      run: |
+        cd ..
+        mkdir tmp
+        cd installer\tests
+        dir
+        setx WITH_TEMP "..\..\tmp" 
+        python testall.py

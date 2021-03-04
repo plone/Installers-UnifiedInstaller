@@ -83,23 +83,23 @@ Please make sure that you have all :doc:`dependencies` installed.
 Download the latest Plone unified installer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now it is time to download the installer:
+Now it is time to download the installer. Go to `Plone Installer download Page on Launchpad <https://launchpad.net/plone/+download>`_ and COPY the URL of the latest release.
 
 .. code-block:: bash
 
-	wget --no-check-certificate https://launchpad.net/plone/5.2/5.2.1/+download/Plone-5.2.1-UnifiedInstaller-r1.tgz
+	wget --no-check-certificate PASTE-URL-HERE
 
-Extract the downloaded file:
+Extract the downloaded file (change filename to actual :
 
 .. code-block:: bash
 
-	tar -xf Plone-5.2.1-UnifiedInstaller-r1.tgz
+	tar -xf Plone-5.2.4-UnifiedInstaller-1.0.tgz
 
 Go the folder containing installer script:
 
 .. code-block:: bash
 
-	cd Plone-5.2.1-UnifiedInstaller-r1
+	cd Plone-5.2.4-UnifiedInstaller-1.0
 
 Run the installer:
 
