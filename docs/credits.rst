@@ -18,3 +18,6 @@ of the rootless install.
 Thanks to Barry Page and Larry Pitcher for their work on the init scripts.
 
 Thanks to Steve McMahon for his years of awesome work and mentorship.
+
+Jens Klein refactored the installer to work again with Plone 5.2 on all platforms and added CI/CD.
+ 

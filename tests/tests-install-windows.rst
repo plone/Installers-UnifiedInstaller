@@ -126,11 +126,11 @@ Run it
 
 ::
 
-    >>> zeo = doCommand('{}/zeocluster/bin/zeoserver_runzeo.bat'.format(testTarget), forever=True)
-    >>> client1 = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/zeocluster/parts/client1/etc/wsgi.ini'.format(target=testTarget), forever=True)
-    >>> client2 = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/zeocluster/parts/client2/etc/wsgi.ini'.format(target=testTarget), forever=True)
-    >>> programs = zeo, client1, client2
-    >>> cycles = 60
+    >> zeo = doCommand('{}/zeocluster/bin/zeoserver_runzeo.bat'.format(testTarget), forever=True)
+    >> client1 = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/zeocluster/parts/client1/etc/wsgi.ini'.format(target=testTarget), forever=True)
+    >> client2 = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/zeocluster/parts/client2/etc/wsgi.ini'.format(target=testTarget), forever=True)
+    >> programs = zeo, client1, client2
+    >> cycles = 60
     
     
     

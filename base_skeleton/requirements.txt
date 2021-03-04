@@ -1,5 +1,2 @@
--r https://dist.plone.org/release/5.2.3/requirements.txt
+-r https://dist.plone.org/release/5.2.4-pending/requirements.txt
 
-# SSL Certs on windows, because Python is missing them otherwise:
-# can be removed for 5.2.4 (included in coredev)
-certifi ; platform_system == 'Windows'
