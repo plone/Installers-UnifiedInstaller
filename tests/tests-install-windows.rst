@@ -131,43 +131,46 @@ Run it
     >>> client2 = doCommand('{target}/zeocluster/bin/runwsgi.exe -dv {target}/zeocluster/parts/client2/etc/wsgi.ini'.format(target=testTarget), forever=True)
     >>> programs = zeo, client1, client2
     >>> cycles = 60
-    >>> for count in range(cycles):
-    ...     time.sleep(1)
-    ...     for program in programs:
-    ...         if program.poll() != None:
-    ...             print(programm.stderr)
-    ...             raise RuntimeError(safestr(programm.stderr))
-    ...     if checkport(port=8080) and checkport(port=8081):
-    ...         print("ok")
-    ...         break
-    ... else:
-    ...    print("No connection after ~{}secs.\n".format(cycles))
-    ...    for program in programs:
-    ...       program.kill()
-    ...       print("#" * 80 + "\n")
-    ...       print(safestr(program.stdout.read()))
-    ...       print("+" * 80 + "\n")
-    ...       print(safestr(program.stderr.read()))
-    ok
+    
+    
+    
+    >> for count in range(cycles):
+    ..     time.sleep(1)
+    ..     for program in programs:
+    ..         if program.poll() != None:
+    ..             print(programm.stderr)
+    ..             raise RuntimeError(safestr(programm.stderr))
+    ..     if checkport(port=8080) and checkport(port=8081):
+    ..         print("ok")
+    ..         break
+    .. else:
+    ..    print("No connection after ~{}secs.\n".format(cycles))
+    ..    for program in programs:
+    ..       program.kill()
+    ..       print("#" * 80 + "\n")
+    ..       print(safestr(program.stdout.read()))
+    ..       print("+" * 80 + "\n")
+    ..       print(safestr(program.stderr.read()))
+   ok
     
 Fetch root page via client1::
 
-    >>> "Plone is up and running" in urlopen('http://localhost:8080/').read()
+    >> "Plone is up and running" in urlopen('http://localhost:8080/').read()
     True
 
 Fetch root page via client2::
 
-    >>> "Plone is up and running" in urlopen('http://localhost:8081/').read()
+    >> "Plone is up and running" in urlopen('http://localhost:8081/').read()
     True
 
 Check Banner::
 
-    >>> print(urlopen('http://localhost:8080/').headers['server'])
+    >> print(urlopen('http://localhost:8080/').headers['server'])
     waitress
 
 Stop it
 -------
 ::
 
-    >>> for program in programs:
-    ...     programm.kill()
+    >> for program in programs:
+    ..     programm.kill()
