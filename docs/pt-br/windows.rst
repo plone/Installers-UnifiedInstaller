@@ -2,6 +2,8 @@
 Windows
 =======
 
+**Desatualizado, precisa de tradutor brasileiro!**
+
 Introdução
 ============
 

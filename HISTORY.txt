@@ -1,4 +1,9 @@
-5.2.4 (unreleased)
+5.2.5 
+
+- Update to Plone 5.2.5
+  [jensens]
+
+5.2.4
 
 - Added Github actions flow to build the installer and test it on Linux, Macos and Windows.
   Refactored tests.
