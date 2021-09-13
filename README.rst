@@ -39,7 +39,7 @@ Extract the downloaded file:
 
 .. code-block:: shell
 
-  tar -xf Plone-5.2.5-UnifiedInstaller-1.0
+  tar -xf Plone-5.2.5-UnifiedInstaller-1.0.tgz
 
 Go the folder containing installer script:
 
