@@ -34,9 +34,9 @@ PLONE_GROUP=plone_group
 # End of commonly configured options.
 #################################################
 
-readonly FOR_PLONE=5.2.5
+readonly FOR_PLONE=6.0-dev
 readonly WANT_PYTHON=3.8
-readonly ELIGIBLE_PYTHONS='2.7 3.6 3.7 3.8'
+readonly ELIGIBLE_PYTHONS='3.7 3.8 3.9'
 
 PACKAGES_DIR="${INSTALLER_PWD}/packages"
 readonly ONLINE_PACKAGES_DIR=opackages

@@ -1,2 +1,2 @@
-Plone version: 5.2.5 (with Zope 4.5.x)
-Installer version: Unified Installer 5.2.5-r1
+Plone version: 6.0-dev (with Zope 5.3.x)
+Installer version: Unified Installer 6.0-dev-r1
