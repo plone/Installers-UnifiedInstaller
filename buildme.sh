@@ -88,7 +88,8 @@ rm -r ${TARGET_DIR}/.github
 rm -rf ${TARGET_DIR}/packages/Python*
 
 echo "Getting docs"
-curl -L https://github.com/plone/Plone/archive/${BASE_VER}.zip --output ${BASE_VER}.zip
+# XXX Temporarily hardcoded.  The Plone package accidentally already has an alpha release.
+curl -L https://github.com/plone/Plone/archive/6.0.0a1.zip --output ${BASE_VER}.zip
 if [ -f "${BASE_VER}.zip" ]; then
   unzip ${BASE_VER}.zip
   rm ${BASE_VER}.zip
