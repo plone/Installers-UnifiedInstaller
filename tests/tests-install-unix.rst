@@ -150,14 +150,14 @@ Test a ZEO install
 
     Status check
     >>> stdout, stderr, returncode = doCommand('%s/zeocluster/bin/plonectl status' % testTarget)
-    >>> returncode
-    0
+    >>> returncode == 0 or (returncode, stdout)
+    True
 
     >>> safestr(stderr)
     ''
 
     Fetch root page via client1
-    >>> response = urlopen('http://localhost:8080/')    
+    >>> response = urlopen('http://localhost:8080/')
     >>> body = safestr(response.read())
     >>> True if "Plone is up and running" in body else body
     True
