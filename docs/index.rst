@@ -93,13 +93,13 @@ Extract the downloaded file (change filename to actual :
 
 .. code-block:: bash
 
-	tar -xf Plone-5.2.5-UnifiedInstaller-1.0.tgz
+	tar -xf Plone-5.2.6-UnifiedInstaller-1.0.tgz
 
 Go the folder containing installer script:
 
 .. code-block:: bash
 
-	cd Plone-5.2.5-UnifiedInstaller-1.0
+	cd Plone-5.2.6-UnifiedInstaller-1.0
 
 Run the installer:
 
