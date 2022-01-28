@@ -1,3 +1,8 @@
+5.2.7
+
+- Update to Plone 5.2.7
+  [maurits]
+
 5.2.6
 
 - Update to Plone 5.2.6
