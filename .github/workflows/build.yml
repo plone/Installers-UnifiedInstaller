@@ -3,7 +3,7 @@ name: Build and test result
 on: [push]
 
 env:
-    PLONE_VERSION: "5.2.8"
+    PLONE_VERSION: "5.2.9"
     INSTALLER_VERSION: "1.0"
 
 jobs:
