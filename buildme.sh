@@ -9,7 +9,7 @@ set -e
 
 
 # MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
-BASE_VER="5.2.9"
+BASE_VER="5.2.10"
 INSTALLER_REVISION="1.0"
 
 # The next file has to start with virtualenv* -
