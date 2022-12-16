@@ -10,6 +10,9 @@ set -e
 
 # MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
 BASE_VER="5.2.10.1"
+PLONE_VER=$BASE_VER
+# There is no .1 release of the Plone package, so use the previous one for the docs.
+PLONE_VER="5.2.10"
 INSTALLER_REVISION="1.0"
 
 # The next file has to start with virtualenv* -
@@ -88,12 +91,12 @@ rm -r ${TARGET_DIR}/.github
 rm -rf ${TARGET_DIR}/packages/Python*
 
 echo "Getting docs"
-curl -L https://github.com/plone/Plone/archive/${BASE_VER}.zip --output ${BASE_VER}.zip
-if [ -f "${BASE_VER}.zip" ]; then
-  unzip ${BASE_VER}.zip
-  rm ${BASE_VER}.zip
-  mv Plone-${BASE_VER}/docs ${TARGET_DIR}/Plone-docs
-  rm -rf Plone-${BASE_VER}
+curl -L https://github.com/plone/Plone/archive/${PLONE_VER}.zip --output ${PLONE_VER}.zip
+if [ -f "${PLONE_VER}.zip" ]; then
+  unzip ${PLONE_VER}.zip
+  rm ${PLONE_VER}.zip
+  mv Plone-${PLONE_VER}/docs ${TARGET_DIR}/Plone-docs
+  rm -rf Plone-${PLONE_VER}
 fi
 
 echo "Getting virtualenv"
