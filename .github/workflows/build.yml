@@ -8,7 +8,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -32,7 +32,7 @@ jobs:
         - "3.6"
         - "3.7"
         - "3.8"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Installs on Linux
       run: |
@@ -67,13 +67,13 @@ jobs:
 # do not test on 3.7, b/c it fails for unknown GH actions specific reasons
 #        - "3.7"
         - "3.8"
-    runs-on: macos-latest
+    runs-on: macos
     steps:
     - name: Installs on Macos
       run: |
         brew install libxml2 libxslt
     - name: Increase WAIT for Service on macos
-      if: matrix.os == 'macos-latest'
+      if: matrix.os == 'macos'
       run: |
         echo PLONE_SERVER_START_WAIT="120" >> $GITHUB_ENV
     - name: Set up Python ${{ matrix.python-version }}
@@ -106,7 +106,7 @@ jobs:
         - "3.6"
         - "3.7"
         - "3.8"
-    runs-on: windows-latest
+    runs-on: windows
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -128,5 +128,5 @@ jobs:
         mkdir tmp
         cd installer\tests
         dir
-        setx WITH_TEMP "..\..\tmp" 
+        setx WITH_TEMP "..\..\tmp"
         python testall.py
