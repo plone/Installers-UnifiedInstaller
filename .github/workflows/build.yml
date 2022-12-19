@@ -65,13 +65,13 @@ jobs:
 # do not test on 3.7, b/c it fails for unknown GH actions specific reasons
 #        - "3.7"
         - "3.8"
-    runs-on: macos
+    runs-on: macos-10.15
     steps:
     - name: Installs on Macos
       run: |
         brew install libxml2 libxslt
     - name: Increase WAIT for Service on macos
-      if: matrix.os == 'macos'
+      if: matrix.os == 'macos-10.15'
       run: |
         echo PLONE_SERVER_START_WAIT="120" >> $GITHUB_ENV
     - name: Set up Python ${{ matrix.python-version }}
@@ -100,10 +100,10 @@ jobs:
     strategy:
       matrix:
         python-version:
-        # by intend no support for Python 2.7
+        # by intent no support for Python 2.7
         - "3.7"
         - "3.8"
-    runs-on: windows
+    runs-on: windows-2019
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
