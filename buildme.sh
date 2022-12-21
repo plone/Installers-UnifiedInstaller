@@ -9,7 +9,7 @@ set -e
 
 
 # MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
-BASE_VER="5.2.10.1"
+BASE_VER="5.2.10.2"
 PLONE_VER=$BASE_VER
 # There is no .1 release of the Plone package, so use the previous one for the docs.
 PLONE_VER="5.2.10"
