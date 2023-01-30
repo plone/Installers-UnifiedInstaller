@@ -51,7 +51,7 @@ Change your current directory to the unpacked archive's directory and execute th
 
 .. code-block:: bat
 
-    cd Plone-5.2.10.2-UnifiedInstaller-1.0
+    cd Plone-5.2.11-UnifiedInstaller-1.0
     dir
     windows_install.bat standalone --password=admin
 
