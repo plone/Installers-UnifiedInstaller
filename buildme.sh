@@ -9,7 +9,7 @@ set -e
 
 
 # MODIFY THE VARIABLES BELOW TO REFLECT THE NEEDS OF THE NEW VERSION
-BASE_VER="5.2.12"
+BASE_VER="5.2.13"
 PLONE_VER=$BASE_VER
 # In case of a "sub" release like 5.2.10.1, you need to activate the following.
 # There is no .1 release of the Plone package, so use the previous one for the docs.
