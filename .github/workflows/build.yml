@@ -23,12 +23,44 @@ jobs:
       with:
         name: Plone-Unified-Installer
         path: ~/dist/Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.*
-  test-ubuntu:
+  test-ubuntu-27:
     needs: build
     strategy:
       matrix:
         python-version:
         - "2.7"
+    runs-on: ubuntu-20.04
+      container:
+        image: python:2.7.18-buster
+    steps:
+    - name: Installs on Linux
+      run: |
+        sudo apt install libxml2-dev libxslt1-dev
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: Test Installer
+      shell: bash
+      run: |
+        tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
+        cd ..
+        mkdir tmp
+        ls -la
+        cd installer/tests
+        WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
+  test-ubuntu-38:
+    needs: build
+    strategy:
+      matrix:
+        python-version:
         - "3.8"
     runs-on: ubuntu-20.04
     steps:
@@ -60,7 +92,7 @@ jobs:
     strategy:
       matrix:
         python-version:
-        - "2.7"
+        # by intent no support for Python 2.7
         - "3.8"
     runs-on: macos-10.15
     steps:
