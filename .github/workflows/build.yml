@@ -29,7 +29,6 @@ jobs:
       matrix:
         python-version:
         - "2.7"
-        - "3.7"
         - "3.8"
     runs-on: ubuntu-20.04
     steps:
@@ -62,8 +61,6 @@ jobs:
       matrix:
         python-version:
         - "2.7"
-# do not test on 3.7, b/c it fails for unknown GH actions specific reasons
-#        - "3.7"
         - "3.8"
     runs-on: macos-10.15
     steps:
@@ -101,7 +98,6 @@ jobs:
       matrix:
         python-version:
         # by intent no support for Python 2.7
-        - "3.7"
         - "3.8"
     runs-on: windows-2019
     steps:
