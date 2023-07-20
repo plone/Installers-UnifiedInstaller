@@ -42,6 +42,7 @@ jobs:
     - name: Test Installer
       shell: bash
       run: |
+        apt-get update
         apt-get install sudo
         tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
         mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
