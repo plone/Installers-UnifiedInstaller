@@ -49,6 +49,7 @@ jobs:
   #       ls -la
   #       cd installer/tests
   #       WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
+  # It fails here with: 'sudo utility is required to do a server-mode install.'
   test-ubuntu-38:
     needs: build
     strategy:
