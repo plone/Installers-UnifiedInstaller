@@ -49,7 +49,9 @@ jobs:
         useradd -d /srv/plone -s /bin/bash plone
         mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} /srv/plone/installer
         chown -R plone:plone /srv/plone
+        whoami
         su - plone
+        whoami
         cd /srv/plone
         ls -la
         cd installer/tests
