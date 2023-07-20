@@ -41,18 +41,12 @@ jobs:
       run: ls -R
     - name: Test Installer
       shell: bash
-      # We have no sudo in the container, so let's create a new user
-      # and do a root-less install.
       run: |
+        apt-get install sudo
         tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
-        mkdir -p /srv/plone/tmp
-        useradd -d /srv/plone -s /bin/bash plone
-        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} /srv/plone/installer
-        chown -R plone:plone /srv/plone
-        whoami
-        su - plone
-        whoami
-        cd /srv/plone
+        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
+        cd ..
+        mkdir tmp
         ls -la
         cd installer/tests
         WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
