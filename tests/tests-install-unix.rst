@@ -57,6 +57,10 @@ Test a ZEO install
       Username: admin
       Password: admin-etc-
 
+    gh-actions on 27 fails, so let's print the log.
+    >>> with open("/__w/Installers-UnifiedInstaller/installer/install.log") as myfile:
+    ...     print(myfile.read())
+
     target should have basic kit
     >>> sorted(os.listdir(testTarget))
     ['Plone-docs', 'buildout-cache', 'zeocluster']
