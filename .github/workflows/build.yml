@@ -23,33 +23,37 @@ jobs:
       with:
         name: Plone-Unified-Installer
         path: ~/dist/Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.*
-  # test-ubuntu-27:
-  #   needs: build
-  #   strategy:
-  #     matrix:
-  #       python-version:
-  #       - "2.7"
-  #   runs-on: ubuntu-20.04
-  #   container:
-  #     image: python:2.7.18-buster
-  #   steps:
-  #   - name: Download Plone-Installer
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: Plone-Unified-Installer
-  #   - name: Display structure of downloaded files
-  #     run: ls -R
-  #   - name: Test Installer
-  #     shell: bash
-  #     run: |
-  #       tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
-  #       mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} ../installer
-  #       cd ..
-  #       mkdir tmp
-  #       ls -la
-  #       cd installer/tests
-  #       WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
-  # It fails here with: 'sudo utility is required to do a server-mode install.'
+  test-ubuntu-27:
+    needs: build
+    strategy:
+      matrix:
+        python-version:
+        - "2.7"
+    runs-on: ubuntu-20.04
+    container:
+      image: python:2.7.18-buster
+    steps:
+    - name: Download Plone-Installer
+      uses: actions/download-artifact@v2
+      with:
+        name: Plone-Unified-Installer
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: Test Installer
+      shell: bash
+      # We have no sudo in the container, so let's create a new user
+      # and do a root-less install.
+      run: |
+        tar xzf Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }}.tgz
+        mkdir -p /srv/plone/tmp
+        useradd -d /srv/plone -s /bin/bash plone
+        mv Plone-${{ env.PLONE_VERSION }}-UnifiedInstaller-${{ env.INSTALLER_VERSION }} /srv/plone/installer
+        chown -R plone:plone /srv/plone
+        su - plone
+        cd /srv/plone
+        ls -la
+        cd installer/tests
+        WITH_TEMP="../../tmp" WITH_PYTHON="`which python`" python testall.py
   test-ubuntu-38:
     needs: build
     strategy:
