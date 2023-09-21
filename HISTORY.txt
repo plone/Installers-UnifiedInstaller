@@ -1,5 +1,8 @@
 5.2.14
 
+- Update to Plone 5.2.14
+  [maurits]
+
 - No longer test on Python 2.7, we cannot get it to work.
   If you want to fix this, see https://github.com/plone/Installers-UnifiedInstaller/pull/135.
   [maurits]
