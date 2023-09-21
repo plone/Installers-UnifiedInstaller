@@ -61,13 +61,12 @@ jobs:
         python-version:
         # by intent no support for Python 2.7
         - "3.8"
-    runs-on: macos-10.15
+    runs-on: macos-11
     steps:
     - name: Installs on Macos
       run: |
         brew install libxml2 libxslt
     - name: Increase WAIT for Service on macos
-      if: matrix.os == 'macos-10.15'
       run: |
         echo PLONE_SERVER_START_WAIT="120" >> $GITHUB_ENV
     - name: Set up Python ${{ matrix.python-version }}
