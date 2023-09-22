@@ -118,7 +118,26 @@ if not os.path.exists(PY_HOME):
         with tarfile.open(
             glob.glob(os.path.join(PACKAGES_HOME, "virtualenv*"))[0]
         ) as tf:
-            tf.extractall(opt.target)
+            def is_within_directory(directory, target):
+                
+                abs_directory = os.path.abspath(directory)
+                abs_target = os.path.abspath(target)
+            
+                prefix = os.path.commonprefix([abs_directory, abs_target])
+                
+                return prefix == abs_directory
+            
+            def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+            
+                for member in tar.getmembers():
+                    member_path = os.path.join(path, member.name)
+                    if not is_within_directory(path, member_path):
+                        raise Exception("Attempted Path Traversal in Tar File")
+            
+                tar.extractall(path, members, numeric_owner=numeric_owner) 
+                
+            
+            safe_extract(tf, opt.target)
         vepackagedir = glob.glob(os.path.join(opt.target, "virtualenv*"))[0]
         doCommand(
             sys.executable
