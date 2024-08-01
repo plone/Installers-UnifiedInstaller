@@ -61,7 +61,7 @@ jobs:
         python-version:
         # by intent no support for Python 2.7
         - "3.8"
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
     - name: Installs on Macos
       run: |
