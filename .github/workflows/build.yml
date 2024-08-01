@@ -3,7 +3,7 @@ name: Build and test result
 on: [push]
 
 env:
-    PLONE_VERSION: "5.2.14"
+    PLONE_VERSION: "5.2.15"
     INSTALLER_VERSION: "1.0"
 
 jobs:
@@ -61,7 +61,7 @@ jobs:
         python-version:
         # by intent no support for Python 2.7
         - "3.8"
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
     - name: Installs on Macos
       run: |
